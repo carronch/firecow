@@ -8,7 +8,7 @@ To make the Content Management System (CMS) work on your live site, you need to 
 1.  Go to **[GitHub Developer Settings > OAuth Apps](https://github.com/settings/applications/new)**.
 2.  Click **New OAuth App**.
 3.  **Application Name**: `FireCow CMS` (or your preferred name).
-4.  **Homepage URL**: Usage your Cloudflare Pages URL (e.g., `https://firecow.pages.dev`).
+4.  **Homepage URL**: Use your Cloudflare Pages URL (e.g., `https://firecow.pages.dev`).
 5.  **Authorization Callback URL**: 
     ```
     https://<YOUR-SITE-URL>/api/keystatic/github/oauth/callback
@@ -29,8 +29,37 @@ After saving the variables, you must **redeploy** your site for the changes to t
 
 ---
 
+## Deploying a New Site (Spin-off)
+
+When you create a new site using `pnpm new-site`, the code is ready for Cloudflare, but you must manually create the project in the Cloudflare Dashboard to connect it.
+
+### Step-by-Step Guide
+
+1.  **Create Project**:
+    - Go to **Cloudflare Dashboard > Pages**.
+    - Click **Create a project** > **Connect to Git**.
+    - Select your repository (`firecow-bookings`).
+
+2.  **Configure Build Settings**:
+    - **Project Name**: e.g., `isla-tortuga`
+    - **Production Branch**: `main`
+    - **Framework Preset**: `None`
+    - **Build command**: 
+      ```bash
+      npx turbo run build --filter=@firecow/<your-new-site-name>
+      ```
+      *(Example: `npx turbo run build --filter=@firecow/isla-tortuga-costa-rica`)*
+    - **Build output directory**:
+      ```bash
+      apps/<your-new-site-name>/dist
+      ```
+      *(Example: `apps/isla-tortuga-costa-rica/dist`)*
+
+3.  **Environment Variables**:
+    - Add the same `KEYSTATIC_GITHUB_` variables if you want the CMS to work (you can reuse the same OAuth app if the domain matches, or create a new one).
+
 ### Local Development
 To run the CMS locally:
-1.  Ren `pnpm dev`.
+1.  Run `pnpm dev`.
 2.  Go to `http://localhost:4321/keystatic`.
 3.  Since we are in `github` mode, changes will be committed directly to your repository!
