@@ -1,0 +1,50 @@
+
+> @firecow/template@0.0.1 build /Users/treeseedtreeseed/Desktop/FireCow Workspace/firecow-bookings/apps/template
+> astro build
+
+12:56:15 [types] Generated 57ms
+12:56:15 [build] output: "static"
+12:56:15 [build] directory: /Users/treeseedtreeseed/Desktop/FireCow Workspace/firecow-bookings/apps/template/dist/
+12:56:15 [build] Collecting build info...
+12:56:15 [build] ✓ Completed in 126ms.
+12:56:15 [build] Building static entrypoints...
+12:56:16 [vite] ✓ built in 1.01s
+12:56:16 [build] ✓ Completed in 1.04s.
+
+ building client (vite) 
+12:56:16 [vite] transforming...
+12:56:22 [vite] ✓ 1464 modules transformed.
+12:56:22 [vite] rendering chunks...
+12:56:23 [vite] computing gzip size...
+12:56:23 [vite] dist/_astro/keystatic-page.DxXjk_Cn.js        0.12 kB │ gzip:   0.12 kB
+12:56:23 [vite] dist/_astro/KeystaticApp.Cw6dikfS.js          0.13 kB │ gzip:   0.13 kB
+12:56:23 [vite] dist/_astro/client.rWhUKloA.js                1.72 kB │ gzip:   0.88 kB
+12:56:23 [vite] dist/_astro/index.B73fhjLu.js               141.40 kB │ gzip:  45.48 kB
+12:56:23 [vite] dist/_astro/keystatic.config.5r5XixsC.js  2,715.62 kB │ gzip: 856.89 kB
+12:56:23 [WARN] [vite] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+12:56:23 [vite] ✓ built in 7.47s
+
+ generating static routes 
+12:56:23 λ /api/keystatic/[...params]
+12:56:23 [ERROR] [build] Failed to call getStaticPaths for ../../node_modules/.pnpm/@keystatic+astro@5.0.6_@keystatic+core@0.5.48_astro@4.16.19_react-dom@18.3.1_react@18.3.1/node_modules/@keystatic/astro/internal/keystatic-api.js
+[GetStaticPathsRequired] `getStaticPaths()` function is required for dynamic routes. Make sure that you `export` a `getStaticPaths` function from your dynamic route.
+  Hint:
+    See https://docs.astro.build/en/guides/routing/#dynamic-routes for more information on dynamic routes.
+    
+    Alternatively, set `output: "server"` or `output: "hybrid"` in your Astro config file to switch to a non-static server build. This error can also occur if using `export const prerender = true;`.
+    See https://docs.astro.build/en/guides/server-side-rendering/ for more information on non-static rendering.
+  Error reference:
+    https://docs.astro.build/en/reference/errors/get-static-paths-required/
+  Location:
+    ../../node_modules/.pnpm/@keystatic+astro@5.0.6_@keystatic+core@0.5.48_astro@4.16.19_react-dom@18.3.1_react@18.3.1/node_modules/@keystatic/astro/internal/keystatic-api.js:0:0
+  Stack trace:
+    at validateDynamicRouteModule (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/astro@4.16.19_typescript@5.9.3/node_modules/astro/dist/core/routing/validation.js:19:11)
+    at getPathsForRoute (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/astro@4.16.19_typescript@5.9.3/node_modules/astro/dist/core/build/generate.js:196:31)
+    at async generatePages (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/astro@4.16.19_typescript@5.9.3/node_modules/astro/dist/core/build/generate.js:98:7)
+    at async AstroBuilder.build (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/astro@4.16.19_typescript@5.9.3/node_modules/astro/dist/core/build/index.js:149:5)
+    at async build (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/astro@4.16.19_typescript@5.9.3/node_modules/astro/dist/core/build/index.js:51:3)
+ ELIFECYCLE  Command failed with exit code 1.

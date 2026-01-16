@@ -1,0 +1,15 @@
+{
+    "name": "@firecow/config",
+    "version": "0.0.0",
+    "private": true,
+    "main": "./index.mjs",
+    "types": "./index.d.ts",
+    "exports": {
+        ".": "./index.mjs",
+        "./tailwind.config.mjs": "./tailwind.config.mjs",
+        "./tsconfig.json": "./tsconfig.json"
+    },
+    "dependencies": {
+        "tailwindcss": "^3.4.1"
+    }
+}

@@ -1,0 +1,6 @@
+node_modules
+.ds_store
+dist
+.env
+.env.*.local
+.turbo

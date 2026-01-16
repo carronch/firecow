@@ -1,0 +1,12 @@
+---
+import { KeystaticApp } from '../../components/KeystaticApp';
+
+// This is required for static site generation
+export function getStaticPaths() {
+  return [
+    { params: { params: undefined } }
+  ];
+}
+---
+
+<KeystaticApp client:only="react" />
