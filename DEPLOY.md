@@ -21,6 +21,7 @@ To make the Content Management System (CMS) work on your live site, you need to 
 3.  Add the following variables using the credentials from the GitHub OAuth App you just created:
     - `KEYSTATIC_GITHUB_CLIENT_ID`
     - `KEYSTATIC_GITHUB_CLIENT_SECRET`
+    - `KEYSTATIC_SECRET` (A random string for session encryption, e.g., generated with `openssl rand -hex 32`)
 
 ### 3. Redeploy
 After saving the variables, you must **redeploy** your site for the changes to take effect. You can do this by:
