@@ -3,6 +3,7 @@ import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import markdoc from '@astrojs/markdoc';
 import keystatic from '@keystatic/astro';
+import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
@@ -13,12 +14,8 @@ export default defineConfig({
             applyBaseStyles: false,
         }),
         markdoc(),
-        // keystatic()
+        keystatic()
     ],
-    output: 'static',
-    vite: {
-        ssr: {
-            noExternal: ['@keystatic/core', '@keystatic/astro']
-        }
-    }
+    output: 'server',
+    adapter: cloudflare()
 });
