@@ -11,7 +11,7 @@ export async function GET(context) {
         },
         // Source 2: process.env (Node compatibility shim)
         'process.env': {
-            KEYSTATIC_GITHUB_CLIENT_ID: process.env.KEYSTATIC_GITHUB_CLIENT_ID ? 'Set ✅' : 'Missing ❌',
+            KEYSTATIC_GITHUB_CLIENT_ID: process?.env?.KEYSTATIC_GITHUB_CLIENT_ID ? 'Set ✅' : 'Missing ❌',
         },
         // Source 3: context.locals.runtime.env (Cloudflare native)
         'context.locals.runtime.env': {
