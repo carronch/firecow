@@ -15,7 +15,19 @@ importers:
         specifier: latest
         version: 2.7.4
 
-  apps/Isla:
+  apps/catamaran-sunset:
+    dependencies:
+      '@firecow/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@firecow/template':
+        specifier: workspace:*
+        version: link:../template
+      astro:
+        specifier: ^4.0.0
+        version: 4.16.19(typescript@5.9.3)
+
+  apps/isla-tortuga-costa-rica:
     dependencies:
       '@astrojs/cloudflare':
         specifier: ^11.2.0
@@ -66,18 +78,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.0
         version: 18.3.7(@types/react@18.3.27)
-
-  apps/catamaran-sunset:
-    dependencies:
-      '@firecow/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@firecow/template':
-        specifier: workspace:*
-        version: link:../template
-      astro:
-        specifier: ^4.0.0
-        version: 4.16.19(typescript@5.9.3)
 
   apps/template:
     dependencies:
