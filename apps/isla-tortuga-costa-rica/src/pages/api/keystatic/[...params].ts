@@ -37,7 +37,11 @@ export const ALL: APIRoute = async (context) => {
 
     const handler = makeHandler({
         config: runtimeConfig,
-    });
+        // Passing arguments directly to makeHandler to bypass process.env reliance
+        clientId: runtime?.env?.KEYSTATIC_GITHUB_CLIENT_ID || import.meta.env.KEYSTATIC_GITHUB_CLIENT_ID,
+        clientSecret: runtime?.env?.KEYSTATIC_GITHUB_CLIENT_SECRET || import.meta.env.KEYSTATIC_GITHUB_CLIENT_SECRET,
+        secret: runtime?.env?.KEYSTATIC_SECRET || import.meta.env.KEYSTATIC_SECRET,
+    } as any);
 
     return handler(context);
 };
