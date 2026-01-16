@@ -14,15 +14,23 @@ export const ALL: APIRoute = async (context) => {
     const runtime = (context.locals as any)?.runtime;
 
     if (runtime?.env) {
+        // ... (existing Cloudflare logic)
         const env = runtime.env;
-        // manually inject for session secret if keystatic reads process.env directly
         process.env.KEYSTATIC_SECRET = env.KEYSTATIC_SECRET;
-
         if (runtimeConfig.storage && runtimeConfig.storage.kind === 'github') {
             runtimeConfig.storage = {
                 ...runtimeConfig.storage,
                 clientId: env.KEYSTATIC_GITHUB_CLIENT_ID,
                 clientSecret: env.KEYSTATIC_GITHUB_CLIENT_SECRET
+            } as any;
+        }
+    } else {
+        // Fallback for Local Development (using import.meta.env from .env file)
+        if (runtimeConfig.storage && runtimeConfig.storage.kind === 'github') {
+            runtimeConfig.storage = {
+                ...runtimeConfig.storage,
+                clientId: import.meta.env.KEYSTATIC_GITHUB_CLIENT_ID,
+                clientSecret: import.meta.env.KEYSTATIC_GITHUB_CLIENT_SECRET
             } as any;
         }
     }
