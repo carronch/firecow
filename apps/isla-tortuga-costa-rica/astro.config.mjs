@@ -17,5 +17,9 @@ export default defineConfig({
         keystatic()
     ],
     output: 'server',
-    adapter: cloudflare()
+    adapter: cloudflare({
+        platformProxy: {
+            enabled: true,
+        },
+    })
 });
