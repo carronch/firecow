@@ -1,0 +1,77 @@
+---
+import Button from './Button.astro';
+
+// Placeholder data - will eventually come from Keystatic
+// Fallback data matching legacy HTML content
+const tours = [
+  {
+    id: 1,
+    title: "Isla Tortuga All-Inclusive Day Tour",
+    price: 150,
+    duration: "1 Day (7:45 AM - 3:45 PM)",
+    image: "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800&q=80",
+    category: "Adventure",
+    description: "Cruise to the white sands of Isla Tortuga. Includes snorkeling, banana boat, eco-hike, and a full buffet lunch."
+  },
+  {
+    id: 2,
+    title: "Private Catamaran Charter",
+    price: 1800,
+    duration: "Full Day",
+    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800&q=80",
+    category: "Luxury",
+    description: "Experience exclusivity with a private charter for your group. Customized itinerary, premium service, and total privacy."
+  }
+];
+---
+
+<section id="experiences" class="py-24 bg-slate-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <span class="text-primary-600 font-semibold tracking-wide uppercase text-sm">Discover Paradise</span>
+      <h2 class="text-4xl md:text-5xl font-bold font-heading mt-2 mb-4 text-slate-900">Unforgettable Experiences</h2>
+      <p class="text-slate-600 text-lg max-w-2xl mx-auto">Choose from our curated selection of premium tours designed to create lasting memories.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {tours.map(tour => (
+        <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+          <div class="relative h-64 overflow-hidden">
+             <div class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-slate-800">
+               {tour.category}
+             </div>
+             <img 
+               src={tour.image} 
+               alt={tour.title}
+               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+             />
+          </div>
+          
+          <div class="p-8">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <h3 class="text-xl font-bold font-heading text-slate-900 mb-2 group-hover:text-primary-600 transition-colors">{tour.title}</h3>
+                <div class="flex items-center text-slate-500 text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                  {tour.duration}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mt-6 pt-6 border-t border-slate-100">
+              <div>
+                <span class="text-slate-400 text-sm">From</span>
+                <p class="text-2xl font-bold text-primary-600">${tour.price}</p>
+              </div>
+              <Button variant="outline" size="sm" href={`/tours/${tour.id}`}>
+                View Details
+              </Button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
