@@ -4,59 +4,61 @@ import { getEntry } from 'astro:content';
 const homepageData = await getEntry('homepage', 'settings');
 const homepage = homepageData?.data;
 
-const rawHeroImage = homepage?.heroImage;
-const heroImage = rawHeroImage ? (rawHeroImage.startsWith('http') ? rawHeroImage : `/images/hero/${rawHeroImage}`) : 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=80';
-const heroHeading = homepage?.heroHeading || 'Experience the Enchanted Islands in Style';
-const heroSubheading = homepage?.heroSubheading || 'Luxury Galapagos Cruises and Tours for the Discerning Traveler';
+const heroImage = homepage?.heroImage || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80";
+const heroHeading = homepage?.heroHeading || "Premium Tours & Adventures";
+const heroSubheading = homepage?.heroSubheading || "Experience the adventure of a lifetime";
 ---
 
-<section id="hero-booking" class="relative min-h-screen flex items-center pt-20 bg-cover bg-center bg-no-repeat bg-fixed" style={`background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('${heroImage}');`}>
-  <div class="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full py-12">
-      
-      <!-- Left: Text -->
-      <div class="text-white text-center lg:text-left">
-          <div class="inline-block bg-primary-500 px-4 py-1 rounded-full text-sm font-bold tracking-wide uppercase mb-6 shadow-lg">
-              Premier Adventures
-          </div>
-          <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight drop-shadow-xl font-heading">
-              {heroHeading}
-          </h1>
-          <p class="text-lg md:text-xl mb-8 font-light drop-shadow-md text-gray-100 max-w-2xl mx-auto lg:mx-0">
-              {heroSubheading}
-          </p>
-          
-          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <a href="#experiences" class="bg-white hover:bg-gray-100 text-slate-900 text-lg font-bold py-3 px-8 rounded-lg shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center">
-                  <i class="fa-solid fa-eye mr-2"></i> View Tours
-              </a>
-          </div>
-          
-          <div class="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm font-medium text-gray-300">
-              <span class="flex items-center"><i class="fa-solid fa-check-circle text-green-400 mr-2"></i> 5-Star Rated</span>
-              <span class="flex items-center"><i class="fa-solid fa-shield-halved text-blue-400 mr-2"></i> Safe & Secure</span>
-          </div>
-      </div>
+<section 
+  class="relative h-screen flex items-center justify-center text-white overflow-hidden"
+  aria-label="Hero section"
+>
+    <!-- Background Image with proper loading -->
+    <div class="absolute inset-0 z-0">
+        <img 
+            src={heroImage}
+            alt="Beautiful Costa Rica adventure tour scenery"
+            class="w-full h-full object-cover"
+            loading="eager"
+            fetchpriority="high"
+            width="1920"
+            height="1080"
+        />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
+    </div>
 
-      <!-- Right: Booking Form Placeholder -->
-      <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-white/20 backdrop-blur-sm h-[600px] relative">
-          <div class="p-8 h-full flex flex-col justify-center items-center text-center">
-             <div class="w-20 h-20 bg-primary-50 rounded-full flex items-center justify-center mb-6">
-                <i class="fa-solid fa-calendar-days text-4xl text-primary-500"></i>
-             </div>
-             <h3 class="text-2xl font-bold text-slate-900 mb-2">Book Your Adventure</h3>
-             <p class="text-slate-500 mb-8">Select your dates and tour type to check availability.</p>
-             
-             <!-- Visual representation of the booking widget -->
-             <div class="w-full max-w-sm space-y-4 opacity-75">
-                <div class="h-12 bg-slate-100 rounded-lg w-full"></div>
-                <div class="h-12 bg-slate-100 rounded-lg w-full"></div>
-                <div class="h-12 bg-primary-100 rounded-lg w-full"></div>
-             </div>
+    <!-- Hero Content -->
+    <div class="container mx-auto px-4 z-10 text-center">
+        <h1 class="text-5xl md:text-7xl font-heading font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white drop-shadow-2xl">
+            {heroHeading}
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 text-blue-50 font-light max-w-3xl mx-auto drop-shadow-lg">
+            {heroSubheading}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a 
+                href="#experiences" 
+                class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 transform hover:scale-105 shadow-2xl"
+                aria-label="View available tours and experiences"
+            >
+                <i class="fa-solid fa-compass mr-2" aria-hidden="true"></i>
+                Explore Tours
+            </a>
+            <a 
+                href="#contact" 
+                class="bg-white/10 backdrop-blur-md hover:background-white/20 border-2 border-white text-white px-8 py-4 rounded-full text-lg font-bold transition-all duration-300 transform hover:scale-105"
+                aria-label="Get in touch with us"
+            >
+                <i class="fa-solid fa-envelope mr-2" aria-hidden="true"></i>
+                Get in Touch
+            </a>
+        </div>
+    </div>
 
-             <div class="absolute bottom-8 text-xs text-slate-400">
-                Powered by <span class="font-semibold">FireCow Booking Engine</span>
-             </div>
-          </div>
-      </div>
-  </div>
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+        <a href="#trust-banner" aria-label="Scroll down to see more">
+            <i class="fa-solid fa-chevron-down text-white text-3xl opacity-70 hover:opacity-100 transition-opacity" aria-hidden="true"></i>
+        </a>
+    </div>
 </section>
