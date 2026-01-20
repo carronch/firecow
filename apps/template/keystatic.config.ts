@@ -85,4 +85,35 @@ export default config({
             }
         })
     },
+    singletons: {
+        homepage: {
+            label: 'Homepage & Site Settings',
+            path: 'src/content/homepage/settings',
+            schema: {
+                siteName: fields.text({ label: 'Site Name' }),
+                logoEmoji: fields.text({ label: 'Logo Emoji (e.g. 🐢)' }),
+                heroImage: fields.image({
+                    label: 'Hero Background Image',
+                    directory: 'public/images/hero',
+                    publicPath: '/images/hero/'
+                }),
+                heroHeading: fields.text({ label: 'Hero Heading' }),
+                heroSubheading: fields.text({ label: 'Hero Subheading' }),
+                socialProofImage1: fields.image({ label: 'Social Proof Image 1', directory: 'public/images/social', publicPath: '/images/social/' }),
+                socialProofImage2: fields.image({ label: 'Social Proof Image 2', directory: 'public/images/social', publicPath: '/images/social/' }),
+                socialProofImage3: fields.image({ label: 'Social Proof Image 3', directory: 'public/images/social', publicPath: '/images/social/' }),
+                galleryImages: fields.array(
+                    fields.image({
+                        label: 'Gallery Image',
+                        directory: 'public/images/gallery',
+                        publicPath: '/images/gallery/'
+                    }),
+                    {
+                        label: 'Photo Gallery',
+                        itemLabel: (props) => props.value ? 'Image' : 'New Image'
+                    }
+                )
+            }
+        }
+    }
 });

@@ -77,24 +77,9 @@ const alsoIncluded = [
 <section class="py-16 bg-blue-50/50" id="whats-included">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- Top Row: 4 Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      {topFeatures.map((feature) => (
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100/50 hover:shadow-md transition-shadow">
-          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 text-primary">
-            <feature.icon className="w-6 h-6" />
-          </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-4">{feature.title}</h3>
-          <ul class="space-y-3">
-            {feature.items.map((item) => (
-              <li class="flex items-start gap-2.5">
-                <Check className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" />
-                <span class="text-sm text-gray-600 leading-relaxed">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold font-heading text-slate-900">What's Included</h2>
+      <p class="text-slate-600 mt-4 max-w-2xl mx-auto">Everything you need for a perfect day in paradise is included in your tour.</p>
     </div>
 
     <!-- Middle Row: Daily Activities + Schedule -->
