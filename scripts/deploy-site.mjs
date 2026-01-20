@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { scrapeImagesFromWebsite, selectBestImages } from './image-scraper.mjs';
 
 // Get arguments
 const args = process.argv.slice(2);
@@ -136,38 +137,20 @@ console.log(`   pnpm --filter @firecow/${siteName} dev\n`);
  * Helper functions for image selection
  */
 async function findPlaceholderImages(tourType, siteName) {
-    const heroImageId = await searchUnsplashImage(tourType, 'hero');
-    const testimonialImageIds = await searchUnsplashImages(tourType, 'portrait', 3);
+    let scrapedImages = { heroImages: [], testimonialImages: [], allImages: [] };
+
+    // Try to scrape images from reference URL if provided
+    if (referenceUrl) {
+        scrapedImages = await scrapeImagesFromWebsite(referenceUrl, siteName);
+    }
+
+    // Select the best images (will use scraped or fallback to Unsplash)
+    const selectedImages = await selectBestImages(scrapedImages, tourType);
 
     return {
-        heroImage: `https://images.unsplash.com/photo-${heroImageId}?w=1920&q=80`,
-        testimonialImages: testimonialImageIds.map(id =>
-            `https://images.unsplash.com/photo-${id}?w=600&q=80`
-        ),
+        heroImage: selectedImages.heroImage,
+        testimonialImages: selectedImages.testimonialImages
     };
 }
 
-async function searchUnsplashImage(tourType, imageType) {
-    const imageMap = {
-        fishing: { hero: '1544252890-a1e74f714247' },
-        catamaran: { hero: '1559827260-797a72d2a598' },
-        snorkeling: { hero: '1559827291-72ee739d0d9a' },
-        diving: { hero: '1544551763-46a013bb70d5' },
-        surfing: { hero: '1502680390469-be75c86b636f' },
-        default: { hero: '1506905925346-21bda4d32df4' }
-    };
 
-    return imageMap[tourType]?.[imageType] || imageMap.default.hero;
-}
-
-async function searchUnsplashImages(tourType, style, count) {
-    const portraitImages = [
-        '1539571696357-5a69c17a67c6',
-        '1527631746610-bca00a040d60',
-        '1507003211169-0a1dd7228f2d',
-        '1500648767791-00dcc994a43e',
-        '1506794778202-cad84cf45f1d',
-    ];
-
-    return portraitImages.slice(0, count);
-}
