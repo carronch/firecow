@@ -1,8 +1,11 @@
 ---
-import { reader } from '../lib/keystatic';
+import { getEntry } from 'astro:content';
 
-const homepage = await reader.singletons.homepage.read();
-const heroImage = homepage?.heroImage || 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=80';
+const homepageData = await getEntry('homepage', 'settings');
+const homepage = homepageData?.data;
+
+const rawHeroImage = homepage?.heroImage;
+const heroImage = rawHeroImage ? (rawHeroImage.startsWith('http') ? rawHeroImage : `/images/hero/${rawHeroImage}`) : 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=80';
 const heroHeading = homepage?.heroHeading || 'Experience the Enchanted Islands in Style';
 const heroSubheading = homepage?.heroSubheading || 'Luxury Galapagos Cruises and Tours for the Discerning Traveler';
 ---

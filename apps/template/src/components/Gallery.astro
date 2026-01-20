@@ -1,8 +1,14 @@
 ---
-import { reader } from '../lib/keystatic';
+import { getEntry } from 'astro:content';
 
-const homepage = await reader.singletons.homepage.read();
-const galleryImages = homepage?.galleryImages || [];
+const homepageData = await getEntry('homepage', 'settings');
+const homepage = homepageData?.data;
+
+const rawGalleryImages = homepage?.galleryImages || [];
+// Resolve paths
+const galleryImages = rawGalleryImages.map((img: string) => 
+    img.startsWith('http') ? img : `/images/gallery/${img}`
+);
 
 // Fallback images if no gallery content is created
 const fallbackImages = [

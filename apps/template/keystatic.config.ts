@@ -99,9 +99,9 @@ export default config({
                 }),
                 heroHeading: fields.text({ label: 'Hero Heading' }),
                 heroSubheading: fields.text({ label: 'Hero Subheading' }),
-                socialProofImage1: fields.image({ label: 'Social Proof Image 1', directory: 'public/images/social', publicPath: '/images/social/' }),
-                socialProofImage2: fields.image({ label: 'Social Proof Image 2', directory: 'public/images/social', publicPath: '/images/social/' }),
-                socialProofImage3: fields.image({ label: 'Social Proof Image 3', directory: 'public/images/social', publicPath: '/images/social/' }),
+                testimonialImage1: fields.image({ label: 'Testimonial Image 1', directory: 'public/images/testimonials', publicPath: '/images/testimonials/' }),
+                testimonialImage2: fields.image({ label: 'Testimonial Image 2', directory: 'public/images/testimonials', publicPath: '/images/testimonials/' }),
+                testimonialImage3: fields.image({ label: 'Testimonial Image 3', directory: 'public/images/testimonials', publicPath: '/images/testimonials/' }),
                 galleryImages: fields.array(
                     fields.image({
                         label: 'Gallery Image',

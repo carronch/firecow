@@ -1,4 +1,14 @@
 ---
+import { getEntry } from 'astro:content';
+
+const homepageData = await getEntry('homepage', 'settings');
+const homepage = homepageData?.data;
+
+const resolveImage = (img: string | undefined, defaultImg: string) => {
+    if (!img) return defaultImg;
+    return img.startsWith('http') ? img : `/images/testimonials/${img}`;
+};
+
 const reviews = [
   {
     name: "James M.",
@@ -15,9 +25,9 @@ const reviews = [
 ];
 
 const photos = [
-  "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&q=80",
-  "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=600&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80"
+  resolveImage(homepage?.testimonialImage1, "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&q=80"),
+  resolveImage(homepage?.testimonialImage2, "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=600&q=80"),
+  resolveImage(homepage?.testimonialImage3, "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80")
 ];
 ---
 
