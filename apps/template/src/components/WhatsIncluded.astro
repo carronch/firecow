@@ -17,7 +17,10 @@ import {
   Wifi,
   ShieldCheck,
   Ban,
-  Check
+  Check,
+  Coffee,
+  Ticket,
+  Anchor
 } from 'lucide-react';
 
 const topFeatures = [
@@ -71,7 +74,7 @@ const alsoIncluded = [
 ];
 ---
 
-<section class="py-16 bg-blue-50/50">
+<section class="py-16 bg-blue-50/50" id="whats-included">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
     <!-- Top Row: 4 Cards -->
@@ -102,12 +105,6 @@ const alsoIncluded = [
         <div class="flex items-center gap-3 mb-6">
           <div class="p-2 bg-blue-100 text-primary rounded-lg">
              <Waves className="w-6 h-6" /> 
-             {/* Using Waves as generic icon for activities or maybe List? Screen shows List icon. 
-                 Let's use List or LayoutList. Wait, I imported specific icons. 
-                 I'll just use a generic one like Map or List. 
-                 Let's add List to imports if needed, or just use Waves. 
-                 Actually screenshot has 'Daily Activities' header with an icon that looks like a list. 
-             */}
           </div>
           <h3 class="text-xl font-bold text-gray-900">Daily Activities</h3>
         </div>
@@ -124,10 +121,9 @@ const alsoIncluded = [
 
       <!-- Typical Day Schedule -->
       <div class="bg-primary p-8 rounded-xl shadow-sm text-white relative overflow-hidden">
-        {/* Background decoration or gradient could go here */}
         <div class="flex items-center gap-3 mb-8 relative z-10">
           <Clock className="w-6 h-6 text-blue-200" />
-          <h3 class="text-xl font-bold">Typical Day Schedule</h3>
+          <h3 class="text-xl font-bold">Tour Schedule</h3>
         </div>
 
         <div class="space-y-6 relative z-10">
@@ -151,7 +147,7 @@ const alsoIncluded = [
 
     <!-- Bottom Row: Also Included -->
     <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100/50 text-center">
-      <h3 class="text-xl font-bold text-gray-900 mb-8">Also Included</h3>
+      <h3 class="text-xl font-bold text-gray-900 mb-8">Detailed Inclusions</h3>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
         {alsoIncluded.map((item) => (
           <div class="flex flex-col items-center">
