@@ -1,4 +1,18 @@
 ---
+import { reader } from '../lib/keystatic';
+
+const homepage = await reader.singletons.homepage.read();
+const galleryImages = homepage?.galleryImages || [];
+
+// Fallback images if no gallery content is created
+const fallbackImages = [
+  "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800&q=80",
+  "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80",
+  "https://images.unsplash.com/photo-1583212235753-b250a3b5b120?w=800&q=80",
+  "https://images.unsplash.com/photo-1621262828626-4b8cc4821867?w=800&q=80"
+];
+
+const imagesToDisplay = galleryImages.length > 0 ? galleryImages : fallbackImages;
 ---
 <section class="py-20 bg-white" id="gallery">
     <div class="container mx-auto px-4">
@@ -9,19 +23,11 @@
       </div>
   
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <!-- Placeholder for Keystatic Gallery -->
-        <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden group relative">
-             <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800&q=80" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Isla Tortuga 1"/>
-        </div>
-        <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden group relative">
-             <img src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Isla Tortuga 2"/>
-        </div>
-         <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden group relative">
-             <img src="https://images.unsplash.com/photo-1583212235753-b250a3b5b120?w=800&q=80" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Isla Tortuga 3"/>
-        </div>
-         <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden group relative">
-             <img src="https://images.unsplash.com/photo-1621262828626-4b8cc4821867?w=800&q=80" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="Isla Tortuga 4"/>
-        </div>
+        {imagesToDisplay.map((img, index) => (
+           <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden group relative">
+             <img src={img} class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt={`Gallery Image ${index + 1}`}/>
+           </div>
+        ))}
       </div>
     </div>
   </section>

@@ -1,8 +1,11 @@
 ---
+import { reader } from '../lib/keystatic';
+const homepage = await reader.singletons.homepage.read();
+
 const partners = [
-  { name: 'TripAdvisor', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/02/TripAdvisor_Logo.svg' },
-  { name: 'National Geographic', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fc/Natgeologo.svg' },
-  { name: 'Travel + Leisure', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Travel_and_Leisure_Logo_2020.svg/1280px-Travel_and_Leisure_Logo_2020.svg.png' },
+  { name: 'Partner 1', logo: homepage?.socialProofImage1 || 'https://upload.wikimedia.org/wikipedia/commons/0/02/TripAdvisor_Logo.svg' },
+  { name: 'Partner 2', logo: homepage?.socialProofImage2 || 'https://upload.wikimedia.org/wikipedia/commons/f/fc/Natgeologo.svg' },
+  { name: 'Partner 3', logo: homepage?.socialProofImage3 || 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Travel_and_Leisure_Logo_2020.svg/1280px-Travel_and_Leisure_Logo_2020.svg.png' },
 ];
 ---
 
