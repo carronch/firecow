@@ -1,0 +1,44 @@
+---
+import Button from './Button.astro';
+import { getEntry } from 'astro:content';
+
+const homepageData = await getEntry('homepage', 'settings');
+const homepage = homepageData?.data;
+
+const siteName = homepage?.siteName || 'Galapagos Island Cruise';
+const logoEmoji = homepage?.logoEmoji || '🧭'; // Using compass as default if no emoji provided
+
+const links = [
+  { text: 'Home', href: '/' },
+  { text: 'Tours', href: '/#experiences' },
+  { text: 'Why Us', href: '/why-us' },
+  { text: 'Reviews', href: '/#reviews' },
+  { text: 'Contact', href: '/#contact' }
+];
+---
+
+<header class="fixed w-full z-50 top-0 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-sm">
+  <div class="container mx-auto px-4 h-20 flex items-center justify-between">
+    <a href="/" class="text-2xl font-extrabold font-heading text-slate-900 tracking-tighter flex items-center">
+      <span class="text-3xl mr-2">{logoEmoji}</span> {siteName}
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8">
+      {links.map(link => (
+        <a 
+          href={link.href} 
+          class="text-slate-700 hover:text-primary-500 font-semibold transition-colors"
+        >
+          {link.text}
+        </a>
+      ))}
+      <a href="/#book" class="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2 rounded-full font-bold shadow-lg transition flex items-center text-sm">
+        <i class="fa-solid fa-calendar-check mr-2"></i> Book Now
+      </a>
+    </nav>
+
+    <button class="md:hidden text-slate-900">
+      <i class="fa-solid fa-bars text-2xl"></i>
+    </button>
+  </div>
+</header>

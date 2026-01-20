@@ -1,0 +1,22 @@
+---
+const partners = [
+  { name: 'TripAdvisor', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/02/TripAdvisor_Logo.svg' },
+  { name: 'National Geographic', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fc/Natgeologo.svg' },
+  { name: 'Travel + Leisure', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Travel_and_Leisure_Logo_2020.svg/1280px-Travel_and_Leisure_Logo_2020.svg.png' },
+];
+---
+
+<section class="py-10 bg-gray-50 border-b border-gray-200">
+  <div class="container mx-auto px-4 text-center">
+    <p class="text-gray-400 uppercase tracking-widest text-xs font-bold mb-6">As Seen On</p>
+    <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+      {partners.map(partner => (
+        <img 
+          src={partner.logo} 
+          alt={partner.name} 
+          class="h-8 md:h-10 object-contain"
+        />
+      ))}
+    </div>
+  </div>
+</section>

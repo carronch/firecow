@@ -1,0 +1,8 @@
+---
+import { KeystaticApp } from '../../components/KeystaticApp';
+
+// SSR mode enabled
+export const prerender = false;
+---
+
+<KeystaticApp client:only="react" />

@@ -1,0 +1,150 @@
+---
+import {
+  Utensils,
+  LifeBuoy,
+  Users,
+  Bed,
+  Waves,
+  Camera,
+  Ship,
+  Fish,
+  Mountain,
+  Sun,
+  Binoculars,
+  GraduationCap,
+  Clock,
+  Plane,
+  Wifi,
+  ShieldCheck,
+  Ban,
+  Check,
+  Coffee,
+  Ticket,
+  Anchor
+} from 'lucide-react';
+
+const topFeatures = [
+  {
+    icon: Utensils,
+    title: "All Meals & Snacks",
+    items: ["Gourmet breakfast, lunch & dinner", "Fresh fruit & snacks", "Coffee, tea, juice & water", "Vegetarian options available"]
+  },
+  {
+    icon: LifeBuoy,
+    title: "Premium Equipment",
+    items: ["Snorkeling gear & wetsuits", "Kayaks for water exploration", "Life jackets & safety gear", "Panga boats for landings"]
+  },
+  {
+    icon: Users,
+    title: "Expert Guides",
+    items: ["Certified naturalist guides", "Bilingual (English/Spanish)", "Expert wildlife knowledge", "Photography tips & assistance"]
+  },
+  {
+    icon: Bed,
+    title: "Luxury Accommodations",
+    items: ["Private cabins with ocean views", "En-suite bathrooms", "Air conditioning & hot water", "Daily housekeeping"]
+  }
+];
+
+const dailyActivities = [
+  { icon: Waves, text: "Snorkeling sessions" },
+  { icon: Camera, text: "Wildlife photography" },
+  { icon: Ship, text: "Panga boat rides" },
+  { icon: Fish, text: "Marine life encounters" },
+  { icon: Mountain, text: "Guided island hikes" },
+  { icon: Sun, text: "Beach time & swimming" },
+  { icon: Binoculars, text: "Bird watching" }, 
+  { icon: GraduationCap, text: "Educational talks" }
+];
+
+const schedule = [
+  { time: "7:00 AM", title: "Wake-up call & breakfast", desc: "Fresh coffee and hearty meal" },
+  { time: "8:00 AM", title: "Morning excursion", desc: "Island visit or snorkeling" },
+  { time: "12:30 PM", title: "Lunch onboard", desc: "Return to yacht for meal & rest" },
+  { time: "3:00 PM", title: "Afternoon activity", desc: "Second island visit or kayaking" },
+  { time: "6:30 PM", title: "Briefing & dinner", desc: "Next day overview & gourmet meal" },
+  { time: "8:00 PM", title: "Evening at leisure", desc: "Stargazing, socializing, or rest" }
+];
+
+const alsoIncluded = [
+  { icon: Plane, title: "Airport Transfers", desc: "Pick-up & drop-off" },
+  { icon: Wifi, title: "WiFi Access", desc: "Limited in remote areas" },
+  { icon: ShieldCheck, title: "Travel Insurance", desc: "Medical & trip coverage" },
+  { icon: Ban, title: "No Hidden Fees", desc: "All-inclusive pricing" }
+];
+---
+
+<section class="py-16 bg-blue-50/50" id="whats-included">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold font-heading text-slate-900">What's Included</h2>
+      <p class="text-slate-600 mt-4 max-w-2xl mx-auto">Everything you need for a perfect day in paradise is included in your tour.</p>
+    </div>
+
+    <!-- Middle Row: Daily Activities + Schedule -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      
+      <!-- Daily Activities -->
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100/50">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="p-2 bg-blue-100 text-primary rounded-lg">
+             <Waves className="w-6 h-6" /> 
+          </div>
+          <h3 class="text-xl font-bold text-gray-900">Daily Activities</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-4">
+          {dailyActivities.map((activity) => (
+            <div class="flex items-center gap-3">
+              <activity.icon className="w-5 h-5 text-primary" />
+              <span class="text-gray-600 font-medium">{activity.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Typical Day Schedule -->
+      <div class="bg-primary p-8 rounded-xl shadow-sm text-white relative overflow-hidden">
+        <div class="flex items-center gap-3 mb-8 relative z-10">
+          <Clock className="w-6 h-6 text-blue-200" />
+          <h3 class="text-xl font-bold">Tour Schedule</h3>
+        </div>
+
+        <div class="space-y-6 relative z-10">
+          {schedule.map((slot) => (
+            <div class="flex gap-4 items-start group">
+              <div class="w-20 pt-1 flex-shrink-0">
+                <span class="px-2 py-1 bg-white/20 rounded text-xs font-semibold text-blue-50 block text-center backdrop-blur-sm">
+                  {slot.time}
+                </span>
+              </div>
+              <div class="pb-6 border-b border-white/10 last:border-0 last:pb-0 flex-grow">
+                <h4 class="font-bold text-white mb-1 group-hover:text-blue-100 transition-colors">{slot.title}</h4>
+                <p class="text-sm text-blue-100/90">{slot.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Row: Also Included -->
+    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100/50 text-center">
+      <h3 class="text-xl font-bold text-gray-900 mb-8">Detailed Inclusions</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {alsoIncluded.map((item) => (
+          <div class="flex flex-col items-center">
+            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-primary mb-3">
+              <item.icon className="w-5 h-5" />
+            </div>
+            <h4 class="font-bold text-gray-900 mb-1">{item.title}</h4>
+            <p class="text-xs text-gray-500 uppercase tracking-wide">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>

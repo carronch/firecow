@@ -1,0 +1,88 @@
+---
+import { Globe2, Waves, BookOpen, Fish } from 'lucide-react';
+
+const features = [
+  {
+    icon: Globe2,
+    title: "Unique Biodiversity",
+    description: "Home to species found nowhere else on Earth. See giant tortoises, marine iguanas, blue-footed boobies, and endemic wildlife that inspired Darwin's theory of evolution."
+  },
+  {
+    icon: Waves,
+    title: "Pristine Natural Beauty",
+    description: "Crystal-clear waters, volcanic landscapes, and untouched beaches. The Galapagos offers some of the most dramatic and beautiful scenery in the world."
+  },
+  {
+    icon: BookOpen,
+    title: "Living Laboratory",
+    description: "Walk in Darwin's footsteps and experience the same wonder that led to groundbreaking scientific discoveries. A UNESCO World Heritage Site protected for future generations."
+  },
+  {
+    icon: Fish,
+    title: "World-Class Diving & Snorkeling",
+    description: "Swim with sea lions, sea turtles, and tropical fish. The Galapagos offers some of the best underwater experiences on the planet."
+  }
+];
+---
+
+<section id="why-location" class="py-24 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      
+      <!-- Left Column: Content -->
+      <div class="order-2 lg:order-1">
+        <h2 class="text-4xl md:text-5xl font-heading font-extrabold text-slate-900 mb-8 leading-tight">
+          Why the Galapagos <span class="text-primary">Islands?</span>
+        </h2>
+        
+        <div class="space-y-8">
+          {features.map((feature) => (
+            <div class="flex gap-5 group">
+              <div class="flex-shrink-0">
+                <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-sm border border-blue-100">
+                  <feature.icon className="w-7 h-7 text-primary group-hover:text-white transition-colors" />
+                </div>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">{feature.title}</h3>
+                <p class="text-slate-600 leading-relaxed text-lg">{feature.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <!-- Right Column: Image -->
+      <div class="order-1 lg:order-2 relative">
+        <div class="relative rounded-3xl overflow-hidden shadow-2xl group">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent mix-blend-multiply transition-opacity group-hover:opacity-80"></div>
+          <img 
+            src="https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80" 
+            alt="Galapagos underwater scenery" 
+            class="w-full h-[600px] object-cover"
+          />
+          
+          <!-- Floating Stat Card -->
+          <div class="absolute bottom-8 left-8 bg-white/95 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/50 max-w-xs transform transition-transform group-hover:scale-105 duration-300">
+            <p class="text-5xl font-extrabold text-primary mb-1">97%</p>
+            <div class="h-1 w-12 bg-slate-200 rounded my-2"></div>
+            <p class="text-slate-600 font-semibold uppercase tracking-wider text-sm">Of Reptiles & Mammals are Endemic</p>
+          </div>
+        </div>
+        
+        <!-- Decoration Dots -->
+        <div class="absolute -top-12 -right-12 text-primary opacity-10">
+          <svg width="100" height="100" fill="currentColor">
+            <defs>
+              <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="2"></circle>
+              </pattern>
+            </defs>
+            <rect width="100" height="100" fill="url(#dots)"></rect>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
