@@ -1,0 +1,23 @@
+
+> @firecow/template@0.0.1 build /Users/treeseedtreeseed/Desktop/FireCow Workspace/firecow-bookings/apps/template
+> astro build
+
+10:49:19 [WARN] The currently selected adapter `@astrojs/cloudflare` is not compatible with the image service "Sharp".
+10:49:19 [types] Generated 62ms
+10:49:19 [build] output: "server"
+10:49:19 [build] directory: /Users/treeseedtreeseed/Desktop/FireCow Workspace/firecow-bookings/apps/template/dist/
+10:49:19 [build] adapter: @astrojs/cloudflare
+10:49:19 [build] Collecting build info...
+10:49:19 [build] ✓ Completed in 127ms.
+10:49:19 [build] Building server entrypoints...
+10:49:21 [ERROR] [vite] x Build failed in 2.07s
+[commonjs--resolver] [plugin vite:resolve] Cannot bundle Node.js built-in "node:path" imported from "../../node_modules/.pnpm/@keystatic+core@0.5.48_react-dom@18.3.1_react@18.3.1/node_modules/@keystatic/core/dist/keystatic-core-reader.worker.js". Consider disabling ssr.noExternal or remove the built-in dependency.
+  Stack trace:
+    at getRollupError (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/rollup@4.55.1/node_modules/rollup/dist/es/shared/parseAst.js:401:41)
+    at Object.error (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/rollup@4.55.1/node_modules/rollup/dist/es/shared/node-entry.js:22249:20)
+    at Object.handler (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/vite@5.4.21/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:65919:15)
+    at async PluginDriver.hookFirstAndGetPlugin (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/rollup@4.55.1/node_modules/rollup/dist/es/shared/node-entry.js:22453:28)
+    at async ModuleLoader.resolveId (file:///Users/treeseedtreeseed/Desktop/FireCow%20Workspace/firecow-bookings/node_modules/.pnpm/rollup@4.55.1/node_modules/rollup/dist/es/shared/node-entry.js:21366:15)
+/Users/treeseedtreeseed/Desktop/FireCow Workspace/firecow-bookings/apps/template:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @firecow/template@0.0.1 build: `astro build`
+Exit status 1

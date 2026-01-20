@@ -1,3 +1,4 @@
+---
 const partners = [
   { name: 'TripAdvisor', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/02/TripAdvisor_Logo.svg' },
   { name: 'National Geographic', logo: 'https://upload.wikimedia.org/wikipedia/commons/f/fc/Natgeologo.svg' },
@@ -5,15 +6,19 @@ const partners = [
 ];
 ---
 
-<section class="py-10 bg-gray-50 border-b border-gray-200">
+<section class="py-10 bg-gray-50 border-b border-gray-200" aria-label="Media Mentions">
   <div class="container mx-auto px-4 text-center">
-    <p class="text-gray-400 uppercase tracking-widest text-xs font-bold mb-6">As Seen On</p>
-    <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+    <p class="text-gray-500 uppercase tracking-widest text-xs font-bold mb-6">As Seen On</p>
+    <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
       {partners.map(partner => (
         <img 
           src={partner.logo} 
-          alt={partner.name} 
-          class="h-8 md:h-10 object-contain"
+          alt={`${partner.name} logo`} 
+          width="120"
+          height="40"
+          loading="lazy"
+          decoding="async"
+          class="h-8 md:h-10 w-auto object-contain"
         />
       ))}
     </div>

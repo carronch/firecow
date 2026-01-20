@@ -1,5 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
+import OptimizedImage from './common/OptimizedImage.astro';
 
 const homepageData = await getEntry('homepage', 'settings');
 const homepage = homepageData?.data;
@@ -20,18 +21,24 @@ const fallbackImages = [
 
 const imagesToDisplay = galleryImages.length > 0 ? galleryImages : fallbackImages;
 ---
-<section class="py-20 bg-white" id="gallery">
+<section class="py-20 bg-white" id="gallery" aria-label="Photo Gallery">
     <div class="container mx-auto px-4">
       <div class="text-center mb-16">
-        <span class="text-primary-600 font-semibold tracking-wide uppercase text-sm">Visual Journey</span>
-        <h2 class="text-4xl md:text-5xl font-bold font-heading mt-2 mb-4 text-slate-900">Gallery</h2>
-        <p class="text-slate-600 text-lg max-w-2xl mx-auto">See the beauty that awaits you.</p>
+        <span class="text-blue-700 font-bold tracking-wide uppercase text-sm">Visual Journey</span>
+        <h2 class="text-4xl md:text-5xl font-bold font-heading mt-2 mb-4 text-gray-900">Gallery</h2>
+        <p class="text-gray-700 text-lg max-w-2xl mx-auto">See the beauty that awaits you.</p>
       </div>
   
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {imagesToDisplay.map((img, index) => (
            <div class="aspect-square bg-slate-100 rounded-xl overflow-hidden group relative">
-             <img src={img} class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt={`Gallery Image ${index + 1}`}/>
+             <OptimizedImage 
+               src={img} 
+               class="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
+               alt={`Tour photo highlight ${index + 1}`}
+               width={400}
+               height={400}
+             />
            </div>
         ))}
       </div>

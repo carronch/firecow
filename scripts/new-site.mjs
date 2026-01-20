@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { scrapeImagesFromWebsite, selectBestImages } from './image-scraper.mjs';
 
 // Get arguments
 const args = process.argv.slice(2);

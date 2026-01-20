@@ -1,0 +1,41 @@
+---
+/**
+ * Optimized Image Component
+ * Automatically applies lazy loading, proper dimensions, and alt text
+ */
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+  priority?: boolean;
+}
+
+const { 
+  src, 
+  alt, 
+  width, 
+  height, 
+  loading = 'lazy',
+  class: className = '',
+  priority = false
+} = Astro.props;
+
+// Set fetchpriority for LCP images
+const fetchPriority = priority ? 'high' : 'auto';
+const loadingStrategy = priority ? 'eager' : loading;
+---
+
+<img 
+  src={src}
+  alt={alt}
+  {width}
+  {height}
+  loading={loadingStrategy}
+  fetchpriority={fetchPriority}
+  class={className}
+  decoding="async"
+/>
