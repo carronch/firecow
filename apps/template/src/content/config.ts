@@ -25,6 +25,10 @@ const homepage = defineCollection({
         testimonialImage2: z.string().optional(),
         testimonialImage3: z.string().optional(),
         galleryImages: z.array(z.string()).optional(),
+        locationName: z.string().optional(),
+        locationAddress: z.string().optional(),
+        googleMapsUrl: z.string().optional(),
+        googleMapsLink: z.string().optional(),
     }),
 });
 

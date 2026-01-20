@@ -11,3 +11,7 @@ galleryImages:
   - "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=1200&q=80"
   - "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&q=80"
   - "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=80"
+locationName: "Costa Rica"
+locationAddress: "Beautiful Costa Rica - Paradise Awaits"
+googleMapsUrl: "https://maps.google.com/maps?q=Costa+Rica&t=&z=10&ie=UTF8&iwloc=&output=embed"
+googleMapsLink: "https://goo.gl/maps/CostaRica"

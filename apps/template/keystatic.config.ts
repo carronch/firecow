@@ -112,7 +112,11 @@ export default config({
                         label: 'Photo Gallery',
                         itemLabel: (props) => props.value ? 'Image' : 'New Image'
                     }
-                )
+                ),
+                locationName: fields.text({ label: 'Location Name (e.g. "Los Sueños Marina")' }),
+                locationAddress: fields.text({ label: 'Full Address', multiline: true }),
+                googleMapsUrl: fields.url({ label: 'Google Maps Embed URL (iframe src)' }),
+                googleMapsLink: fields.url({ label: 'Google Maps Link (for "Open in Maps")' })
             }
         }
     }
