@@ -45,6 +45,7 @@ for site in "${sites[@]}"; do
   cp "$template_dir/src/components/Footer.astro" "$site_dir/src/components/Footer.astro"
   cp "$template_dir/src/components/Location.astro" "$site_dir/src/components/Location.astro"
   cp "$template_dir/src/components/WhatsIncluded.astro" "$site_dir/src/components/WhatsIncluded.astro"
+  cp "$template_dir/src/components/ContactSection.astro" "$site_dir/src/components/ContactSection.astro"
   
   echo "   ✨ Synced successfully"
 done

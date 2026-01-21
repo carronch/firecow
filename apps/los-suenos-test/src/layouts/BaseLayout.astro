@@ -57,5 +57,28 @@ const { title, description = "Book your next adventure with FireCow Bookings" } 
   </head>
   <body>
     <slot />
+    
+    <script is:inline>
+      // Efficient Mobile Menu & Scroll handling to avoid forced reflows
+      document.addEventListener('DOMContentLoaded', () => {
+        const menuBtn = document.querySelector('button[aria-label="Open mobile menu"]');
+        const nav = document.querySelector('nav');
+        
+        if (menuBtn && nav) {
+          menuBtn.addEventListener('click', () => {
+            nav.classList.toggle('hidden');
+            nav.classList.toggle('flex');
+            nav.classList.toggle('flex-col');
+            nav.classList.toggle('absolute');
+            nav.classList.toggle('top-full');
+            nav.classList.toggle('left-0');
+            nav.classList.toggle('w-full');
+            nav.classList.toggle('bg-white');
+            nav.classList.toggle('p-4');
+            nav.classList.toggle('shadow-lg');
+          });
+        }
+      });
+    </script>
   </body>
 </html>
