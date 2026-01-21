@@ -34,14 +34,19 @@ for site in "${sites[@]}"; do
   mkdir -p "$site_dir/src/components/common"
   cp "$template_dir/src/components/common/OptimizedImage.astro" "$site_dir/src/components/common/OptimizedImage.astro"
   
-  # Copy updated functional components (The Deep Clean)
+  # Copy ALL updated components
+  echo "   📝 Copying components..."
   cp "$template_dir/src/components/HeroSection.astro" "$site_dir/src/components/HeroSection.astro"
   cp "$template_dir/src/components/ExperiencesGrid.astro" "$site_dir/src/components/ExperiencesGrid.astro"
   cp "$template_dir/src/components/TrustBanner.astro" "$site_dir/src/components/TrustBanner.astro"
   cp "$template_dir/src/components/Testimonials.astro" "$site_dir/src/components/Testimonials.astro"
   cp "$template_dir/src/components/Gallery.astro" "$site_dir/src/components/Gallery.astro"
+  cp "$template_dir/src/components/Header.astro" "$site_dir/src/components/Header.astro"
+  cp "$template_dir/src/components/Footer.astro" "$site_dir/src/components/Footer.astro"
+  cp "$template_dir/src/components/Location.astro" "$site_dir/src/components/Location.astro"
+  cp "$template_dir/src/components/WhatsIncluded.astro" "$site_dir/src/components/WhatsIncluded.astro"
   
-  echo "   ✨ Components synced"
+  echo "   ✨ Synced successfully"
 done
 
 echo "✅ Deep Clean Complete!"

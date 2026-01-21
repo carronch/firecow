@@ -39,7 +39,7 @@ const photos = [
     <div class="container mx-auto px-4 relative z-10">
         <div class="text-center mb-16">
             <div class="inline-block mb-4">
-                <div class="flex justify-center text-yellow-400 gap-1 text-xl" aria-label="5 out of 5 stars">
+                <div class="flex justify-center text-yellow-400 gap-1 text-xl" role="img" aria-label="5 out of 5 stars">
                     <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i>
                 </div>
             </div>
@@ -72,8 +72,8 @@ const photos = [
                     <div class="text-yellow-400 text-4xl mb-6 opacity-50"><i class="fa-solid fa-quote-left" aria-hidden="true"></i></div>
                     <p class="text-lg text-gray-300 mb-6 italic leading-relaxed flex-grow">"{review.quote}"</p>
                     <div class="border-t border-gray-700 pt-4">
-                        <h4 class="font-bold text-white">— {review.name}</h4>
-                        <div class="flex text-yellow-500 text-xs gap-0.5 mt-1" aria-label="5 stars">
+                        <h3 class="font-bold text-white text-lg">— {review.name}</h3>
+                        <div class="flex text-yellow-500 text-xs gap-0.5 mt-1" role="img" aria-label="5 out of 5 stars">
                             <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i>
                         </div>
                     </div>

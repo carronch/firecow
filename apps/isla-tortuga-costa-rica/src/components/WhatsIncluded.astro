@@ -26,73 +26,60 @@ import {
 const topFeatures = [
   {
     icon: Utensils,
-    title: "Dining & Drinks",
-    items: ["Light breakfast onboard", "Full buffet lunch on island", "Rum punch & margaritas", "Soft drinks & water"]
+    title: "All Meals & Snacks",
+    items: ["Gourmet breakfast, lunch & dinner", "Fresh fruit & snacks", "Coffee, tea, juice & water", "Vegetarian options available"]
   },
   {
     icon: LifeBuoy,
-    title: "Adventure Gear",
-    items: ["Snorkeling equipment", "Banana boat rides", "Eco-trail guided hikes", "Beach chairs & umbrellas"]
+    title: "Premium Equipment",
+    items: ["Snorkeling gear & wetsuits", "Kayaks for water exploration", "Life jackets & safety gear", "Panga boats for landings"]
   },
   {
     icon: Users,
-    title: "Service & Safety",
-    items: ["Bilingual guides (Eng/Spa)", "Marine safety equipment", "Insurance & permits", "Daily housekeeping"]
+    title: "Expert Guides",
+    items: ["Certified naturalist guides", "Bilingual (English/Spanish)", "Expert wildlife knowledge", "Photography tips & assistance"]
   },
   {
-    icon: Anchor,
-    title: "The Cruise",
-    items: ["World-class Catamaran", "Depart from Los Sueños", "Stable & comfortable ride", "45 min cruise time"]
+    icon: Bed,
+    title: "Luxury Accommodations",
+    items: ["Private cabins with ocean views", "En-suite bathrooms", "Air conditioning & hot water", "Daily housekeeping"]
   }
 ];
 
 const dailyActivities = [
-  { icon: Waves, text: "Snorkeling volcanic reefs" },
-  { icon: Ship, text: "Banana boat thrill ride" },
-  { icon: Mountain, text: "Eco-hike nature trail" },
-  { icon: Sun, text: "Beach relaxation" },
-  { icon: Fish, text: "Marine wildlife spotting" },
-  { icon: Camera, text: "Scenic photography" },
+  { icon: Waves, text: "Snorkeling sessions" },
+  { icon: Camera, text: "Wildlife photography" },
+  { icon: Ship, text: "Panga boat rides" },
+  { icon: Fish, text: "Marine life encounters" },
+  { icon: Mountain, text: "Guided island hikes" },
+  { icon: Sun, text: "Beach time & swimming" },
+  { icon: Binoculars, text: "Bird watching" }, 
+  { icon: GraduationCap, text: "Educational talks" }
 ];
 
 const schedule = [
-  { time: "7:15 AM", title: "Check-in", desc: "Arrive at Los Sueños Marina" },
-  { time: "7:45 AM", title: "Departure", desc: "Board the Catamaran" },
-  { time: "8:45 AM", title: "Arrival", desc: "Arrive at Tortuga Island" },
-  { time: "12:00 PM", title: "Lunch", desc: "Buffet lunch served" },
-  { time: "3:30 PM", title: "Return", desc: "Depart from Island" },
-  { time: "4:30 PM", title: "Dock", desc: "Back at Los Sueños" }
+  { time: "7:00 AM", title: "Wake-up call & breakfast", desc: "Fresh coffee and hearty meal" },
+  { time: "8:00 AM", title: "Morning excursion", desc: "Island visit or snorkeling" },
+  { time: "12:30 PM", title: "Lunch onboard", desc: "Return to yacht for meal & rest" },
+  { time: "3:00 PM", title: "Afternoon activity", desc: "Second island visit or kayaking" },
+  { time: "6:30 PM", title: "Briefing & dinner", desc: "Next day overview & gourmet meal" },
+  { time: "8:00 PM", title: "Evening at leisure", desc: "Stargazing, socializing, or rest" }
 ];
 
 const alsoIncluded = [
-  { icon: Ticket, title: "Activities", desc: "Snorkel, Hike, Banana Boat" },
-  { icon: ShieldCheck, title: "Insurance", desc: "Full coverage included" },
-  { icon: Users, title: "Bilingual Guide", desc: "English & Spanish" },
-  { icon: Ban, title: "No Hidden Fees", desc: "Port taxes included" }
+  { icon: Plane, title: "Airport Transfers", desc: "Pick-up & drop-off" },
+  { icon: Wifi, title: "WiFi Access", desc: "Limited in remote areas" },
+  { icon: ShieldCheck, title: "Travel Insurance", desc: "Medical & trip coverage" },
+  { icon: Ban, title: "No Hidden Fees", desc: "All-inclusive pricing" }
 ];
 ---
 
 <section class="py-16 bg-blue-50/50" id="whats-included">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     
-    <!-- Top Row: 4 Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      {topFeatures.map((feature) => (
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100/50 hover:shadow-md transition-shadow">
-          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 text-primary">
-            <feature.icon className="w-6 h-6" />
-          </div>
-          <h3 class="text-lg font-bold text-gray-900 mb-4">{feature.title}</h3>
-          <ul class="space-y-3">
-            {feature.items.map((item) => (
-              <li class="flex items-start gap-2.5">
-                <Check className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" />
-                <span class="text-sm text-gray-600 leading-relaxed">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold font-heading text-slate-900">What's Included</h2>
+      <p class="text-slate-600 mt-4 max-w-2xl mx-auto">Everything you need for a perfect day in paradise is included in your tour.</p>
     </div>
 
     <!-- Middle Row: Daily Activities + Schedule -->
@@ -153,7 +140,7 @@ const alsoIncluded = [
               <item.icon className="w-5 h-5" />
             </div>
             <h4 class="font-bold text-gray-900 mb-1">{item.title}</h4>
-            <p class="text-xs text-gray-500 uppercase tracking-wide">{item.desc}</p>
+            <p class="text-xs text-gray-600 uppercase tracking-wide">{item.desc}</p>
           </div>
         ))}
       </div>
