@@ -1,5 +1,5 @@
 {
-    "name": "@firecow/maverick-sport-fishing",
+    "name": "@firecow/test-sport-fishing",
     "version": "0.0.1",
     "private": true,
     "exports": {

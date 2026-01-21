@@ -11,7 +11,7 @@ sites=(
   "fishing-jaco-costa-rica"
   "isla-tortuga-costa-rica"
   "los-suenos-test"
-  "maverick-sport-fishing"
+  "test-sport-fishing"
   "test-catamaran-site"
 )
 
