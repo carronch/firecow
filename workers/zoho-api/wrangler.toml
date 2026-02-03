@@ -1,0 +1,12 @@
+name = "firecow-zoho-api"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+# Environment variables (set these in Cloudflare dashboard)
+# ZOHO_CLIENT_ID = "your_client_id"
+# ZOHO_CLIENT_SECRET = "your_client_secret"
+# ZOHO_REFRESH_TOKEN = "your_refresh_token"
+# ZOHO_PORTAL_NAME = "firecowbookings"
+
+[env.production]
+name = "firecow-zoho-api"

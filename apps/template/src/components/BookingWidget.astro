@@ -9,7 +9,7 @@ const {
   <div class="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden">
     
     <!-- Form Content -->
-    <form class="p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-4 items-end" action={bookingUrl}>
+    <form id="booking-form" class="p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
       
       <!-- Date Picker -->
       <div class="md:col-span-5">
@@ -90,5 +90,24 @@ const {
   if (dateInput) {
     const today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('min', today);
+  }
+
+  // Handle form submission - redirect to reservation page
+  const bookingForm = document.getElementById('booking-form');
+  if (bookingForm) {
+    bookingForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const date = (document.getElementById('booking-date') as HTMLInputElement)?.value;
+      const guests = (document.getElementById('booking-guests') as HTMLSelectElement)?.value;
+      
+      // Build reservation URL with query parameters
+      const params = new URLSearchParams();
+      if (date) params.set('date', date);
+      if (guests) params.set('guests', guests);
+      
+      // Redirect to reservation page
+      window.location.href = `/reservation?${params.toString()}`;
+    });
   }
 </script>
