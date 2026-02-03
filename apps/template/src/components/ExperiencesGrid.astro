@@ -42,9 +42,11 @@ const tours = [
       <p class="text-gray-700 text-lg max-w-2xl mx-auto">Choose from our curated selection of premium tours designed to create lasting memories.</p>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+    <div id="experiences-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Fallback Content (Static) */}
       {tours.map(tour => (
-        <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+        <div class="tour-card-fallback group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
           <div class="relative h-64 overflow-hidden">
              <div class="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-gray-900 shadow-sm">
                {tour.category}
@@ -86,3 +88,77 @@ const tours = [
     </div>
   </div>
 </section>
+
+<script>
+  async function loadZohoTours() {
+    const grid = document.getElementById('experiences-grid');
+    if (!grid) return;
+
+    try {
+      const response = await fetch('/api/tours');
+      // If API responds with error or is not configured (503), keep fallbacks
+      if (!response.ok) {
+        console.warn('Zoho API unavailable, using static content.');
+        return;
+      }
+
+      const data = await response.json();
+      if (!data.success || !data.tours || data.tours.length === 0) {
+        return;
+      }
+
+      // Success: Replace content
+      const tours = data.tours;
+      
+      const tourHtml = tours.map(tour => `
+        <div class="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100">
+          <div class="relative h-64 overflow-hidden">
+             <div class="absolute top-4 left-4 z-10 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-gray-900 shadow-sm">
+               ${tour.category || 'Tour'}
+             </div>
+             <img 
+               src="${tour.image}" 
+               alt="${tour.name}"
+               width="800"
+               height="600"
+               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+               loading="lazy"
+             />
+          </div>
+          
+          <div class="p-8">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <h3 class="text-xl font-bold font-heading text-gray-900 mb-2 group-hover:text-blue-700 transition-colors">${tour.name}</h3>
+                <div class="flex items-center text-gray-600 text-sm">
+                  <i class="fa-regular fa-clock mr-2 text-gray-500" aria-hidden="true"></i>
+                   ${tour.duration}
+                </div>
+              </div>
+            </div>
+
+            <p class="text-gray-700 mb-6 text-sm line-clamp-2 leading-relaxed">${tour.description}</p>
+
+            <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+              <div>
+                <span class="text-gray-600 text-sm font-medium">From</span>
+                <p class="text-2xl font-bold text-blue-700">$${tour.price}</p>
+              </div>
+              <a href="/tours/${tour.serviceId}" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300 shadow-lg shadow-blue-500/30">
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      grid.innerHTML = tourHtml;
+
+    } catch (err) {
+      console.error('Failed to load Zoho tours:', err);
+    }
+  }
+
+  // Load on mount
+  loadZohoTours();
+</script>
