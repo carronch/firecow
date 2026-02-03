@@ -23,9 +23,9 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  siteId: "isla-tortuga-costa-rica",
-  siteName: "Isla Tortuga Costa Rica",
-  siteEmoji: "🏝️",
+  siteId: "isla-tortuga-2-costa-rica",
+  siteName: "Isla Tortuga 2 Costa Rica",
+  siteEmoji: "⛵",
   heroImageUrl: "https://lh3.googleusercontent.com/p/AF1QipNQAPWSwElfntfAu0_VPsUcA4LxauIUnwdqOqaF=s1360-w1360-h1020-rw",
   dailyActivities: [
     "Snorkel in crystal-clear waters",

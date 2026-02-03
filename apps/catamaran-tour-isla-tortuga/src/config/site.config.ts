@@ -74,6 +74,6 @@ export const siteConfig: SiteConfig = {
   ],
   contact: {
     googleBusinessUrl: "https://g.page/catamaran-tortuga",
-    phoneNumber: "+506-2661-0585"
+    phoneNumber: "+506-8450-9498"
   }
 };

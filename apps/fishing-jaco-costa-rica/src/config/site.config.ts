@@ -73,6 +73,6 @@ export const siteConfig: SiteConfig = {
   ],
   contact: {
     googleBusinessUrl: "https://g.page/fishing-jaco-cr",
-    phoneNumber: "+506-2637-8942"
+    phoneNumber: "+506-8450-9498"
   }
 };

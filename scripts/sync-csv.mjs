@@ -14,10 +14,15 @@ const __dirname = path.dirname(__filename);
 const CSV_PATH = path.join(__dirname, '..', 'sites-content.csv');
 const APPS_DIR = path.join(__dirname, '..', 'apps');
 
-// Parse CSV
+// Parse CSV with auto-detect delimiter
 function parseCSV(csvText) {
-    const lines = csvText.split('\n').filter(line => line.trim());
-    const headers = lines[0].split(',');
+    const lines = csvText.split(/\r?\n/).filter(line => line.trim());
+
+    // Auto-detect delimiter (comma or semicolon)
+    const firstLine = lines[0];
+    const delimiter = firstLine.includes(';') ? ';' : ',';
+
+    const headers = firstLine.split(delimiter).map(h => h.trim());
     const sites = [];
 
     for (let i = 1; i < lines.length; i++) {
@@ -32,14 +37,14 @@ function parseCSV(csvText) {
         for (let char of line) {
             if (char === '"') {
                 inQuotes = !inQuotes;
-            } else if (char === ',' && !inQuotes) {
-                values.push(current);
+            } else if (char === delimiter && !inQuotes) {
+                values.push(current.trim());
                 current = '';
             } else {
                 current += char;
             }
         }
-        values.push(current);
+        values.push(current.trim());
 
         const site = {};
         headers.forEach((header, index) => {

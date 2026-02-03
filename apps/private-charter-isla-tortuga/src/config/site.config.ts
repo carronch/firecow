@@ -74,6 +74,6 @@ export const siteConfig: SiteConfig = {
   ],
   contact: {
     googleBusinessUrl: "https://g.page/costa-cat-cruises",
-    phoneNumber: "+506-8888-5555"
+    phoneNumber: "+506-8450-9498"
   }
 };

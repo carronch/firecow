@@ -73,6 +73,6 @@ export const siteConfig: SiteConfig = {
   ],
   contact: {
     googleBusinessUrl: "https://g.page/catamaran-sunset-cr",
-    phoneNumber: "+506-2637-1234"
+    phoneNumber: "+506-8450-9498"
   }
 };
