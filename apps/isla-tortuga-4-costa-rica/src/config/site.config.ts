@@ -49,9 +49,7 @@ export const siteConfig: SiteConfig = {
       "https://costacat.b-cdn.net/wp-content/uploads/2025/04/DSC5373-1024x683.jpg",
       "https://costacat.b-cdn.net/wp-content/uploads/2025/06/Wahoo-1024x682.jpg",
       "https://costacat.b-cdn.net/wp-content/uploads/2025/10/DSC3532-1024x683.jpg",
-      "https://costacat.b-cdn.net/wp-content/uploads/2025/10/DSC6659-1024x683.jpg",
-      "https://costacat.b-cdn.net/wp-content/uploads/2025/10/tropical-island-palm-and-underwater-snorkeling-in-2025-03-13-01-11-45-utc-1024x683.jpg",
-      "https://costacat.b-cdn.net/wp-content/uploads/2025/10/amazing-sea-sunset-on-the-pebble-beach-the-sun-w-2025-10-11-20-41-50-utc-1024x680.jpg"
+      "https://costacat.b-cdn.net/wp-content/uploads/2025/10/DSC6659-1024x683.jpg"
 ]
   },
   reviews: [

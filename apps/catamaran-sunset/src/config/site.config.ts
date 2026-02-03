@@ -49,9 +49,7 @@ export const siteConfig: SiteConfig = {
       "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
       "https://images.unsplash.com/photo-1495954484750-af469f2f9be5",
       "https://images.unsplash.com/photo-1518709268805-4e9042af9f23",
-      "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a",
-      "https://images.unsplash.com/photo-1559827260-dc66d52bef19",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+      "https://images.unsplash.com/photo-1473496169904-658ba7c44d8a"
 ]
   },
   reviews: [
