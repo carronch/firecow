@@ -166,14 +166,36 @@ function syncCSV() {
         const sitePath = path.join(APPS_DIR, siteId);
         const configDir = path.join(sitePath, 'src', 'config');
         const configPath = path.join(configDir, 'site.config.ts');
+        const templatePath = path.join(APPS_DIR, 'template');
 
         try {
-            // Create config directory if it doesn't exist
+            // 1. Check if site exists, if not create it from template
+            if (!fs.existsSync(path.join(sitePath, 'package.json'))) {
+                console.log(`✨ New site found: ${siteId}`);
+                console.log(`   📂 Scaffolding from template...`);
+
+                if (!fs.existsSync(templatePath)) {
+                    throw new Error('Template directory not found! Cannot scaffold new site.');
+                }
+
+                // Copy template
+                fs.cpSync(templatePath, sitePath, { recursive: true });
+
+                // Update package.json name
+                const pkgPath = path.join(sitePath, 'package.json');
+                const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+                pkg.name = `@firecow/${siteId}`;
+                fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 4));
+
+                console.log(`   📦 Created new site structure`);
+            }
+
+            // 2. Create config directory if it doesn't exist
             if (!fs.existsSync(configDir)) {
                 fs.mkdirSync(configDir, { recursive: true });
             }
 
-            // Generate and write config
+            // 3. Generate and write config
             const configContent = generateConfigContent(site);
             fs.writeFileSync(configPath, configContent);
 
