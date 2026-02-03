@@ -1,0 +1,139 @@
+---
+import { getEntry } from 'astro:content';
+
+const homepageData = await getEntry('homepage', 'settings');
+const homepage = homepageData?.data;
+
+// Default to a sample Costa Rica location if not configured
+const locationName = homepage?.locationName || "Costa Rica";
+const locationAddress = homepage?.locationAddress || "Beautiful Costa Rica";
+const googleMapsUrl = homepage?.googleMapsUrl || "https://maps.google.com/maps?q=Costa+Rica&t=&z=10&ie=UTF8&iwloc=&output=embed";
+const googleMapsLink = homepage?.googleMapsLink || "https://goo.gl/maps/example";
+---
+
+<section id="location" class="py-24 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+    <!-- Decorative background -->
+    <div class="absolute inset-0 opacity-5">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 rounded-full filter blur-3xl"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+            <div class="inline-block mb-4">
+                <div class="flex items-center justify-center gap-2 text-blue-600">
+                    <i class="fa-solid fa-location-dot text-2xl"></i>
+                </div>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-purple-600 mb-4">
+                Find Us
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                {locationName} - {locationAddress}
+            </p>
+        </div>
+
+        <!-- Map and Info Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            
+            <!-- Map Container (takes 2 columns on desktop) -->
+            <div class="lg:col-span-2">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white" style="height: 450px;">
+                    <!-- Google Maps Embed -->
+                    <iframe 
+                        src={googleMapsUrl}
+                        title={`Google Maps view of ${locationName}`}
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        class="w-full h-full"
+                    ></iframe>
+                    
+                    <!-- Overlay button for opening in Google Maps -->
+                    <a 
+                        href={googleMapsLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Open location in Google Maps"
+                        class="absolute top-4 right-4 bg-white hover:bg-blue-50 text-blue-600 px-4 py-2 rounded-lg shadow-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+                    >
+                        <i class="fa-solid fa-external-link-alt" aria-hidden="true"></i>
+                        Open in Maps
+                    </a>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                
+                <!-- Address Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 bg-blue-100 rounded-xl">
+                            <i class="fa-solid fa-map-marker-alt text-2xl text-blue-600" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Location</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                {locationAddress}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Directions Card -->
+                <div class="bg-gradient-to-br from-blue-500 to-purple-600 p-6 rounded-2xl shadow-lg text-white hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                            <i class="fa-solid fa-directions text-2xl" aria-hidden="true"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg mb-2">Get Directions</h3>
+                            <p class="text-blue-100 text-sm mb-4 leading-relaxed">
+                                Navigate to our location using your favorite maps app
+                            </p>
+                            <a 
+                                href={googleMapsLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Start navigation in Google Maps"
+                                class="inline-flex items-center gap-2 bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-300"
+                            >
+                                <i class="fa-solid fa-navigation" aria-hidden="true"></i>
+                                Start Navigation
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Easy to Find Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 bg-green-100 rounded-xl">
+                            <i class="fa-solid fa-check-circle text-2xl text-green-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg text-gray-900 mb-2">Easy to Find</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">
+                                We're centrally located and easy to reach. Look for our signs!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mt-12 text-center">
+            <p class="text-gray-600 text-sm">
+                <i class="fa-solid fa-info-circle mr-2" aria-hidden="true"></i>
+                Can't find us? Give us a call and we'll guide you!
+            </p>
+        </div>
+    </div>
+</section>

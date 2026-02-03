@@ -1,17 +1,21 @@
 ---
 import { getEntry } from 'astro:content';
 import OptimizedImage from './common/OptimizedImage.astro';
+import { siteConfig } from '../config/site.config';
 
 const homepageData = await getEntry('homepage', 'settings');
 const homepage = homepageData?.data;
 
-const rawGalleryImages = homepage?.galleryImages || [];
-// Resolve paths
-const galleryImages = rawGalleryImages.map((img: string) => 
+// 1. Try Site Config (CSV Data)
+const configImages = siteConfig.gallery?.images || [];
+
+// 2. Try Keystatic Data
+const rawKeystaticImages = homepage?.galleryImages || [];
+const keystaticImages = rawKeystaticImages.map((img: string) => 
     img.startsWith('http') ? img : `/images/gallery/${img}`
 );
 
-// Fallback images if no gallery content is created
+// 3. Fallback Images
 const fallbackImages = [
   "https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?w=800&q=80",
   "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80",
@@ -19,7 +23,14 @@ const fallbackImages = [
   "https://images.unsplash.com/photo-1621262828626-4b8cc4821867?w=800&q=80"
 ];
 
-const imagesToDisplay = galleryImages.length > 0 ? galleryImages : fallbackImages;
+// Determine which source to use
+let imagesToDisplay = fallbackImages;
+
+if (configImages.length > 0) {
+    imagesToDisplay = configImages;
+} else if (keystaticImages.length > 0) {
+    imagesToDisplay = keystaticImages;
+}
 ---
 <section class="py-20 bg-white" id="gallery" aria-label="Photo Gallery">
     <div class="container mx-auto px-4">

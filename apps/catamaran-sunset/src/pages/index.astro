@@ -1,28 +1,28 @@
 ---
-// Import components from the template
-import BaseLayout from '@firecow/template/src/layouts/BaseLayout.astro';
-import Header from '@firecow/template/src/components/Header.astro';
-import Footer from '@firecow/template/src/components/Footer.astro';
-import HeroSection from '@firecow/template/src/components/HeroSection.astro';
-import TrustBanner from '@firecow/template/src/components/TrustBanner.astro';
-import ExperiencesGrid from '@firecow/template/src/components/ExperiencesGrid.astro';
-import Testimonials from '@firecow/template/src/components/Testimonials.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import HeroSection from '../components/HeroSection.astro';
+import TrustBanner from '../components/TrustBanner.astro';
+import ExperiencesGrid from '../components/ExperiencesGrid.astro';
+import WhatsIncluded from '../components/WhatsIncluded.astro';
+import Gallery from '../components/Gallery.astro';
+import Testimonials from '../components/Testimonials.astro';
 import Location from '../components/Location.astro';
-import ContactSection from '@firecow/template/src/components/ContactSection.astro';
+import ContactSection from '../components/ContactSection.astro';
 
-const pageTitle = "Catamaran Sunset | FireCow";
+const pageTitle = "FireCow Bookings | Premium Tours & Adventures";
 ---
 
 <BaseLayout title={pageTitle}>
   <Header />
   
   <main>
-    <HeroSection 
-      title="Catamaran Sunset Cruise" 
-      subtitle="The most exclusive way to see the sunset."
-    />
+    <HeroSection />
     <TrustBanner />
     <ExperiencesGrid />
+    <WhatsIncluded />
+    <Gallery />
     <Testimonials />
     <Location />
     <ContactSection />
