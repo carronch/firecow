@@ -1,0 +1,94 @@
+---
+const { 
+  bookingUrl = "#contact" // Default fallback
+} = Astro.props;
+---
+
+<div class="w-full max-w-4xl mx-auto mt-12 p-1 relative z-20">
+  <!-- Glassmorphism Container with Border Gradient -->
+  <div class="relative bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden">
+    
+    <!-- Form Content -->
+    <form class="p-4 md:p-6 grid grid-cols-1 md:grid-cols-12 gap-4 items-end" action={bookingUrl}>
+      
+      <!-- Date Picker -->
+      <div class="md:col-span-5">
+        <label for="booking-date" class="block text-blue-100 text-xs font-bold uppercase tracking-wider mb-2 ml-1">
+          Select Date
+        </label>
+        <div class="relative group">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fa-solid fa-calendar text-blue-300 group-focus-within:text-blue-500 transition-colors" aria-hidden="true"></i>
+          </div>
+          <input 
+            type="date" 
+            id="booking-date" 
+            name="date"
+            class="w-full bg-white/90 border border-transparent text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-3 shadow-inner font-medium placeholder-slate-500" 
+            required
+            aria-label="Select booking date"
+          >
+        </div>
+      </div>
+
+      <!-- Guests Selector -->
+      <div class="md:col-span-4">
+        <label for="booking-guests" class="block text-blue-100 text-xs font-bold uppercase tracking-wider mb-2 ml-1">
+          Guests
+        </label>
+        <div class="relative group">
+           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <i class="fa-solid fa-users text-blue-300 group-focus-within:text-blue-500 transition-colors" aria-hidden="true"></i>
+          </div>
+          <select 
+            id="booking-guests" 
+            name="guests"
+            class="w-full bg-white/90 border border-transparent text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 p-3 shadow-inner font-medium appearance-none cursor-pointer"
+            aria-label="Number of guests"
+          >
+            <option value="1">1 Person</option>
+            <option value="2" selected>2 People</option>
+            <option value="3">3 People</option>
+            <option value="4">4 People</option>
+            <option value="5">5 People</option>
+            <option value="6">6 People</option>
+            <option value="group">7+ (Group)</option>
+          </select>
+          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-slate-500">
+             <i class="fa-solid fa-chevron-down text-xs" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="md:col-span-3">
+        <button 
+          type="submit" 
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-blue-500/50 transition-all duration-300 flex items-center justify-center gap-2 transform active:scale-95"
+          aria-label="Check tour availability"
+        >
+          <span>Check Availability</span>
+          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+      
+    </form>
+  </div>
+  
+  <!-- Trust Badge below -->
+  <div class="text-center mt-3">
+    <p class="text-blue-200 text-xs flex items-center justify-center gap-1 opacity-80">
+      <i class="fa-solid fa-check-circle text-green-400" aria-hidden="true"></i>
+      <span>Secure booking • Instant confirmation</span>
+    </p>
+  </div>
+</div>
+
+<script>
+  // Set minimum date to today
+  const dateInput = document.getElementById('booking-date');
+  if (dateInput) {
+    const today = new Date().toISOString().split('T')[0];
+    dateInput.setAttribute('min', today);
+  }
+</script>

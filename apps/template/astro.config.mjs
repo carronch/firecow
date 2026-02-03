@@ -2,7 +2,6 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import markdoc from '@astrojs/markdoc';
-import keystatic from '@keystatic/astro';
 import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
@@ -13,8 +12,7 @@ export default defineConfig({
         tailwind({
             applyBaseStyles: false,
         }),
-        markdoc(),
-        keystatic()
+        markdoc()
     ],
     output: 'server',
     adapter: cloudflare()

@@ -85,4 +85,39 @@ export default config({
             }
         })
     },
+    singletons: {
+        homepage: {
+            label: 'Homepage & Site Settings',
+            path: 'src/content/homepage/settings',
+            schema: {
+                siteName: fields.text({ label: 'Site Name' }),
+                logoEmoji: fields.text({ label: 'Logo Emoji (e.g. 🐢)' }),
+                heroImage: fields.image({
+                    label: 'Hero Background Image',
+                    directory: 'public/images/hero',
+                    publicPath: '/images/hero/'
+                }),
+                heroHeading: fields.text({ label: 'Hero Heading' }),
+                heroSubheading: fields.text({ label: 'Hero Subheading' }),
+                testimonialImage1: fields.image({ label: 'Testimonial Image 1', directory: 'public/images/testimonials', publicPath: '/images/testimonials/' }),
+                testimonialImage2: fields.image({ label: 'Testimonial Image 2', directory: 'public/images/testimonials', publicPath: '/images/testimonials/' }),
+                testimonialImage3: fields.image({ label: 'Testimonial Image 3', directory: 'public/images/testimonials', publicPath: '/images/testimonials/' }),
+                galleryImages: fields.array(
+                    fields.image({
+                        label: 'Gallery Image',
+                        directory: 'public/images/gallery',
+                        publicPath: '/images/gallery/'
+                    }),
+                    {
+                        label: 'Photo Gallery',
+                        itemLabel: (props) => props.value ? 'Image' : 'New Image'
+                    }
+                ),
+                locationName: fields.text({ label: 'Location Name (e.g. "Los Sueños Marina")' }),
+                locationAddress: fields.text({ label: 'Full Address', multiline: true }),
+                googleMapsUrl: fields.url({ label: 'Google Maps Embed URL (iframe src)' }),
+                googleMapsLink: fields.url({ label: 'Google Maps Link (for "Open in Maps")' })
+            }
+        }
+    }
 });

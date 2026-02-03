@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import OptimizedImage from './common/OptimizedImage.astro';
+import { siteConfig } from '../config/site.config';
 
 const homepageData = await getEntry('homepage', 'settings');
 const homepage = homepageData?.data;
@@ -10,7 +11,15 @@ const resolveImage = (img: string | undefined, defaultImg: string) => {
     return img.startsWith('http') ? img : `/images/testimonials/${img}`;
 };
 
-const reviews = [
+// Use real reviews from CSV config
+const reviews = siteConfig.reviews.map(review => ({
+  name: review.author,
+  quote: review.text,
+  image: review.image
+}));
+
+// Fallback reviews if config is empty
+const fallbackReviews = [
   {
     name: "James M.",
     quote: "I've traveled all over the world, but this tour was something else. The crew was professional, the views were cinematic, and the memories are priceless.",
@@ -25,11 +34,16 @@ const reviews = [
   }
 ];
 
-const photos = [
-  resolveImage(homepage?.testimonialImage1, "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&q=80"),
-  resolveImage(homepage?.testimonialImage2, "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=600&q=80"),
-  resolveImage(homepage?.testimonialImage3, "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80")
-];
+const displayReviews = reviews.length > 0 ? reviews : fallbackReviews;
+
+// Use review images from config, or fallback to Keystatic/defaults
+const photos = reviews.length > 0 
+  ? reviews.map(r => r.image)
+  : [
+      resolveImage(homepage?.testimonialImage1, "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&q=80"),
+      resolveImage(homepage?.testimonialImage2, "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=600&q=80"),
+      resolveImage(homepage?.testimonialImage3, "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80")
+    ];
 ---
 
 <section id="reviews" class="py-24 bg-slate-900 text-white relative overflow-hidden" aria-label="Customer Reviews">
@@ -67,7 +81,7 @@ const photos = [
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {reviews.map(review => (
+            {displayReviews.map(review => (
                 <div class="bg-slate-800 bg-opacity-50 p-8 rounded-2xl border border-yellow-500/30 backdrop-blur-sm shadow-2xl transform hover:-translate-y-2 transition duration-300 flex flex-col">
                     <div class="text-yellow-400 text-4xl mb-6 opacity-50"><i class="fa-solid fa-quote-left" aria-hidden="true"></i></div>
                     <p class="text-lg text-gray-300 mb-6 italic leading-relaxed flex-grow">"{review.quote}"</p>

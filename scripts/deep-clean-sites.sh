@@ -37,6 +37,7 @@ for site in "${sites[@]}"; do
   # Copy ALL updated components
   echo "   📝 Copying components..."
   cp "$template_dir/src/components/HeroSection.astro" "$site_dir/src/components/HeroSection.astro"
+  cp "$template_dir/src/components/BookingWidget.astro" "$site_dir/src/components/BookingWidget.astro"
   cp "$template_dir/src/components/ExperiencesGrid.astro" "$site_dir/src/components/ExperiencesGrid.astro"
   cp "$template_dir/src/components/TrustBanner.astro" "$site_dir/src/components/TrustBanner.astro"
   cp "$template_dir/src/components/Testimonials.astro" "$site_dir/src/components/Testimonials.astro"
