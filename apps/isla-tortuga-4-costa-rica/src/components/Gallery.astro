@@ -23,14 +23,9 @@ const fallbackImages = [
   "https://images.unsplash.com/photo-1621262828626-4b8cc4821867?w=800&q=80"
 ];
 
-// Determine which source to use
-let imagesToDisplay = fallbackImages;
-
-if (configImages.length > 0) {
-    imagesToDisplay = configImages;
-} else if (keystaticImages.length > 0) {
-    imagesToDisplay = keystaticImages;
-}
+// Prioritize: Config > Keystatic > Fallback
+let imagesToDisplay = configImages.length > 0 ? configImages : 
+                      (keystaticImages.length > 0 ? keystaticImages : fallbackImages);
 ---
 <section class="py-20 bg-white" id="gallery" aria-label="Photo Gallery">
     <div class="container mx-auto px-4">
