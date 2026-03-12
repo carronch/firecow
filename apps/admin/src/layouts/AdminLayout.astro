@@ -1,7 +1,7 @@
 ---
 interface Props {
     title: string;
-    active: 'bookings' | 'suppliers' | 'tours' | 'sites' | 'calendar' | 'analytics';
+    active: 'bookings' | 'suppliers' | 'tours' | 'sites' | 'calendar' | 'analytics' | 'agents';
 }
 const { title, active } = Astro.props;
 const userEmail = Astro.locals.userEmail;
@@ -13,6 +13,7 @@ const nav = [
     { label: 'Suppliers', href: '/suppliers', key: 'suppliers' },
     { label: 'Tours',     href: '/tours',     key: 'tours'     },
     { label: 'Sites',     href: '/sites',     key: 'sites'     },
+    { label: 'Agents',    href: '/agents',    key: 'agents'    },
 ] as const;
 ---
 

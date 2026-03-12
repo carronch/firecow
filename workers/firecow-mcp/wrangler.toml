@@ -1,0 +1,20 @@
+name = "firecow-mcp"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "firecow-db"
+database_id = "161ece68-0170-4deb-b72d-f55be878670f"
+
+[[durable_objects.bindings]]
+name = "MCP_AGENT"
+class_name = "FireCowMcpAgent"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["FireCowMcpAgent"]
+
+[vars]
+ENVIRONMENT = "production"

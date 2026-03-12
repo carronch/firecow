@@ -1,0 +1,27 @@
+---
+import AdminLayout from '../layouts/AdminLayout.astro';
+import AgentsTable from '../components/AgentsTable';
+import { AGENT_API_BASE, AGENT_ADMIN_KEY, type AgentApiKey } from '../lib/api';
+
+export const prerender = false;
+
+let keys: AgentApiKey[] = [];
+try {
+    const res = await fetch(`${AGENT_API_BASE}/admin/api-keys`, {
+        headers: { Authorization: `Bearer ${AGENT_ADMIN_KEY}` },
+    });
+    if (res.ok) {
+        const data = await res.json();
+        keys = data.keys ?? [];
+    }
+} catch {}
+---
+
+<AdminLayout title="Agent API Keys" active="agents">
+    <AgentsTable
+        client:load
+        initialKeys={keys}
+        agentApiBase={AGENT_API_BASE}
+        agentAdminKey={AGENT_ADMIN_KEY}
+    />
+</AdminLayout>
