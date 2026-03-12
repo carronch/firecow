@@ -2,45 +2,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import BookingWidget from '../components/BookingWidget.astro';
 import { siteConfig } from '../config/site.config';
 
-// Get Zoho booking URL from settings
-const zohoBookingUrl = siteConfig.zohoBookingUrl || 'https://firecowbookings.zohobookings.com/portal-embed#/4699574000000085024';
-
-// Get query parameters
-const url = Astro.url;
-const selectedDate = url.searchParams.get('date') || '';
-const selectedGuests = url.searchParams.get('guests') || '2';
-
-// Build iframe URL with pre-filled parameters
-// Need to insert query params BEFORE the hash fragment if it exists
-let iframeSrc = zohoBookingUrl;
-if (selectedDate || selectedGuests) {
-  const params = new URLSearchParams();
-  if (selectedDate) params.set('date', selectedDate);
-  if (selectedGuests) params.set('guests', selectedGuests);
-  
-  // Split URL at hash to insert query params correctly
-  const hashIndex = zohoBookingUrl.indexOf('#');
-  if (hashIndex !== -1) {
-    // URL has a hash - insert params before it
-    const baseUrl = zohoBookingUrl.substring(0, hashIndex);
-    const hashPart = zohoBookingUrl.substring(hashIndex);
-    const separator = baseUrl.includes('?') ? '&' : '?';
-    iframeSrc = `${baseUrl}${separator}${params.toString()}${hashPart}`;
-  } else {
-    // No hash - append params normally
-    const separator = zohoBookingUrl.includes('?') ? '&' : '?';
-    iframeSrc = `${zohoBookingUrl}${separator}${params.toString()}`;
-  }
-}
+export const prerender = false;
 
 const pageTitle = `Book Your Tour - ${siteConfig.siteName}`;
 ---
 
 <BaseLayout title={pageTitle}>
   <Header />
-  
+
   <main class="min-h-screen bg-gray-50">
     <!-- Breadcrumb -->
     <div class="bg-white border-b border-gray-200">
@@ -56,7 +28,7 @@ const pageTitle = `Book Your Tour - ${siteConfig.siteName}`;
       </div>
     </div>
 
-    <!-- Reservation Header -->
+    <!-- Header + Booking Widget -->
     <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-12">
       <div class="container mx-auto px-4 text-center">
         <h1 class="text-4xl md:text-5xl font-heading font-bold mb-4">
@@ -65,47 +37,15 @@ const pageTitle = `Book Your Tour - ${siteConfig.siteName}`;
         <p class="text-xl text-blue-100 max-w-2xl mx-auto">
           You're just moments away from an unforgettable adventure
         </p>
-        {selectedDate && (
-          <div class="mt-6 flex items-center justify-center gap-6 text-blue-100">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-calendar text-blue-300" aria-hidden="true"></i>
-              <span>Selected Date: <strong class="text-white">{selectedDate}</strong></span>
-            </div>
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-users text-blue-300" aria-hidden="true"></i>
-              <span>Guests: <strong class="text-white">{selectedGuests}</strong></span>
-            </div>
-          </div>
-        )}
+        <BookingWidget className="mt-8" />
       </div>
     </div>
 
-    <!-- Zoho Booking Iframe Container -->
     <div class="container mx-auto px-4 py-12">
-      <div class="max-w-6xl mx-auto">
-        <!-- Loading State -->
-        <div id="iframe-loader" class="bg-white rounded-2xl shadow-lg p-12 text-center">
-          <div class="flex flex-col items-center">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-            <p class="text-gray-600 font-medium">Loading booking form...</p>
-          </div>
-        </div>
-
-        <!-- Iframe -->
-        <div id="iframe-container" class="hidden bg-white rounded-2xl shadow-lg overflow-hidden">
-          <iframe
-            id="zoho-booking-iframe"
-            src={iframeSrc}
-            class="w-full min-h-screen border-0"
-            style="min-height: 1200px;"
-            title="Zoho Bookings - Complete your reservation"
-            loading="eager"
-            allow="payment"
-          ></iframe>
-        </div>
+      <div class="max-w-4xl mx-auto">
 
         <!-- Trust Badges -->
-        <div class="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600">
+        <div class="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-lock text-green-600" aria-hidden="true"></i>
             <span>Secure Checkout</span>
@@ -125,7 +65,7 @@ const pageTitle = `Book Your Tour - ${siteConfig.siteName}`;
         </div>
 
         <!-- Help Section -->
-        <div class="mt-12 bg-blue-50 border border-blue-100 rounded-xl p-6">
+        <div class="mt-8 bg-blue-50 border border-blue-100 rounded-xl p-6">
           <div class="flex items-start gap-4">
             <div class="flex-shrink-0">
               <i class="fa-solid fa-circle-info text-blue-600 text-2xl" aria-hidden="true"></i>
@@ -136,8 +76,8 @@ const pageTitle = `Book Your Tour - ${siteConfig.siteName}`;
                 Our team is available to assist you with your booking. Contact us anytime!
               </p>
               <div class="flex flex-wrap gap-4">
-                <a 
-                  href="https://wa.me/50612345678" 
+                <a
+                  href={`https://wa.me/${siteConfig.contact.phoneNumber.replace(/\D/g, '')}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm font-medium"
@@ -145,8 +85,8 @@ const pageTitle = `Book Your Tour - ${siteConfig.siteName}`;
                   <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                   WhatsApp Support
                 </a>
-                <a 
-                  href="mailto:hello@firecowbookings.com"
+                <a
+                  href="mailto:hello@costacatcruises.com"
                   class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 rounded-lg transition-colors text-sm font-medium"
                 >
                   <i class="fa-solid fa-envelope" aria-hidden="true"></i>
@@ -156,42 +96,10 @@ const pageTitle = `Book Your Tour - ${siteConfig.siteName}`;
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </main>
 
   <Footer />
 </BaseLayout>
-
-<script>
-  // Hide loader and show iframe when it loads
-  const iframe = document.getElementById('zoho-booking-iframe') as HTMLIFrameElement;
-  const loader = document.getElementById('iframe-loader');
-  const container = document.getElementById('iframe-container');
-
-  if (iframe && loader && container) {
-    iframe.addEventListener('load', () => {
-      loader.classList.add('hidden');
-      container.classList.remove('hidden');
-    });
-
-    // Fallback: show iframe after 3 seconds even if load event doesn't fire
-    setTimeout(() => {
-      loader.classList.add('hidden');
-      container.classList.remove('hidden');
-    }, 3000);
-  }
-
-  // Adjust iframe height based on content (if messaging is available)
-  window.addEventListener('message', (event) => {
-    // Only accept messages from Zoho domains
-    if (event.origin.includes('zoho')) {
-      if (event.data.height) {
-        const iframe = document.getElementById('zoho-booking-iframe') as HTMLIFrameElement;
-        if (iframe) {
-          iframe.style.height = `${event.data.height}px`;
-        }
-      }
-    }
-  });
-</script>

@@ -2,34 +2,284 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { stripe } from '../utils/stripe';
 
 export const prerender = false;
+
+const sessionId = Astro.url.searchParams.get('session_id');
+
+let booking: {
+    id: string;
+    tourName: string;
+    tourId: string;
+    supplierId: string;
+    date: string;
+    adults: number;
+    children: number;
+    total: number;
+    customerEmail: string;
+    customerName: string;
+} | null = null;
+let errorMsg: string | null = null;
+let upsellTours: any[] = [];
+
+if (!sessionId) {
+    errorMsg = 'No booking session found.';
+} else {
+    try {
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+        if (session.payment_status !== 'paid') {
+            errorMsg = 'Payment was not completed. Please try again or contact support.';
+        } else {
+            const metadata = session.metadata || {};
+            const customerDetails = session.customer_details;
+            const paymentIntentId = typeof session.payment_intent === 'string'
+                ? session.payment_intent
+                : (session.payment_intent as any)?.id || '';
+            const totalAmountCents = session.amount_total || 0;
+            const totalAmount = totalAmountCents / 100;
+
+            const apiBase = import.meta.env.FIRECOW_API_URL || '';
+            let bookingId = sessionId.slice(-8).toUpperCase();
+            let dbBookingId: string | null = null;
+
+            // Build UTM notes from metadata
+            const utmNotes: Record<string, string> = {};
+            for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content']) {
+                if (metadata[k]) utmNotes[k] = metadata[k];
+            }
+            const notesJson = Object.keys(utmNotes).length ? JSON.stringify(utmNotes) : null;
+
+            if (apiBase && paymentIntentId) {
+                // Idempotency: check if booking already exists
+                try {
+                    const lookupRes = await fetch(
+                        `${apiBase}/api/bookings?payment_intent_id=${paymentIntentId}`
+                    );
+                    if (lookupRes.ok) {
+                        const found = await lookupRes.json();
+                        dbBookingId = found?.id || null;
+                    }
+                } catch (_) {}
+
+                if (!dbBookingId) {
+                    try {
+                        const createRes = await fetch(`${apiBase}/api/bookings`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                tour_id: metadata.tourId || null,
+                                site_id: 'isla-tortuga-costa-rica',
+                                stripe_payment_intent_id: paymentIntentId,
+                                customer_email: customerDetails?.email || '',
+                                customer_name: customerDetails?.name || '',
+                                booking_date: metadata.date || null,
+                                party_size:
+                                    parseInt(metadata.adults || '1') +
+                                    parseInt(metadata.children || '0'),
+                                total_amount: totalAmountCents,
+                                notes: notesJson,
+                            }),
+                        });
+                        if (createRes.ok) {
+                            const created = await createRes.json();
+                            dbBookingId = created?.id || null;
+                        }
+                    } catch (e) {
+                        console.error('Failed to record booking in Worker:', e);
+                    }
+                }
+
+                if (dbBookingId) bookingId = dbBookingId.slice(-8).toUpperCase();
+
+                // Fetch upsell tours (other active tours from same supplier)
+                try {
+                    const toursRes = await fetch(`${apiBase}/api/tours`);
+                    if (toursRes.ok) {
+                        const allTours = await toursRes.json();
+                        upsellTours = allTours
+                            .filter((t: any) => t.id !== metadata.tourId && t.is_active)
+                            .slice(0, 3);
+                    }
+                } catch (_) {}
+
+                // Send confirmation email via Resend
+                const resendKey = import.meta.env.RESEND_API_KEY;
+                if (resendKey && customerDetails?.email) {
+                    const upsellHtml = upsellTours.length
+                        ? `<hr style="margin:24px 0;border:none;border-top:1px solid #e5e7eb">
+                           <h3 style="font-size:16px;color:#111827;margin-bottom:12px">You might also love:</h3>
+                           ${upsellTours.map((t: any) => `
+                               <div style="margin-bottom:10px;padding:12px;background:#f9fafb;border-radius:8px">
+                                   <strong style="color:#111827">${t.name}</strong>
+                                   <span style="color:#6b7280;font-size:13px;margin-left:8px">$${Math.round(Number(t.base_price) / 100)}/person</span><br>
+                                   <a href="https://isla-tortuga-costa-rica.pages.dev/reservation?tour=${t.slug}"
+                                      style="display:inline-block;margin-top:6px;font-size:13px;color:#2563eb;text-decoration:none">
+                                       Book this experience →
+                                   </a>
+                               </div>`).join('')}`
+                        : '';
+
+                    try {
+                        await fetch('https://api.resend.com/emails', {
+                            method: 'POST',
+                            headers: {
+                                Authorization: `Bearer ${resendKey}`,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                from: 'bookings@firecowbooking.com',
+                                to: customerDetails.email,
+                                subject: `Booking Confirmed — ${metadata.tourName || 'Your Tour'}`,
+                                html: `
+                                    <div style="font-family:sans-serif;max-width:520px;margin:0 auto;color:#111827">
+                                        <div style="background:#16a34a;padding:24px;border-radius:12px 12px 0 0;text-align:center">
+                                            <h1 style="color:#fff;margin:0;font-size:24px">Booking Confirmed!</h1>
+                                        </div>
+                                        <div style="padding:24px;background:#fff;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px">
+                                            <p style="color:#6b7280">Hi ${customerDetails?.name || 'there'},</p>
+                                            <p>Your booking is confirmed. Here are your details:</p>
+                                            <table style="width:100%;font-size:14px;border-collapse:collapse">
+                                                <tr><td style="padding:6px 0;color:#6b7280">Confirmation #</td><td style="text-align:right;font-weight:600">${bookingId}</td></tr>
+                                                <tr><td style="padding:6px 0;color:#6b7280">Tour</td><td style="text-align:right;font-weight:600">${metadata.tourName || 'Your Tour'}</td></tr>
+                                                ${metadata.date ? `<tr><td style="padding:6px 0;color:#6b7280">Date</td><td style="text-align:right;font-weight:600">${metadata.date}</td></tr>` : ''}
+                                                <tr><td style="padding:6px 0;color:#6b7280">Guests</td><td style="text-align:right;font-weight:600">${metadata.adults || 1} Adults${parseInt(metadata.children || '0') > 0 ? `, ${metadata.children} Children` : ''}</td></tr>
+                                                <tr style="border-top:1px solid #e5e7eb"><td style="padding:10px 0 6px;font-weight:600">Total Paid</td><td style="text-align:right;font-weight:700">$${totalAmount.toFixed(2)} USD</td></tr>
+                                            </table>
+                                            ${upsellHtml}
+                                            <p style="margin-top:24px;color:#6b7280;font-size:13px">Questions? Reply to this email or contact us on WhatsApp.</p>
+                                        </div>
+                                    </div>
+                                `,
+                            }),
+                        });
+                    } catch (emailErr) {
+                        console.error('Email send failed:', emailErr);
+                    }
+                }
+            }
+
+            booking = {
+                id: bookingId,
+                tourName: metadata.tourName || 'Your Tour',
+                tourId: metadata.tourId || '',
+                supplierId: '',
+                date: metadata.date || '',
+                adults: parseInt(metadata.adults || '1'),
+                children: parseInt(metadata.children || '0'),
+                total: totalAmount,
+                customerEmail: customerDetails?.email || '',
+                customerName: customerDetails?.name || '',
+            };
+        }
+    } catch (e: any) {
+        console.error('Error verifying Stripe session:', e);
+        errorMsg = 'Unable to verify your booking. Please contact support.';
+    }
+}
 ---
 
 <BaseLayout title="Booking Confirmed | Costa Cat Cruises">
   <Header />
 
-  <main class="min-h-[70vh] flex items-center justify-center bg-gray-50 py-20">
+  <main class="min-h-[70vh] bg-gray-50 py-20">
     <div class="container mx-auto px-4">
-      <div class="max-w-lg mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
-        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <i class="fa-solid fa-check text-4xl text-green-600" aria-hidden="true"></i>
-        </div>
-        
-        <h1 class="text-3xl md:text-4xl font-bold font-heading text-gray-900 mb-4">Booking Confirmed!</h1>
-        <p class="text-gray-600 text-lg mb-8 leading-relaxed">
-          Thank you for choosing Costa Cat Cruises. We have received your booking and sent a confirmation email to you.
-        </p>
 
-        <div class="space-y-4">
-          <a href="/" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-blue-500/30">
+      {errorMsg ? (
+        <div class="max-w-lg mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
+          <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fa-solid fa-xmark text-4xl text-red-600" aria-hidden="true"></i>
+          </div>
+          <h1 class="text-2xl font-bold text-gray-900 mb-4">Booking Error</h1>
+          <p class="text-gray-600 mb-8">{errorMsg}</p>
+          <a href="/" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all">
             Return to Home
           </a>
-          <a href="#contact" class="block w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-xl transition-all">
-            Contact Support
-          </a>
         </div>
-      </div>
+      ) : booking ? (
+        <div class="max-w-2xl mx-auto space-y-6">
+
+          {/* Confirmation card */}
+          <div class="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <i class="fa-solid fa-check text-4xl text-green-600" aria-hidden="true"></i>
+            </div>
+
+            <h1 class="text-3xl md:text-4xl font-bold font-heading text-gray-900 mb-2">Booking Confirmed!</h1>
+            <p class="text-gray-400 text-sm mb-6">Confirmation #{booking.id}</p>
+
+            <div class="bg-gray-50 rounded-xl p-5 text-left mb-6 space-y-3 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-500">Tour</span>
+                <span class="font-semibold text-gray-900">{booking.tourName}</span>
+              </div>
+              {booking.date && (
+                <div class="flex justify-between">
+                  <span class="text-gray-500">Date</span>
+                  <span class="font-semibold text-gray-900">{booking.date}</span>
+                </div>
+              )}
+              <div class="flex justify-between">
+                <span class="text-gray-500">Guests</span>
+                <span class="font-semibold text-gray-900">
+                  {booking.adults} Adult{booking.adults !== 1 ? 's' : ''}
+                  {booking.children > 0 && `, ${booking.children} Child${booking.children !== 1 ? 'ren' : ''}`}
+                </span>
+              </div>
+              <div class="flex justify-between border-t border-gray-200 pt-3 mt-1">
+                <span class="text-gray-700 font-medium">Total Paid</span>
+                <span class="font-bold text-gray-900">${booking.total.toFixed(2)} USD</span>
+              </div>
+            </div>
+
+            {booking.customerEmail && (
+              <p class="text-gray-500 text-sm mb-8">
+                A confirmation has been sent to <strong>{booking.customerEmail}</strong>.
+              </p>
+            )}
+
+            <div class="space-y-3">
+              <a href="/" class="block w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg hover:shadow-blue-500/30">
+                Return to Home
+              </a>
+              <a href="mailto:hello@costacatcruises.com" class="block w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold py-3 px-6 rounded-xl transition-all">
+                Contact Support
+              </a>
+            </div>
+          </div>
+
+          {/* Upsell section */}
+          {upsellTours.length > 0 && (
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h2 class="text-lg font-bold text-gray-900 mb-1">You might also love</h2>
+              <p class="text-gray-400 text-sm mb-4">Other adventures while you're here</p>
+              <div class="space-y-3">
+                {upsellTours.map((t: any) => (
+                  <a
+                    href={`/reservation?tour=${t.slug}`}
+                    class="flex items-center gap-4 p-3 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50 transition-all group"
+                  >
+                    {t.hero_image_url && (
+                      <img src={t.hero_image_url} alt={t.name} class="w-16 h-12 object-cover rounded-lg flex-shrink-0" />
+                    )}
+                    <div class="flex-1 min-w-0">
+                      <p class="font-semibold text-gray-900 group-hover:text-blue-700 text-sm">{t.name}</p>
+                      <p class="text-gray-400 text-xs capitalize">{t.type} · {t.duration || 'Full day'}</p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                      <p class="font-bold text-gray-900 text-sm">${Math.round(Number(t.base_price) / 100)}</p>
+                      <p class="text-xs text-blue-600 group-hover:text-blue-700">Book →</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+        </div>
+      ) : null}
+
     </div>
   </main>
 

@@ -1,0 +1,14 @@
+---
+import AdminLayout from '../layouts/AdminLayout.astro';
+import AnalyticsDashboard from '../components/AnalyticsDashboard';
+import { API_BASE } from '../lib/api';
+
+export const prerender = false;
+---
+
+<AdminLayout title="Analytics" active="analytics">
+    <AnalyticsDashboard
+        client:load
+        apiBase={API_BASE}
+    />
+</AdminLayout>

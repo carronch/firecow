@@ -1,274 +1,185 @@
-# 🚀 Getting Started with FireCow Bookings
-
-This guide will walk you through setting up your first tour site in under 30 minutes.
+# Getting Started — FireCow Bookings
 
 ## Prerequisites
 
-- **Node.js** 18+ installed
-- **PNPM** installed (`npm install -g pnpm`)
-- **Git** installed
-- Code editor (VS Code recommended)
+- **Node.js** 18+
+- **PNPM** (`npm install -g pnpm`)
+- **Wrangler CLI** (`npm install -g wrangler`) — for Worker + D1 + R2
+- **Git**
+- Cloudflare account (`firecowbooking@gmail.com`)
+- Stripe account (test keys available in dashboard)
 
-## Step 1: Clone and Install (5 minutes)
+---
+
+## 1. Clone and Install
 
 ```bash
-# Navigate to where you want the project
-cd ~/Projects
-
-# Clone the repository
-git clone <your-repo-url> firecow-bookings
+git clone https://github.com/carronch/firecow firecow-bookings
 cd firecow-bookings
-
-# Install all dependencies
 pnpm install
 ```
 
-This will install dependencies for:
-- Root workspace
-- Template app
-- All packages
-
-## Step 2: Set Up Environment Variables (5 minutes)
-
-```bash
-# Navigate to template
-cd apps/template
-
-# Copy example env file
-cp .env.example .env
-
-# Edit .env with your credentials
-nano .env  # or use your preferred editor
-```
-
-**For now, you can use placeholder values:**
-- Zoho credentials: Get from [Zoho Developer Console](https://api-console.zoho.com/)
-- Stripe keys: Get from [Stripe Dashboard](https://dashboard.stripe.com/test/apikeys)
-- Leave others as defaults for local development
-
-## Step 3: Start Development Server (2 minutes)
-
-```bash
-# Make sure you're in firecow-bookings root
-cd /path/to/firecow-bookings
-
-# Start the template dev server
-pnpm --filter template dev
-```
-
-You should see:
-```
-🚀 astro v4.0.0 started in XXXms
-
-  ┃ Local    http://localhost:4321/
-  ┃ Network  use --host to expose
-```
-
-## Step 4: View Your Site (1 minute)
-
-Open your browser and navigate to:
-```
-http://localhost:4321
-```
-
-You should see:
-- ✅ Hero section with "Experience the Enchanted Islands"
-- ✅ Trust banner with logos
-- ✅ Tour cards
-- ✅ Testimonials
-- ✅ Contact section
-
-**🎉 Congratulations! Your template is running!**
-
-## Step 5: Open Keystatic CMS (2 minutes)
-
-Navigate to the admin panel:
-```
-http://localhost:4321/keystatic
-```
-
-Here you can:
-- Create/edit tours
-- Add upsells
-- Manage FAQs
-
-## Step 6: Customize Your First Tour (10 minutes)
-
-### Option A: Using Keystatic (Recommended)
-
-1. Go to `http://localhost:4321/keystatic`
-2. Click "Tours" in sidebar
-3. Click "Create Tour"
-4. Fill in the form:
-   - Tour Name: "Catamaran Sunset Cruise"
-   - Tagline: "Sail into paradise"
-   - Duration: "3 hours"
-   - Base Price: 150
-   - Upload a hero image
-5. Click "Create"
-
-### Option B: Manual File Creation
-
-Create `apps/template/src/content/tours/catamaran-sunset.md`:
-
-```yaml
----
-tourId: cat-001
-tourName: catamaran-sunset
-tagline: Sail into paradise as the sun paints the Pacific golden
-zohoServiceId: ""
-heroImage: /images/tours/catamaran-hero.jpg
-duration: 3 hours
-maxCapacity: 12
-basePrice: 150
-highSeasonPrice: 195
-category: water-sports
-featured: true
-whatsIncluded:
-  - Open bar with premium drinks
-  - Snorkeling equipment
-  - Professional crew
-  - Sunset views
-whatToBring:
-  - Swimsuit and towel
-  - Sunscreen
-  - Camera
-  - Light jacket for evening
 ---
 
-Experience the magic of Costa Rica's Pacific coast aboard our luxury catamaran. Watch the sun sink into the ocean while dolphins play in our wake. This isn't just a boat ride—it's an unforgettable journey.
-
-## What to Expect
-
-Our premium catamaran accommodates up to 12 guests for an intimate experience. We depart at 4:00 PM and sail along the stunning coastline, with stops for snorkeling in crystal-clear waters.
-
-As the golden hour approaches, we'll position ourselves for the perfect sunset view while you enjoy cocktails and appetizers.
-```
-
-## Step 7: See Your Changes (Instant)
-
-The dev server hot-reloads automatically. Refresh your browser to see updates.
-
-## Next Steps
-
-### Create Your First Site Instance
-
-Now that the template is working, let's create your first actual tour site:
+## 2. Cloudflare Auth
 
 ```bash
-# From project root
-mkdir apps/catamaran-sunset
-cd apps/catamaran-sunset
+wrangler login
+# Authenticate as firecowbooking@gmail.com
 ```
 
-Create `package.json`:
-```json
-{
-  "name": "catamaran-sunset",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "@firecow/template": "workspace:*"
-  },
-  "scripts": {
-    "dev": "astro dev --port 4322",
-    "build": "astro build",
-    "preview": "astro preview"
-  }
-}
-```
+---
 
-Create `astro.config.mjs`:
-```javascript
-import { defineConfig } from 'astro/config';
-import baseConfig from '../template/astro.config.mjs';
+## 3. Run the Tour Site Locally
 
-export default defineConfig({
-  ...baseConfig,
-  site: 'https://catamaransunset.com',
-});
-```
-
-Create your content:
 ```bash
-mkdir -p src/content/tours
-cp ../template/src/content/tours/catamaran-sunset.md src/content/tours/tour.md
+cd apps/isla-tortuga-costa-rica
+cp .env.example .env   # then fill in values below
+pnpm dev
+# → http://localhost:4321
 ```
 
-Install dependencies:
+**.env values needed:**
+
+```
+PUBLIC_STRIPE_KEY=pk_test_...        # Stripe dashboard → Developers → API keys
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...      # From Stripe webhook settings
+FIRECOW_API_URL=https://firecow-api.firecowbooking.workers.dev
+```
+
+> For local Stripe webhook testing, use the [Stripe CLI](https://stripe.com/docs/stripe-cli):
+> ```bash
+> stripe listen --forward-to localhost:4321/api/webhooks/stripe
+> ```
+> The CLI will print a `whsec_...` secret to use as `STRIPE_WEBHOOK_SECRET`.
+
+---
+
+## 4. Run the Admin Dashboard Locally
+
 ```bash
-cd ../..  # Back to root
-pnpm install
+cd apps/admin
+# create .env:
+echo 'FIRECOW_API_URL=https://firecow-api.firecowbooking.workers.dev' > .env
+echo 'STRIPE_SECRET_KEY=sk_test_...' >> .env
+pnpm dev
+# → http://localhost:4322
 ```
 
-Start your site:
+In local dev, `middleware.ts` falls back to `dev@local` for the user email (no CF Access required).
+
+---
+
+## 5. Run the Worker Locally
+
 ```bash
-pnpm --filter catamaran-sunset dev
+cd workers/firecow-api
+wrangler dev
+# → http://localhost:8787
 ```
 
-Open `http://localhost:4322` - you now have your first independent site! 🎊
+When running the Worker locally, update `FIRECOW_API_URL=http://localhost:8787` in site/admin `.env` files to point at the local Worker.
 
-### Add Images
+---
 
-1. Add images to `apps/catamaran-sunset/public/images/`
-2. Or use Bunny CDN URLs
-3. Reference in your content
+## 6. Deploy
 
-### Customize Content
+### Worker
 
-Edit the tour.md file to match your specific tour:
-- Change tour name
-- Update pricing
-- Add your images
-- Modify description
+```bash
+cd workers/firecow-api
+wrangler deploy
+```
+
+### Tour Site
+
+```bash
+cd apps/isla-tortuga-costa-rica
+pnpm build
+# Deploy via CF Pages — connected to GitHub, auto-deploys on push to main
+```
+
+Set env vars in CF Pages dashboard → Settings → Environment variables.
+
+### Admin Dashboard
+
+```bash
+cd apps/admin
+pnpm build
+# Deploy via CF Pages — set project name to "firecow-admin"
+```
+
+Set env vars in CF Pages dashboard. Then configure Cloudflare Access:
+- CF Dashboard → Zero Trust → Access → Applications → Add application
+- Add the admin Pages URL, set email allowlist
+
+---
+
+## Development Commands
+
+| Command | Description |
+|---|---|
+| `pnpm --filter @firecow/isla-tortuga-costa-rica dev` | Start tour site dev server |
+| `pnpm --filter @firecow/admin dev` | Start admin dev server |
+| `wrangler dev` (in `workers/firecow-api/`) | Start Worker locally |
+| `wrangler d1 execute firecow-db --remote --file=migrations/0001_schema.sql` | Apply DB migration |
+| `pnpm build` (in any app) | Build for production |
+
+---
+
+## Project Structure
+
+```
+firecow-bookings/
+├── apps/
+│   ├── isla-tortuga-costa-rica/   # Tour site
+│   │   ├── src/pages/
+│   │   │   ├── index.astro            # Homepage (fetches from Worker)
+│   │   │   ├── reservation.astro      # Booking widget
+│   │   │   ├── success.astro          # Payment confirmation
+│   │   │   └── api/
+│   │   │       ├── create-checkout-session.ts
+│   │   │       └── webhooks/stripe.ts
+│   │   └── src/components/
+│   │       ├── BookingWidget.jsx
+│   │       └── CheckoutForm.jsx
+│   └── admin/
+│       ├── src/pages/
+│       │   ├── bookings.astro
+│       │   ├── suppliers.astro
+│       │   ├── tours.astro
+│       │   └── sites.astro
+│       ├── src/components/
+│       │   ├── BookingsTable.tsx
+│       │   ├── SuppliersTable.tsx
+│       │   ├── ToursTable.tsx
+│       │   └── SitesTable.tsx
+│       └── src/pages/api/refund.ts
+├── workers/
+│   └── firecow-api/
+│       ├── src/index.js               # All REST endpoints
+│       ├── migrations/
+│       └── wrangler.toml
+└── packages/
+    └── api-client/                    # Shared TS types + fetch helpers
+```
+
+---
 
 ## Common Issues
 
-### Port Already in Use
+### Wrangler not authenticated
 ```bash
-# Use a different port
-pnpm --filter template dev -- --port 3000
+wrangler whoami
+wrangler login
 ```
 
-### Dependencies Not Installing
-```bash
-# Clear cache and reinstall
-rm -rf node_modules pnpm-lock.yaml
-pnpm install
-```
+### D1 queries failing locally
+Local D1 is a SQLite file — run `wrangler dev --local` to use it, or point at the remote DB with `wrangler dev --remote`.
 
-### Changes Not Showing
-```bash
-# Hard refresh browser (Cmd+Shift+R on Mac, Ctrl+Shift+R on Windows)
-# Or restart dev server
-```
+### Stripe webhook signature mismatch
+Make sure `STRIPE_WEBHOOK_SECRET` matches the secret shown in Stripe CLI output (`stripe listen`) or the webhook endpoint in Stripe dashboard.
 
-## What You've Built
-
-✅ **Template**: Master design that all sites inherit from
-✅ **Dev Environment**: Hot-reloading, fast builds
-✅ **CMS**: Keystatic for easy content management
-✅ **Components**: Reusable, typed components
-✅ **Styling**: Tailwind CSS design system
-✅ **First Site**: Ready to customize and deploy
-
-## Next: Deploy to Production
-
-See `DEPLOYMENT.md` for instructions on:
-- Setting up Cloudflare Pages
-- Connecting custom domain
-- Configuring CI/CD
-- Going live!
-
-## Get Help
-
-- **Documentation**: Check README.md
-- **Examples**: Look at template files
-- **Issues**: Create GitHub issue
-- **Chat**: Join our Discord (coming soon)
-
----
-
-**Time to first site: ~30 minutes ✨**
-
-Now go build something amazing! 🚀
+### Build fails — missing env vars
+Astro will throw at build time if `PUBLIC_*` vars are missing. Check `.env` in the app directory.

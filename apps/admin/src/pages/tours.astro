@@ -1,0 +1,20 @@
+---
+import AdminLayout from '../layouts/AdminLayout.astro';
+import ToursTable from '../components/ToursTable';
+import { getTours, getSuppliers, API_BASE, type Tour, type Supplier } from '../lib/api';
+
+export const prerender = false;
+
+let tours: Tour[] = [];
+let suppliers: Supplier[] = [];
+try { [tours, suppliers] = await Promise.all([getTours(), getSuppliers()]); } catch {}
+---
+
+<AdminLayout title="Tours" active="tours">
+    <ToursTable
+        client:load
+        initialTours={tours}
+        suppliers={suppliers}
+        apiBase={API_BASE}
+    />
+</AdminLayout>

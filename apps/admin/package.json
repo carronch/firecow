@@ -1,0 +1,28 @@
+{
+  "name": "@firecow/admin",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --port 4322",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^11.2.0",
+    "@astrojs/react": "^3.0.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "@firecow/api-client": "workspace:*",
+    "@firecow/config": "workspace:*",
+    "astro": "^4.0.0",
+    "lucide-react": "^0.562.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "stripe": "^20.3.0",
+    "tailwindcss": "^3.4.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/node": "^25.2.1"
+  }
+}
