@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import TourEditor from '../../../../components/TourEditor';
+
+export const prerender = false;
+
+const { site, id } = Astro.params;
+---
+
+<BaseLayout title="Edit Tour">
+  <div class="container mx-auto p-8">
+      <div class="mb-4">
+          <a href="/content/tours" class="text-gray-500 hover:underline">&larr; Back to all tours</a>
+      </div>
+      <TourEditor client:load site={site} id={id} />
+  </div>
+</BaseLayout>

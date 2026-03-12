@@ -1,0 +1,124 @@
+---
+import { ChevronDown, HelpCircle } from 'lucide-react';
+
+const scanTitle = "Frequently Asked Questions";
+const scanSubtitle = "Everything you need to know before you book";
+
+const faqs = [
+  {
+    question: "What's the best time to visit the Galapagos?",
+    answer: `The Galapagos Islands are a year-round destination! Each season offers unique experiences:
+      <br/><br/>
+      <strong>December-May (Warm/Wet Season):</strong> Warmer water (75-80°F), calmer seas, best for snorkeling, sea turtle nesting, and marine iguanas breeding.
+      <br/>
+      <strong>June-November (Cool/Dry Season):</strong> Cooler water (65-75°F), more wildlife activity, great for bird watching, sea lion pupping, and penguin sightings.
+      <br/><br/>
+      We recommend booking 6-12 months in advance for peak season (June-August and December-January).`
+  },
+  {
+    question: "Do I need any special permits or vaccinations?",
+    answer: `<strong>Entry Requirements:</strong>
+      <br/>• Valid passport (6+ months validity)
+      <br/>• Transit Control Card ($20 USD) purchased at Ecuador airport
+      <br/>• Galapagos National Park fee ($100 USD cash) paid upon arrival
+      <br/><br/>
+      <strong>Vaccinations:</strong> No vaccinations are required, but we recommend being up-to-date on routine vaccines. Consult your doctor about Hepatitis A, Typhoid, and Yellow Fever depending on your travel plans in Ecuador.`
+  },
+  {
+    question: "What should I pack for the trip?",
+    answer: `<strong>Essentials:</strong>
+      <br/>• Lightweight, quick-dry clothing
+      <br/>• Swimsuit and rash guard
+      <br/>• Comfortable walking shoes and sandals
+      <br/>• Sun protection (hat, sunglasses, SPF 50+ sunscreen)
+      <br/>• Waterproof bag for excursions
+      <br/>• Camera with waterproof case
+      <br/>• Reusable water bottle
+      <br/>• Light jacket for cool evenings
+      <br/>• Seasickness medication (if prone)
+      <br/><br/>
+      <strong>Note:</strong> We provide snorkeling equipment, but you're welcome to bring your own mask if preferred.`
+  },
+  {
+    question: "How physically demanding are the tours?",
+    answer: `Our tours are designed for moderate fitness levels. Daily activities typically include:
+      <br/><br/>
+      • <strong>Hiking:</strong> 1-2 miles on uneven volcanic terrain (optional easier routes available)
+      <br/>• <strong>Snorkeling:</strong> 30-60 minutes in open water with life jackets available
+      <br/>• <strong>Panga Rides:</strong> Wet and dry landings requiring balance
+      <br/><br/>
+      If you have mobility concerns, please contact us. We can customize activities to accommodate your needs.`
+  },
+  {
+    question: "What's your cancellation policy?",
+    answer: `<strong>Cancellation Terms:</strong>
+      <br/>• <strong>90+ days before departure:</strong> Full refund minus $200 processing fee
+      <br/>• <strong>60-89 days:</strong> 50% refund
+      <br/>• <strong>30-59 days:</strong> 25% refund
+      <br/>• <strong>Less than 30 days:</strong> No refund
+      <br/><br/>
+      <strong>Important:</strong> We strongly recommend travel insurance to protect your investment. Weather-related cancellations initiated by us result in a full refund or rescheduling.`
+  },
+  {
+    question: "Can children join the tours?",
+    answer: `Yes! Children ages 5 and up are welcome on most of our tours. The Galapagos is an incredible educational experience for kids.
+      <br/><br/>
+      <strong>Family-Friendly Features:</strong>
+      <br/>• Child-sized snorkeling equipment
+      <br/>• Life jackets for all water activities
+      <br/>• Flexible itineraries for young travelers
+      <br/>• Kid-friendly meal options
+      <br/><br/>
+      <strong>Discounts:</strong> Children under 12 receive 15% off. Contact us about family cabins and private tours.`
+  },
+  {
+    question: "Is WiFi available during the cruise?",
+    answer: `Most of our vessels offer complimentary WiFi, though connectivity can be limited in remote areas due to the islands' protected status.
+      <br/><br/>
+      We encourage guests to embrace the digital detox and fully immerse in the natural beauty around you! Emergency communication is always available through the ship's radio.
+      <br/><br/>
+      <strong>Tip:</strong> Download offline maps, books, and entertainment before your trip.`
+  },
+  {
+    question: "What's included in the tour price?",
+    answer: `<strong>Included:</strong>
+      <br/>✓ All accommodations aboard the yacht
+      <br/>✓ All meals, snacks, and non-alcoholic beverages
+      <br/>✓ Certified naturalist guide services
+      <br/>✓ All excursions and activities
+      <br/>✓ Snorkeling equipment and wetsuits
+      <br/>✓ Airport transfers in Galapagos
+      <br/>✓ Travel insurance
+      <br/><br/>
+      <strong>Not Included:</strong>
+      <br/>✗ International flights
+      <br/>✗ Galapagos National Park fee ($100)
+      <br/>✗ Transit Control Card ($20)
+      <br/>✗ Alcoholic beverages
+      <br/>✗ Gratuities for crew and guide
+      <br/>✗ Personal expenses and souvenirs`
+  }
+];
+---
+
+<section class="py-20 bg-gray-50">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-heading font-extrabold text-slate-900 mb-4">{scanTitle}</h2>
+      <div class="w-20 h-1 bg-primary mx-auto rounded"></div>
+      <p class="mt-4 text-xl text-gray-600">{scanSubtitle}</p>
+    </div>
+
+    <div class="space-y-4">
+      {faqs.map((faq) => (
+        <details class="bg-white rounded-xl shadow-lg overflow-hidden group">
+          <summary class="px-8 py-6 cursor-pointer flex justify-between items-center font-bold text-lg text-gray-900 hover:bg-gray-50 transition list-none">
+            <span>{faq.question}</span>
+            <ChevronDown className="w-5 h-5 text-primary group-open:rotate-180 transition-transform" />
+          </summary>
+          <div class="px-8 pb-6 text-gray-600 leading-relaxed border-t border-gray-100/50" set:html={faq.answer} />
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,100 @@
+---
+import { Gem, Ticket, Users, Check, ArrowRight } from 'lucide-react';
+
+const tourTypes = [
+  {
+    title: "Luxury Cruises",
+    icon: Gem,
+    colorClass: "bg-blue-100 text-blue-600",
+    gradientClass: "from-blue-50 to-white",
+    borderClass: "border-blue-100 hover:border-blue-400",
+    textClass: "text-blue-600",
+    buttonClass: "text-blue-600",
+    features: [
+      "5-9 day itineraries",
+      "Maximum 16 guests",
+      "Premium cabins & suites",
+      "Gourmet dining",
+      "Full bar & entertainment"
+    ],
+    audience: "Couples, honeymoons, special occasions",
+    cta: "View Luxury Tours"
+  },
+  {
+    title: "Adventure Tours",
+    icon: Ticket,
+    colorClass: "bg-green-100 text-green-600",
+    gradientClass: "from-green-50 to-white",
+    borderClass: "border-green-100 hover:border-green-500",
+    textClass: "text-green-600",
+    buttonClass: "text-green-600",
+    features: [
+      "4-8 day itineraries",
+      "Active excursions",
+      "Snorkeling & kayaking",
+      "Comfortable accommodations",
+      "Small group experience"
+    ],
+    audience: "Active travelers, families, nature lovers",
+    cta: "View Adventure Tours"
+  },
+  {
+    title: "Private Charters",
+    icon: Users,
+    colorClass: "bg-purple-100 text-purple-600",
+    gradientClass: "from-purple-50 to-white",
+    borderClass: "border-purple-100 hover:border-purple-500",
+    textClass: "text-purple-600",
+    buttonClass: "text-purple-600",
+    features: [
+      "Custom itineraries",
+      "Your own yacht",
+      "Dedicated crew & guide",
+      "Flexible schedule",
+      "Personalized service"
+    ],
+    audience: "Groups, families, corporate retreats",
+    cta: "Request Custom Quote"
+  }
+];
+---
+
+<section class="py-24 bg-white relative">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-heading font-extrabold text-slate-900 mb-4">Types of Tours We Offer</h2>
+      <div class="w-20 h-1 bg-primary mx-auto rounded"></div>
+      <p class="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">Choose the perfect adventure for your travel style</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {tourTypes.map((tour) => (
+        <div class={`bg-gradient-to-br ${tour.gradientClass} p-8 rounded-2xl border-2 ${tour.borderClass} transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-xl group`}>
+          <div class={`w-16 h-16 ${tour.colorClass} rounded-full flex items-center justify-center mb-6 shadow-sm`}>
+            <tour.icon className="w-8 h-8" />
+          </div>
+          
+          <h3 class="text-2xl font-heading font-bold text-slate-900 mb-6">{tour.title}</h3>
+          
+          <ul class="space-y-4 mb-8">
+            {tour.features.map((feature) => (
+              <li class="flex items-start gap-3">
+                <Check className={`w-5 h-5 ${tour.textClass} mt-0.5 flex-shrink-0`} />
+                <span class="text-slate-600 font-medium">{feature}</span>
+              </li>
+            ))}
+          </ul>
+          
+          <div class="mb-8 pt-6 border-t border-gray-100">
+             <p class="text-sm font-bold text-slate-400 uppercase tracking-wide mb-1">Perfect For</p>
+             <p class="text-slate-700">{tour.audience}</p>
+          </div>
+
+          <a href="#contact" class={`inline-flex items-center font-bold ${tour.buttonClass} hover:opacity-80 transition-opacity group-hover:gap-2`}>
+            {tour.cta} <ArrowRight className="w-4 h-4 ml-2 transition-all" />
+          </a>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

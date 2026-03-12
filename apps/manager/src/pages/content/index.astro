@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CsvEditor from '../../components/CsvEditor';
+
+export const prerender = true;
+---
+
+<BaseLayout title="Manage Content">
+    <div class="container mx-auto p-8">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold">Content Management</h1>
+            <p class="text-gray-600">Edit general content and reviews across all sites.</p>
+        </div>
+
+        <CsvEditor client:load />
+        
+        <div class="mt-12 p-6 bg-gray-50 rounded-lg border">
+            <h3 class="text-lg font-semibold mb-2">Tour Management</h3>
+            <p class="text-gray-600 mb-4">Edit Markdown files for specific tour pricing and details.</p>
+            <a href="/content/tours" class="text-blue-600 hover:underline">Manage Tours &rarr;</a>
+        </div>
+    </div>
+</BaseLayout>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galapagos Island Cruise | Premium Adventures</title>
+    <meta name="description" content="Luxury Galapagos Cruises and Tours for the Discerning Traveler">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        body { font-family: 'Open Sans', sans-serif; }
+        h1, h2, h3, h4, .font-heading { font-family: 'Montserrat', sans-serif; }
+        
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-white/90 backdrop-blur-md shadow-sm fixed w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="text-2xl font-heading font-extrabold text-[#0f172a] tracking-tighter flex items-center">
+                        <i class="fa-solid fa-compass text-[#0ea5e9] mr-2"></i>Galapagos Island Cruise
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html#services" class="text-gray-700 hover:text-[#0ea5e9] font-semibold transition">Experience</a>
+                    <a href="why-us.html" class="text-gray-700 hover:text-[#0ea5e9] font-semibold transition">Why Us</a>
+                    <a href="index.html#reviews" class="text-gray-700 hover:text-[#0ea5e9] font-semibold transition">Reviews</a>
+                    <a href="index.html#contact" class="text-gray-700 hover:text-[#0ea5e9] font-semibold transition">Contact</a>
+                </div>
+                <div class="flex items-center">
+                    <a href="#hero-booking" class="bg-[#0ea5e9] hover:bg-blue-600 text-white px-5 py-2 rounded-full font-bold shadow-lg transition flex items-center text-sm">
+                        <i class="fa-solid fa-calendar-check mr-2"></i> Book Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Split Layout) -->
+    <header id="hero-booking" class="relative hero-bg min-h-screen flex items-center pt-20">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full py-12">
+            
+            <!-- Left: Text -->
+            <div class="text-white text-center lg:text-left">
+                <div class="inline-block bg-[#0ea5e9] px-4 py-1 rounded-full text-sm font-bold tracking-wide uppercase mb-6 shadow-lg">
+                    Premier Adventures
+                </div>
+                <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight drop-shadow-xl">
+                    Experience the Enchanted Islands in Style
+                </h1>
+                <p class="text-lg md:text-xl mb-8 font-light drop-shadow-md text-gray-100 max-w-2xl mx-auto lg:mx-0">
+                    Luxury Galapagos Cruises and Tours for the Discerning Traveler
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="#services" class="bg-white hover:bg-gray-100 text-slate-900 text-lg font-bold py-3 px-8 rounded-lg shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center">
+                        <i class="fa-solid fa-eye mr-2"></i> View Tours
+                    </a>
+                </div>
+                
+                <div class="mt-8 flex items-center justify-center lg:justify-start space-x-6 text-sm font-medium text-gray-300">
+                    <span class="flex items-center"><i class="fa-solid fa-check-circle text-green-400 mr-2"></i> 5-Star Rated</span>
+                    <span class="flex items-center"><i class="fa-solid fa-shield-halved text-blue-400 mr-2"></i> Safe & Secure</span>
+                </div>
+            </div>
+
+            <!-- Right: Booking Form -->
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-white/20 backdrop-blur-sm h-[600px] relative">
+                <div class="p-8 h-full">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">🔥</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-900">FireCow Bookings</p>
+                            <p class="text-sm text-slate-500">Choose Event Types</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 mb-6">
+                        <button class="w-full flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-xl hover:bg-green-100 transition">
+                            <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">ZI</div>
+                            <span class="font-semibold text-slate-900">Zipline Jaco</span>
+                        </button>
+                        <button class="w-full flex items-center gap-3 p-4 bg-purple-50 border border-purple-200 rounded-xl hover:bg-purple-100 transition">
+                            <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center text-white font-bold">IS</div>
+                            <span class="font-semibold text-slate-900">Isla tortuga Cruise</span>
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-center text-slate-400 absolute bottom-4 left-0 right-0">Powered by <span class="font-semibold">CAL Bookings</span></p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- As Seen On Section -->
+    <section class="py-10 bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-gray-400 uppercase tracking-widest text-xs font-bold mb-6">As Seen On</p>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/TripAdvisor_Logo.svg" alt="TripAdvisor" class="h-8 md:h-10 object-contain"/>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Natgeologo.svg" alt="National Geographic" class="h-8 md:h-10 object-contain"/>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Travel_and_Leisure_Logo_2020.svg/1280px-Travel_and_Leisure_Logo_2020.svg.png" alt="Travel + Leisure" class="h-8 md:h-10 object-contain"/>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-[#0f172a] mb-4">Our Experiences</h2>
+                <div class="w-20 h-1 bg-[#0ea5e9] mx-auto rounded"></div>
+                <p class="mt-4 text-xl text-gray-600">Unforgettable memories waiting for you.</p>
+            </div>
+            
+            <!-- Loading State -->
+            <div id="tours-loading" class="text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#0ea5e9]"></div>
+                <p class="mt-4 text-gray-600">Loading available tours...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="tours-error" class="hidden text-center py-12">
+                <div class="text-red-500 text-5xl mb-4"><i class="fa-solid fa-circle-exclamation"></i></div>
+                <p class="text-gray-600 mb-4">Unable to load tours. Please try again later.</p>
+            </div>
+
+            <!-- Tours Grid -->
+            <div id="tours-grid" class="grid grid-cols-1 md:grid-cols-3 gap-10 hidden">
+                <!-- Tours will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Zoho Bookings API Configuration
+        const ZOHO_CONFIG = {
+            // Replace these with your actual Zoho Bookings credentials
+            portalName: 'firecowbookings', // Your Zoho portal name
+            serviceIds: [], // Leave empty to fetch all services, or specify IDs
+            apiEndpoint: 'https://bookings.zoho.com/api/v1',
+            // You'll need to implement OAuth2 authentication for production
+            // For now, this uses the public booking page data
+        };
+
+        // Default fallback tours if API fails
+        const FALLBACK_TOURS = [
+            {
+                name: "Island Paradise Cruise",
+                description: "A luxury yacht customized to carry 16 guests in comfort and safety through the Galapagos Islands. 5, 7, & 9-day cruises exploring the islands' pristine beauty with expert naturalist guides.",
+                price: 3245,
+                image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80",
+                serviceId: "1"
+            },
+            {
+                name: "Coral Reef Adventure",
+                description: "The Coral I and Coral II offer the perfect combination of classic beauty and exquisite style. Explore the Galápagos on a 4, 5 & 8-day adventure with comfortable accommodations.",
+                price: 1881,
+                image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
+                serviceId: "2"
+            },
+            {
+                name: "Hermès Mega Catamaran",
+                description: "Experience the ultimate luxury and comfort on the Hermès Mega Catamaran. Choose from 4, 5, 7, 8 & 9-day cruises, and indulge in spacious cabins with unparalleled style.",
+                price: 6195,
+                image: "https://images.unsplash.com/photo-1544551763-92ee27a5b0b4?w=800&q=80",
+                serviceId: "3"
+            }
+        ];
+
+        // Function to create tour card HTML
+        function createTourCard(tour) {
+            return `
+                <div class="bg-gray-50 rounded-2xl p-0 text-center shadow-lg border border-gray-100 hover:shadow-xl transition duration-300 overflow-hidden flex flex-col group">
+                    <div class="h-64 w-full overflow-hidden relative">
+                        <img src="${tour.image || 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80'}" 
+                             alt="${tour.name}" 
+                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                             onerror="this.src='https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80'" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
+                            <span class="text-white font-bold tracking-wider uppercase text-sm">View Details</span>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8 flex-grow flex flex-col">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">${tour.name}</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm mb-6 flex-grow">
+                            ${tour.description || 'Explore the beautiful Galapagos Islands with our expert guides.'}
+                        </p>
+                        <div class="flex items-center justify-between mt-auto pt-6 border-t border-gray-200">
+                            <span class="text-2xl font-bold text-[#0ea5e9]">$${tour.price || 'Contact'}</span>
+                            <a href="#hero-booking" class="text-sm font-bold text-gray-700 hover:text-[#0ea5e9] transition flex items-center">
+                                Book This <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to fetch tours from Zoho Bookings
+        async function fetchZohoTours() {
+            try {
+                // NOTE: Zoho Bookings API requires OAuth2 authentication
+                // For a production implementation, you'll need to:
+                // 1. Set up OAuth2 flow on your backend
+                // 2. Get an access token
+                // 3. Make authenticated API calls
+                
+                // For now, we'll use a proxy endpoint approach
+                // You'll need to create a backend endpoint that handles the Zoho API authentication
+                
+                const response = await fetch('/api/tours', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tours');
+                }
+
+                const data = await response.json();
+                return data.services || data.tours || [];
+                
+            } catch (error) {
+                console.error('Error fetching Zoho tours:', error);
+                throw error;
+            }
+        }
+
+        // Function to display tours
+        function displayTours(tours) {
+            const grid = document.getElementById('tours-grid');
+            const loading = document.getElementById('tours-loading');
+            const errorDiv = document.getElementById('tours-error');
+
+            loading.classList.add('hidden');
+            errorDiv.classList.add('hidden');
+            grid.classList.remove('hidden');
+
+            grid.innerHTML = tours.map(tour => createTourCard(tour)).join('');
+        }
+
+        // Function to show error state
+        function showError() {
+            const grid = document.getElementById('tours-grid');
+            const loading = document.getElementById('tours-loading');
+            const errorDiv = document.getElementById('tours-error');
+
+            loading.classList.add('hidden');
+            grid.classList.add('hidden');
+            errorDiv.classList.remove('hidden');
+        }
+
+        // Initialize tours on page load
+        async function initializeTours() {
+            try {
+                // Try to fetch from Zoho API
+                const tours = await fetchZohoTours();
+                
+                if (tours && tours.length > 0) {
+                    displayTours(tours);
+                } else {
+                    // Use fallback tours if API returns empty
+                    displayTours(FALLBACK_TOURS);
+                }
+            } catch (error) {
+                console.warn('Using fallback tours due to API error');
+                // Use fallback tours if API fails
+                displayTours(FALLBACK_TOURS);
+            }
+        }
+
+        // Load tours when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeTours);
+        } else {
+            initializeTours();
+        }
+    </script>
+
+    <!-- What's Included Section -->
+    <section class="py-20 bg-gradient-to-br from-blue-50 to-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-[#0f172a] mb-4">What's Included in Every Tour</h2>
+                <div class="w-20 h-1 bg-[#0ea5e9] mx-auto rounded"></div>
+                <p class="mt-4 text-xl text-gray-600">Everything you need for an unforgettable adventure, all included in one price</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <!-- Included Item 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-100">
+                    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-utensils text-[#0ea5e9] text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3">All Meals & Snacks</h3>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Gourmet breakfast, lunch & dinner</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Fresh fruit & snacks</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Coffee, tea, juice & water</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Vegetarian options available</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Included Item 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-100">
+                    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-mask-snorkel text-[#0ea5e9] text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3">Premium Equipment</h3>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Snorkeling gear & wetsuits</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Kayaks for water exploration</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Life jackets & safety gear</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Panga boats for landings</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Included Item 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-100">
+                    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-user-tie text-[#0ea5e9] text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3">Expert Guides</h3>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Certified naturalist guides</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Bilingual (English/Spanish)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Expert wildlife knowledge</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Photography tips & assistance</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Included Item 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-100">
+                    <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-bed text-[#0ea5e9] text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-3">Luxury Accommodations</h3>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Private cabins with ocean views</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>En-suite bathrooms</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Air conditioning & hot water</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
+                            <span>Daily housekeeping</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Activities & Schedule -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Daily Activities -->
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-2 border-[#0ea5e9]/20">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-[#0ea5e9] rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-list-check text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900">Daily Activities</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-water text-[#0ea5e9]"></i>
+                            <span class="text-gray-700">Snorkeling sessions</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-person-hiking text-[#0ea5e9]"></i>
+                            <span class="text-gray-700">Guided island hikes</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-[#0ea5e9]"></i>
+                            <span class="text-gray-700">Wildlife photography</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-person-swimming text-[#0ea5e9] mt-1"></i>
+                            <span class="text-gray-700">Beach time & swimming</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-ship text-[#0ea5e9]"></i>
+                            <span class="text-gray-700">Panga boat rides</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-binoculars text-[#0ea5e9]"></i>
+                            <span class="text-gray-700">Bird watching</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-fish-fins text-[#0ea5e9] mt-1"></i>
+                            <span class="text-gray-700">Marine life encounters</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-graduation-cap text-[#0ea5e9]"></i>
+                            <span class="text-gray-700">Educational talks</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typical Day Schedule -->
+                <div class="bg-gradient-to-br from-[#0ea5e9] to-blue-600 p-8 rounded-2xl shadow-xl text-white">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-clock text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Typical Day Schedule</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-white/20 px-3 py-1 rounded-lg font-bold text-sm whitespace-nowrap">7:00 AM</div>
+                            <div>
+                                <p class="font-semibold">Wake-up call & breakfast</p>
+                                <p class="text-sm text-blue-100">Fresh coffee and hearty meal</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-white/20 px-3 py-1 rounded-lg font-bold text-sm whitespace-nowrap">8:00 AM</div>
+                            <div>
+                                <p class="font-semibold">Morning excursion</p>
+                                <p class="text-sm text-blue-100">Island visit or snorkeling</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-white/20 px-3 py-1 rounded-lg font-bold text-sm whitespace-nowrap">12:30 PM</div>
+                            <div>
+                                <p class="font-semibold">Lunch onboard</p>
+                                <p class="text-sm text-blue-100">Return to yacht for meal & rest</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-white/20 px-3 py-1 rounded-lg font-bold text-sm whitespace-nowrap">3:00 PM</div>
+                            <div>
+                                <p class="font-semibold">Afternoon activity</p>
+                                <p class="text-sm text-blue-100">Second island visit or kayaking</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-white/20 px-3 py-1 rounded-lg font-bold text-sm whitespace-nowrap">6:30 PM</div>
+                            <div>
+                                <p class="font-semibold">Briefing & dinner</p>
+                                <p class="text-sm text-blue-100">Next day overview & gourmet meal</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="bg-white/20 px-3 py-1 rounded-lg font-bold text-sm whitespace-nowrap">8:00 PM</div>
+                            <div>
+                                <p class="font-semibold">Evening at leisure</p>
+                                <p class="text-sm text-blue-100">Stargazing, socializing, or rest</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Inclusions -->
+            <div class="mt-12 bg-white p-8 rounded-2xl shadow-xl border border-gray-200">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Also Included</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa-solid fa-plane-departure text-green-600 text-xl"></i>
+                        </div>
+                        <p class="font-semibold text-gray-900">Airport Transfers</p>
+                        <p class="text-xs text-gray-500 mt-1">Pick-up & drop-off</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa-solid fa-wifi text-purple-600 text-xl"></i>
+                        </div>
+                        <p class="font-semibold text-gray-900">WiFi Access</p>
+                        <p class="text-xs text-gray-500 mt-1">Limited in remote areas</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa-solid fa-shield-heart text-blue-600 text-xl"></i>
+                        </div>
+                        <p class="font-semibold text-gray-900">Travel Insurance</p>
+                        <p class="text-xs text-gray-500 mt-1">Medical & trip coverage</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa-solid fa-ban text-orange-600 text-xl"></i>
+                        </div>
+                        <p class="font-semibold text-gray-900">No Hidden Fees</p>
+                        <p class="text-xs text-gray-500 mt-1">All-inclusive pricing</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Not Included Note -->
+            <div class="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+                <div class="flex gap-3">
+                    <i class="fa-solid fa-circle-info text-yellow-600 text-xl mt-1"></i>
+                    <div>
+                        <h4 class="font-bold text-gray-900 mb-2">Not Included:</h4>
+                        <p class="text-sm text-gray-700">International flights, Galapagos National Park fee ($100 USD), Transit Control Card ($20 USD), alcoholic beverages, and gratuities for crew and guides (suggested $10-15/day per guest).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="py-24 bg-slate-900 text-white relative overflow-hidden">
+        <!-- Golden Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 opacity-80"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <div class="inline-block mb-4">
+                    <div class="flex justify-center text-yellow-400 gap-1 text-xl">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200">
+                    Traveler's Choice
+                </h2>
+                <p class="mt-4 text-xl text-yellow-100 font-light italic">
+                    "Simply the best experience of our lives."
+                </p>
+            </div>
+
+            <!-- Customer Photos Row -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="rounded-xl overflow-hidden shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&q=80" alt="Happy traveler" class="w-full h-64 object-cover"/>
+                </div>
+                <div class="rounded-xl overflow-hidden shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=600&q=80" alt="Couple on tour" class="w-full h-64 object-cover"/>
+                </div>
+                <div class="rounded-xl overflow-hidden shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80" alt="Group enjoying tour" class="w-full h-64 object-cover"/>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Review 1 -->
+                <div class="bg-slate-800 bg-opacity-50 p-8 rounded-2xl border border-yellow-500/30 backdrop-blur-sm shadow-2xl transform hover:-translate-y-2 transition duration-300 flex flex-col">
+                    <div class="text-yellow-400 text-4xl mb-6 opacity-50"><i class="fa-solid fa-quote-left"></i></div>
+                    <p class="text-lg text-gray-300 mb-6 italic leading-relaxed flex-grow">"I've traveled all over the world, but this tour was something else. The crew was professional, the views were cinematic, and the memories are priceless."</p>
+                    <div class="border-t border-gray-700 pt-4">
+                        <h4 class="font-bold text-white">— James M.</h4>
+                        <div class="flex text-yellow-500 text-xs gap-0.5 mt-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="bg-slate-800 bg-opacity-50 p-8 rounded-2xl border border-yellow-500/30 backdrop-blur-sm shadow-2xl transform hover:-translate-y-2 transition duration-300 flex flex-col">
+                    <div class="text-yellow-400 text-4xl mb-6 opacity-50"><i class="fa-solid fa-quote-left"></i></div>
+                    <p class="text-lg text-gray-300 mb-6 italic leading-relaxed flex-grow">"From the moment we booked to the final goodbye, everything was flawless. Truly an Oscar-worthy performance by the entire team!"</p>
+                    <div class="border-t border-gray-700 pt-4">
+                        <h4 class="font-bold text-white">— Sarah L.</h4>
+                        <div class="flex text-yellow-500 text-xs gap-0.5 mt-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="bg-slate-800 bg-opacity-50 p-8 rounded-2xl border border-yellow-500/30 backdrop-blur-sm shadow-2xl transform hover:-translate-y-2 transition duration-300 flex flex-col">
+                    <div class="text-yellow-400 text-4xl mb-6 opacity-50"><i class="fa-solid fa-quote-left"></i></div>
+                    <p class="text-lg text-gray-300 mb-6 italic leading-relaxed flex-grow">"If you do one thing here, make it this tour. Absolutely stunning visuals and first-class service. Highly recommended!"</p>
+                    <div class="border-t border-gray-700 pt-4">
+                        <h4 class="font-bold text-white">— David K.</h4>
+                        <div class="flex text-yellow-500 text-xs gap-0.5 mt-1">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact-us" class="py-16 bg-white border-t border-gray-100">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-blue-900 mb-6">Still Have Questions?</h2>
+            <p class="text-xl text-gray-600 mb-10">
+                Not sure which tour is right for you? Traveling with a large group? We're here to help.
+            </p>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <a href="https://wa.me/50612345678" class="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition transform hover:-translate-y-1 text-lg">
+                    <i class="fa-brands fa-whatsapp mr-3 text-2xl"></i>
+                    <span>Chat on WhatsApp</span>
+                </a>
+                
+                <a href="mailto:hello@galapagoscruise.com" class="flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-4 px-8 rounded-xl border border-gray-200 transition transform hover:-translate-y-1 text-lg">
+                    <i class="fa-regular fa-envelope mr-3 text-2xl text-blue-500"></i>
+                    <span>Email Us</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <div>
+                    <h3 class="text-2xl font-heading font-bold mb-4 flex items-center">
+                        <i class="fa-solid fa-compass text-[#0ea5e9] mr-2"></i> Galapagos Island Cruise
+                    </h3>
+                    <p class="text-gray-400 mb-6">Luxury Galapagos Cruises and Tours for the Discerning Traveler</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center">
+                <p class="text-gray-500 text-sm">&copy; 2024 Galapagos Island Cruise. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

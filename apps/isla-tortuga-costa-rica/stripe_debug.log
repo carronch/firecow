@@ -1,0 +1,8 @@
+[2026-02-06T19:31:33.015Z] RECEIVED: Session cs_test_debug_log_check
+[2026-02-06T19:31:33.992Z] ERROR: Failed to sync Error: Failed to create Lead in Zoho CRM: 401
+[2026-02-06T19:31:51.382Z] RECEIVED: Session cs_test_error_check
+[2026-02-06T19:31:52.159Z] ERROR: Failed to sync Error: Failed to create Lead in Zoho CRM: 401
+[2026-02-06T19:32:11.170Z] RECEIVED: Session cs_test_verification_500
+[2026-02-06T19:32:11.984Z] ERROR: Failed to sync Error: Failed to create Lead in Zoho CRM: 401
+[2026-02-06T19:32:34.536Z] RECEIVED: Session cs_test_error_message_check
+[2026-02-06T19:32:35.350Z] ERROR: Failed to sync Error: Failed to create Lead in Zoho CRM: 401

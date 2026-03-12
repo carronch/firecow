@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  tourId?: string;
+  className?: string;
+  bookingUrl?: string; // Legacy prop support
+}
+
+const { tourId, className = "" } = Astro.props;
+
+import BookingWidgetReact from './BookingWidget.jsx';
+
+
+
+// Fetch all tours for the dropdown if no tourId is specified, and for data attributes
+const allTours = await getCollection('tours');
+const tours = allTours.filter(t => !t.data.draft);
+---
+
+<div class={className}>
+    <BookingWidgetReact 
+        client:load 
+        tours={tours} 
+        initialTourId={tourId} 
+    />
+</div>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Get Zoho Refresh Token</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            padding: 40px;
+        }
+
+        input,
+        button {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 500px;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 20px;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Get Zoho Refresh Token</h1>
+
+    <p>1. <a href="https://accounts.zoho.com/oauth/v2/auth?scope=ZohoBookings.Data.READ&client_id=1000.UYJEDCW00IM1JIV12GDA44KMVXTCYP&response_type=code&access_type=offline&redirect_uri=http://localhost"
+            target="_blank">Click here to generate a fresh Code</a></p>
+    <p>2. Copy the code from the URL (everything after <code>code=</code>).</p>
+    <p>3. Paste it below and click "Get Token".</p>
+
+    <input type="text" id="code" placeholder="Paste Code Here (start with 1000...)" />
+    <button onclick="getToken()">Get Token</button>
+
+    <h3>Result:</h3>
+    <pre id="result">Waiting...</pre>
+
+    <script>
+        async function getToken() {
+            const code = document.getElementById('code').value.trim();
+            const result = document.getElementById('result');
+
+            const params = new URLSearchParams();
+            params.append('code', code);
+            params.append('client_id', '1000.UYJEDCW00IM1JIV12GDA44KMVXTCYP');
+            params.append('client_secret', '161179db33053409212b1fec219de25a3eb5315e57');
+            params.append('grant_type', 'authorization_code');
+            params.append('redirect_uri', 'http://localhost');
+
+            result.textContent = 'Fetching...';
+
+            try {
+                const response = await fetch('https://accounts.zoho.com/oauth/v2/token', {
+                    method: 'POST',
+                    body: params
+                });
+                const data = await response.json();
+                result.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                result.textContent = 'Error: ' + err.message;
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReservationsTable from '../../components/ReservationsTable';
+import ManualBookingForm from '../../components/ManualBookingForm';
+
+export const prerender = false;
+---
+
+<BaseLayout title="Operations Center">
+  <div class="container mx-auto p-8">
+      <h1 class="text-3xl font-bold mb-8">Operations Center 🤠</h1>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-2">
+               <ReservationsTable client:load />
+          </div>
+          <div>
+              <ManualBookingForm client:load />
+          </div>
+      </div>
+  </div>
+</BaseLayout>

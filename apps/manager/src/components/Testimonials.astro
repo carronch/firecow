@@ -1,0 +1,84 @@
+---
+import { getEntry } from 'astro:content';
+import OptimizedImage from './common/OptimizedImage.astro';
+
+const homepageData = await getEntry('homepage', 'settings');
+const homepage = homepageData?.data;
+
+const resolveImage = (img: string | undefined, defaultImg: string) => {
+    if (!img) return defaultImg;
+    return img.startsWith('http') ? img : `/images/testimonials/${img}`;
+};
+
+const reviews = [
+  {
+    name: "James M.",
+    quote: "I've traveled all over the world, but this tour was something else. The crew was professional, the views were cinematic, and the memories are priceless.",
+  },
+  {
+    name: "Sarah L.",
+    quote: "From the moment we booked to the final goodbye, everything was flawless. Truly an Oscar-worthy performance by the entire team!",
+  },
+  {
+    name: "David K.",
+    quote: "If you do one thing here, make it this tour. Absolutely stunning visuals and first-class service. Highly recommended!",
+  }
+];
+
+const photos = [
+  resolveImage(homepage?.testimonialImage1, "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&q=80"),
+  resolveImage(homepage?.testimonialImage2, "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=600&q=80"),
+  resolveImage(homepage?.testimonialImage3, "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80")
+];
+---
+
+<section id="reviews" class="py-24 bg-slate-900 text-white relative overflow-hidden" aria-label="Customer Reviews">
+    <!-- Golden Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 opacity-80 pointer-events-none"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-16">
+            <div class="inline-block mb-4">
+                <div class="flex justify-center text-yellow-400 gap-1 text-xl" role="img" aria-label="5 out of 5 stars">
+                    <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i>
+                </div>
+            </div>
+            <h2 class="text-4xl md:text-5xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-400 to-yellow-200">
+                Traveler's Choice
+            </h2>
+            <p class="mt-4 text-xl text-yellow-100 font-light italic">
+                "Simply the best experience of our lives."
+            </p>
+        </div>
+
+        <!-- Customer Photos Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {photos.map((photo, index) => (
+                <div class="rounded-xl overflow-hidden shadow-xl">
+                    <OptimizedImage 
+                      src={photo} 
+                      alt={`Happy traveler enjoying their tour experience ${index + 1}`} 
+                      width={400} 
+                      height={300} 
+                      class="w-full h-64 object-cover"
+                    />
+                </div>
+            ))}
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {reviews.map(review => (
+                <div class="bg-slate-800 bg-opacity-50 p-8 rounded-2xl border border-yellow-500/30 backdrop-blur-sm shadow-2xl transform hover:-translate-y-2 transition duration-300 flex flex-col">
+                    <div class="text-yellow-400 text-4xl mb-6 opacity-50"><i class="fa-solid fa-quote-left" aria-hidden="true"></i></div>
+                    <p class="text-lg text-gray-300 mb-6 italic leading-relaxed flex-grow">"{review.quote}"</p>
+                    <div class="border-t border-gray-700 pt-4">
+                        <h3 class="font-bold text-white text-lg">— {review.name}</h3>
+                        <div class="flex text-yellow-500 text-xs gap-0.5 mt-1" role="img" aria-label="5 out of 5 stars">
+                            <i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i><i class="fa-solid fa-star" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getSites } from '../../../lib/file-system';
+
+export const prerender = true;
+
+const sites = getSites();
+---
+
+<BaseLayout title="Select Tour">
+  <div class="container mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">Select a Tour to Edit</h1>
+    
+    <div class="grid gap-8">
+      {sites.map(site => (
+        <div class="border rounded-lg p-6 bg-white shadow-sm">
+          <h2 class="text-xl font-semibold mb-4 border-b pb-2 flex items-center gap-2">
+            🌍 {site}
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id={`tours-${site}`}>
+              <p class="text-gray-500 animate-pulse">Loading tours...</p>
+          </div>
+          <script define:vars={{ site }}>
+              fetch(`/api/content/tours?site=${site}`)
+                  .then(res => res.json())
+                  .then(tours => {
+                      const container = document.getElementById(`tours-${site}`);
+                      if (tours.length === 0) {
+                          container.innerHTML = '<p class="text-gray-400 italic">No tours found.</p>';
+                          return;
+                      }
+                      container.innerHTML = tours.map(tour => `
+                          <a href="/content/tour/${site}/${tour.id}" class="block p-4 border rounded hover:border-blue-500 hover:bg-blue-50 transition group">
+                              <h3 class="font-medium group-hover:text-blue-700">${tour.title}</h3>
+                              <div class="flex justify-between mt-2 text-sm text-gray-500">
+                                  <span>$${typeof tour.price === 'object' ? tour.price.adult : tour.price}</span>
+                                  <span>${tour.id}.md</span>
+                              </div>
+                          </a>
+                      `).join('');
+                  });
+          </script>
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
