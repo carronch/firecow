@@ -2,12 +2,21 @@
 import { getEntry } from 'astro:content';
 import BookingWidget from './BookingWidget.astro';
 
+interface Props {
+  heroImage?: string;
+  heading?: string;
+  subheading?: string;
+}
+
+const { heroImage: propHeroImage, heading: propHeading, subheading: propSubheading } = Astro.props;
+
 const homepageData = await getEntry('homepage', 'settings');
 const homepage = homepageData?.data;
 
-const heroImage = homepage?.heroImage || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80";
-const heroHeading = homepage?.heroHeading || "Premium Tours & Adventures";
-const heroSubheading = homepage?.heroSubheading || "Experience the adventure of a lifetime";
+// Props from API take priority over Keystatic content, then defaults
+const heroImage = propHeroImage || homepage?.heroImage || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80";
+const heroHeading = propHeading || homepage?.heroHeading || "Premium Tours & Adventures";
+const heroSubheading = propSubheading || homepage?.heroSubheading || "Experience the adventure of a lifetime";
 const zohoUrl = homepage?.zohoBookingUrl || "#contact";
 ---
 

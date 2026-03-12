@@ -6,24 +6,39 @@ import HeroSection from '../components/HeroSection.astro';
 import TrustBanner from '../components/TrustBanner.astro';
 import ExperiencesGrid from '../components/ExperiencesGrid.astro';
 import WhatsIncluded from '../components/WhatsIncluded.astro';
+import Gallery from '../components/Gallery.astro';
 import Testimonials from '../components/Testimonials.astro';
 import Location from '../components/Location.astro';
 import ContactSection from '../components/ContactSection.astro';
+import { fetchSite, getGallery, displayPrice } from '../lib/api';
 
-const pageTitle = "Tortuga Island Tour | Costa Cat Cruises";
+// Fetch live data from D1 via the Worker API
+const SITE_SLUG = 'isla-tortuga-costa-rica';
+const site = await fetchSite(SITE_SLUG);
+const tour = site?.tours?.[0] ?? null;
+const galleryImages = getGallery(tour);
+const price = tour ? displayPrice(tour.base_price) : null;
+
+const pageTitle = site?.meta_title ?? "Tortuga Island Tour | Costa Cat Cruises";
+const pageDescription = site?.meta_description ?? "Book the best Isla Tortuga day tour from Jacó, Costa Rica.";
 ---
 
-<BaseLayout title={pageTitle}>
-  <Header />
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <Header whatsapp={site?.whatsapp_number} />
   
   <main>
-    <HeroSection />
+    <HeroSection 
+      heroImage={tour?.hero_image_url}
+      heading={tour?.name}
+      subheading={site?.tagline}
+    />
     <TrustBanner />
-    <ExperiencesGrid />
+    <ExperiencesGrid tour={tour} price={price} />
     <WhatsIncluded />
+    <Gallery images={galleryImages} />
     <Testimonials />
     <Location />
-    <ContactSection />
+    <ContactSection whatsapp={site?.whatsapp_number} />
   </main>
 
   <Footer />

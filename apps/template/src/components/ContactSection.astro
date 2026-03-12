@@ -1,5 +1,12 @@
 ---
 import Button from './Button.astro';
+
+interface Props {
+  whatsapp?: string;
+}
+const { whatsapp = '+50612345678' } = Astro.props;
+// Normalize: strip non-digits for wa.me URL
+const waNumber = whatsapp.replace(/[^\d]/g, '');
 ---
 
 <section id="contact" class="py-24 bg-white">
@@ -14,7 +21,7 @@ import Button from './Button.astro';
           </p>
           
           <div class="flex flex-col sm:flex-row gap-4">
-             <Button variant="primary" size="lg" href="https://wa.me/50612345678">
+             <Button variant="primary" size="lg" href={`https://wa.me/${waNumber}`}>
                <span class="flex items-center gap-2">
                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/>
