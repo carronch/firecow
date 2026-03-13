@@ -1,5 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Check, X, RefreshCw } from 'lucide-react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Plus, Pencil, Trash2, Check, X, RefreshCw, CalendarSearch } from 'lucide-react';
+import { getNextSeason } from '../config/high-seasons';
+import SupplierCheckPanel from './SupplierCheckPanel';
 
 interface Supplier {
     id: string;
@@ -7,11 +9,25 @@ interface Supplier {
     contact_email: string;
     contact_whatsapp: string;
     location: string;
+    calendar_url?: string;
 }
+
+type CheckStatus = 'available' | 'unverified' | 'full';
 
 type EditRow = Omit<Supplier, 'id'>;
 
-const EMPTY: EditRow = { name: '', contact_email: '', contact_whatsapp: '', location: '' };
+const EMPTY: EditRow = { name: '', contact_email: '', contact_whatsapp: '', location: '', calendar_url: '' };
+
+const STATUS_LABEL: Record<CheckStatus, string> = {
+    available: '✅ Available',
+    unverified: '🟡 Unverified',
+    full: '🔴 Full',
+};
+const STATUS_CLASSES: Record<CheckStatus, string> = {
+    available: 'bg-green-100 text-green-800',
+    unverified: 'bg-amber-100 text-amber-800',
+    full: 'bg-red-100 text-red-800',
+};
 
 interface Props {
     initialSuppliers: Supplier[];
@@ -26,15 +42,60 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
     const [newRow, setNewRow] = useState<EditRow>(EMPTY);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [panelSupplier, setPanelSupplier] = useState<Supplier | null>(null);
+    const [seasonStatuses, setSeasonStatuses] = useState<Map<string, CheckStatus>>(new Map());
+    const [nextSeasonName, setNextSeasonName] = useState<string | null>(null);
 
     const refresh = useCallback(async () => {
         const res = await fetch(`${apiBase}/api/suppliers`);
         if (res.ok) setRows(await res.json());
     }, [apiBase]);
 
+    // Load season status badges on mount
+    useEffect(() => {
+        const season = getNextSeason(new Date());
+        if (!season) return;
+        setNextSeasonName(season.name);
+        fetch(`${apiBase}/api/supplier-checks?season=${encodeURIComponent(season.name)}`)
+            .then(r => r.ok ? r.json() : null)
+            .then((data: { checks: Array<{ supplier_id: string; status: CheckStatus; check_date: string }> } | null) => {
+                if (!data) return;
+                // Build map: supplier_id → most restrictive status
+                const map = new Map<string, CheckStatus>();
+                for (const c of data.checks) {
+                    const prev = map.get(c.supplier_id) ?? 'unverified';
+                    // full > unverified > available
+                    if (c.status === 'full' || prev === 'unverified' || (prev === 'available' && c.status !== 'full')) {
+                        if (c.status === 'full') map.set(c.supplier_id, 'full');
+                        else if (prev !== 'full') map.set(c.supplier_id, c.status);
+                    }
+                }
+                setSeasonStatuses(map);
+            })
+            .catch(() => {});
+    }, [apiBase]);
+
+    const handleStatusChange = useCallback((supplierId: string, status: CheckStatus) => {
+        setSeasonStatuses(prev => {
+            const next = new Map(prev);
+            const current = next.get(supplierId) ?? 'unverified';
+            // Only update if new status is more restrictive or badge was unverified
+            if (current === 'unverified' || status === 'full' || (status === 'available' && current !== 'full')) {
+                next.set(supplierId, status);
+            }
+            return next;
+        });
+    }, []);
+
     const startEdit = (s: Supplier) => {
         setEditingId(s.id);
-        setEditData({ name: s.name, contact_email: s.contact_email, contact_whatsapp: s.contact_whatsapp, location: s.location });
+        setEditData({
+            name: s.name,
+            contact_email: s.contact_email,
+            contact_whatsapp: s.contact_whatsapp,
+            location: s.location,
+            calendar_url: s.calendar_url ?? '',
+        });
     };
 
     const cancelEdit = () => { setEditingId(null); setEditData(EMPTY); };
@@ -119,7 +180,7 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
                 <table className="min-w-full divide-y divide-gray-200 text-sm">
                     <thead className="bg-gray-50">
                         <tr>
-                            {['Name', 'Email', 'WhatsApp', 'Location', ''].map(h => (
+                            {['Name', 'Email', 'WhatsApp', 'Location', nextSeasonName ? `${nextSeasonName} Status` : 'Season Status', ''].map(h => (
                                 <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>
                             ))}
                         </tr>
@@ -131,6 +192,7 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
                                 <td className={cell}><input className={input} value={editData.contact_email} onChange={e => setEditData(d => ({ ...d, contact_email: e.target.value }))} /></td>
                                 <td className={cell}><input className={input} value={editData.contact_whatsapp} onChange={e => setEditData(d => ({ ...d, contact_whatsapp: e.target.value }))} /></td>
                                 <td className={cell}><input className={input} value={editData.location} onChange={e => setEditData(d => ({ ...d, location: e.target.value }))} /></td>
+                                <td className={cell}><input className={input} placeholder="https://…" value={editData.calendar_url ?? ''} onChange={e => setEditData(d => ({ ...d, calendar_url: e.target.value }))} /></td>
                                 <td className={`${cell} whitespace-nowrap`}>
                                     <div className="flex gap-1">
                                         <button onClick={() => saveEdit(s.id)} disabled={saving} className="flex items-center gap-1 px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50"><Check size={12} />Save</button>
@@ -144,8 +206,25 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
                                 <td className={`${cell} text-gray-600`}>{s.contact_email || '—'}</td>
                                 <td className={`${cell} text-gray-600`}>{s.contact_whatsapp || '—'}</td>
                                 <td className={`${cell} text-gray-600`}>{s.location || '—'}</td>
+                                <td className={cell}>
+                                    {(() => {
+                                        const status = seasonStatuses.get(s.id) ?? 'unverified';
+                                        return (
+                                            <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_CLASSES[status]}`}>
+                                                {STATUS_LABEL[status]}
+                                            </span>
+                                        );
+                                    })()}
+                                </td>
                                 <td className={`${cell} whitespace-nowrap`}>
                                     <div className="flex gap-1">
+                                        <button
+                                            onClick={() => setPanelSupplier(s)}
+                                            className="flex items-center gap-1 p-1.5 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded"
+                                            title="Check Calendar"
+                                        >
+                                            <CalendarSearch size={14} />
+                                        </button>
                                         <button onClick={() => startEdit(s)} className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"><Pencil size={14} /></button>
                                         <button onClick={() => deleteSupplier(s.id, s.name)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"><Trash2 size={14} /></button>
                                     </div>
@@ -160,6 +239,7 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
                                 <td className={cell}><input className={input} placeholder="email" value={newRow.contact_email} onChange={e => setNewRow(d => ({ ...d, contact_email: e.target.value }))} /></td>
                                 <td className={cell}><input className={input} placeholder="+506…" value={newRow.contact_whatsapp} onChange={e => setNewRow(d => ({ ...d, contact_whatsapp: e.target.value }))} /></td>
                                 <td className={cell}><input className={input} placeholder="City, Country" value={newRow.location} onChange={e => setNewRow(d => ({ ...d, location: e.target.value }))} /></td>
+                                <td className={cell}><input className={input} placeholder="Calendar URL" value={newRow.calendar_url ?? ''} onChange={e => setNewRow(d => ({ ...d, calendar_url: e.target.value }))} /></td>
                                 <td className={`${cell} whitespace-nowrap`}>
                                     <div className="flex gap-1">
                                         <button onClick={addSupplier} disabled={saving} className="flex items-center gap-1 px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50"><Check size={12} />Add</button>
@@ -170,11 +250,18 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
                         )}
 
                         {rows.length === 0 && !adding && (
-                            <tr><td colSpan={5} className="px-4 py-10 text-center text-gray-400">No suppliers yet.</td></tr>
+                            <tr><td colSpan={6} className="px-4 py-10 text-center text-gray-400">No suppliers yet.</td></tr>
                         )}
                     </tbody>
                 </table>
             </div>
+
+            <SupplierCheckPanel
+                supplier={panelSupplier}
+                apiBase={apiBase}
+                onClose={() => setPanelSupplier(null)}
+                onStatusChange={handleStatusChange}
+            />
         </div>
     );
 }

@@ -21,6 +21,18 @@ export interface Supplier {
     contact_email: string;
     contact_whatsapp: string;
     location: string;
+    calendar_url?: string;
+}
+
+export interface SupplierCheck {
+    id: string;
+    supplier_id: string;
+    check_date: string;
+    season_name: string | null;
+    status: 'available' | 'unverified' | 'full';
+    notes: string | null;
+    checked_at: string;
+    checked_by: string | null;
 }
 
 export interface Tour {

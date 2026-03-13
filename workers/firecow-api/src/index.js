@@ -30,6 +30,10 @@
  *   GET  /api/analytics/summary        - totals across all bookings
  *   GET  /api/analytics/by-site        - per-site breakdown
  *   GET  /api/analytics/trends?period= - daily trend (7d/30d/90d/360d)
+ *
+ *   GET  /api/supplier-checks?supplier_id=&season= - list checks for a supplier
+ *   POST /api/supplier-checks                      - upsert a check record
+ *   PUT  /api/supplier-checks/:id                  - update status/notes
  */
 
 const CORS = {
@@ -100,7 +104,7 @@ export default {
 
         if (method === 'PUT' && id) {
           const body = await request.json();
-          const fields = ['name', 'contact_email', 'contact_whatsapp', 'location'];
+          const fields = ['name', 'contact_email', 'contact_whatsapp', 'location', 'calendar_url'];
           const updates = fields.filter(f => body[f] !== undefined).map(f => `${f} = ?`).join(', ');
           const values = fields.filter(f => body[f] !== undefined).map(f => body[f]);
           if (!updates) return err('No fields to update');
@@ -112,6 +116,60 @@ export default {
         if (method === 'DELETE' && id) {
           await DB.prepare('DELETE FROM suppliers WHERE id = ?').bind(id).run();
           return json({ deleted: true });
+        }
+      }
+
+      // ─── SUPPLIER CHECKS ───────────────────────────────────────────────────
+      if (segments[1] === 'supplier-checks') {
+        const id = segments[2];
+
+        if (method === 'GET' && !id) {
+          const supplierId = url.searchParams.get('supplier_id');
+          const season = url.searchParams.get('season');
+          let query = 'SELECT * FROM supplier_season_checks WHERE 1=1';
+          const binds = [];
+          if (supplierId) { query += ' AND supplier_id = ?'; binds.push(supplierId); }
+          if (season) { query += ' AND season_name = ?'; binds.push(season); }
+          query += ' ORDER BY check_date ASC';
+          const { results } = await DB.prepare(query).bind(...binds).all();
+          return json({ checks: results });
+        }
+
+        if (method === 'POST') {
+          const body = await request.json();
+          const { supplier_id, check_date, season_name, status, notes, checked_by } = body;
+          if (!supplier_id || !check_date) return err('supplier_id and check_date are required');
+          const validStatuses = ['available', 'unverified', 'full'];
+          if (status && !validStatuses.includes(status)) return err('Invalid status');
+          const checkId = crypto.randomUUID();
+          await DB.prepare(`
+            INSERT INTO supplier_season_checks (id, supplier_id, check_date, season_name, status, notes, checked_by, checked_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+            ON CONFLICT(supplier_id, check_date) DO UPDATE SET
+              season_name = excluded.season_name,
+              status = excluded.status,
+              notes = excluded.notes,
+              checked_by = excluded.checked_by,
+              checked_at = datetime('now')
+          `).bind(checkId, supplier_id, check_date, season_name ?? null, status ?? 'unverified', notes ?? null, checked_by ?? null).run();
+          const saved = await DB.prepare(
+            'SELECT * FROM supplier_season_checks WHERE supplier_id = ? AND check_date = ?'
+          ).bind(supplier_id, check_date).first();
+          return json(saved, 201);
+        }
+
+        if (method === 'PUT' && id) {
+          const body = await request.json();
+          const fields = ['status', 'notes'];
+          const validStatuses = ['available', 'unverified', 'full'];
+          if (body.status && !validStatuses.includes(body.status)) return err('Invalid status');
+          const updates = fields.filter(f => body[f] !== undefined).map(f => `${f} = ?`).join(', ');
+          const values = fields.filter(f => body[f] !== undefined).map(f => body[f]);
+          if (!updates) return err('No fields to update');
+          await DB.prepare(`UPDATE supplier_season_checks SET ${updates}, checked_at = datetime('now') WHERE id = ?`)
+            .bind(...values, id).run();
+          const updated = await DB.prepare('SELECT * FROM supplier_season_checks WHERE id = ?').bind(id).first();
+          return json(updated);
         }
       }
 

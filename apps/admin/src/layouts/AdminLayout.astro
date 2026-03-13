@@ -1,4 +1,6 @@
 ---
+import SeasonAlert from '../components/SeasonAlert';
+
 interface Props {
     title: string;
     active: 'bookings' | 'suppliers' | 'tours' | 'sites' | 'calendar' | 'analytics' | 'agents';
@@ -53,8 +55,11 @@ const nav = [
 
     <!-- Main -->
     <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between flex-shrink-0">
-            <h1 class="text-xl font-semibold text-gray-900">{title}</h1>
+        <header class="bg-white border-b border-gray-200 flex-shrink-0">
+            <div class="px-8 py-4 flex items-center justify-between">
+                <h1 class="text-xl font-semibold text-gray-900">{title}</h1>
+            </div>
+            <SeasonAlert client:load />
         </header>
         <main class="flex-1 overflow-auto p-8">
             <slot />
