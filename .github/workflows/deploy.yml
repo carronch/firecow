@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # ── Deploy firecow-api Worker ─────────────────────────────────────────────
+  deploy-worker:
+    name: Deploy API Worker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy firecow-api
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: de37049df0384c9ae759a247ab16f81f
+          workingDirectory: workers/firecow-api
+          command: deploy
+
+  # ── Deploy Admin (firecow-manager Pages) ─────────────────────────────────
+  deploy-admin:
+    name: Deploy Admin Dashboard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build admin app
+        run: pnpm --filter @firecow/admin build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: de37049df0384c9ae759a247ab16f81f
+          command: pages deploy apps/admin/dist --project-name=firecow-manager --branch=main
