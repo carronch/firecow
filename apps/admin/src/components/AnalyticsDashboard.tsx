@@ -92,13 +92,13 @@ export default function AnalyticsDashboard({ apiBase }: Props) {
                         <button
                             key={p.value}
                             onClick={() => setPeriod(p.value)}
-                            className={`px-3 py-1.5 text-sm rounded-md font-medium transition-colors ${period === p.value ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`px-3 py-1.5 text-sm rounded-md font-medium transition-colors ${period === p.value ? 'bg-slate-900/40 backdrop-blur-md shadow text-white' : 'text-slate-400 hover:text-slate-300'}`}
                         >
                             {p.label}
                         </button>
                     ))}
                 </div>
-                <button onClick={() => load(period)} disabled={loading} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50">
+                <button onClick={() => load(period)} disabled={loading} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-slate-700 rounded-lg hover:bg-slate-800/30 disabled:opacity-50">
                     <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
                 </button>
             </div>
@@ -139,13 +139,13 @@ export default function AnalyticsDashboard({ apiBase }: Props) {
 
             {/* Revenue trend */}
             {trends.length > 0 && (
-                <div className="bg-white rounded-xl border border-gray-200 p-5">
-                    <p className="text-sm font-semibold text-gray-700 mb-4">Revenue Trend</p>
+                <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border border-slate-800/60 p-5">
+                    <p className="text-sm font-semibold text-slate-300 mb-4">Revenue Trend</p>
                     <div className="flex items-end gap-1 h-28">
                         {trends.map(t => (
                             <div key={t.date} className="flex-1 flex flex-col items-center gap-1 group relative" title={`${t.date}: ${fmtMoney(t.revenue_cents)} (${t.booking_count} bookings)`}>
                                 <div
-                                    className="w-full bg-blue-500 rounded-sm min-h-[2px] transition-all group-hover:bg-blue-600"
+                                    className="w-full bg-blue-500 rounded-sm min-h-[2px] transition-all group-hover:bg-gradient-to-r from-sky-500 to-purple-600 border-0"
                                     style={{ height: `${Math.max(2, (t.revenue_cents / maxRevenue) * 100)}%` }}
                                 />
                             </div>
@@ -160,15 +160,15 @@ export default function AnalyticsDashboard({ apiBase }: Props) {
 
             <div className="grid grid-cols-2 gap-4">
                 {/* By Site */}
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border border-slate-800/60 overflow-hidden">
                     <div className="px-5 py-3 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-700">Revenue by Site</p>
+                        <p className="text-sm font-semibold text-slate-300">Revenue by Site</p>
                     </div>
                     <table className="min-w-full text-sm">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-slate-800/30">
                             <tr>
                                 {['Site', 'Bookings', 'Revenue', 'Refunds'].map(h => (
-                                    <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">{h}</th>
+                                    <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-slate-400 uppercase">{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -177,10 +177,10 @@ export default function AnalyticsDashboard({ apiBase }: Props) {
                                 <tr><td colSpan={4} className="px-4 py-6 text-center text-gray-400 text-xs">No data</td></tr>
                             )}
                             {bySite.map(s => (
-                                <tr key={s.site_id} className="hover:bg-gray-50">
-                                    <td className="px-4 py-2 font-medium text-gray-900 text-xs">{s.site_slug || s.site_id}</td>
-                                    <td className="px-4 py-2 text-gray-600 text-xs">{s.booking_count}</td>
-                                    <td className="px-4 py-2 text-gray-900 font-medium text-xs">{fmtMoney(s.revenue_cents)}</td>
+                                <tr key={s.site_id} className="hover:bg-slate-800/30">
+                                    <td className="px-4 py-2 font-medium text-white text-xs">{s.site_slug || s.site_id}</td>
+                                    <td className="px-4 py-2 text-slate-400 text-xs">{s.booking_count}</td>
+                                    <td className="px-4 py-2 text-white font-medium text-xs">{fmtMoney(s.revenue_cents)}</td>
                                     <td className="px-4 py-2 text-xs">
                                         <span className={s.refunded_count > 0 ? 'text-yellow-600' : 'text-gray-400'}>{s.refunded_count}</span>
                                     </td>
@@ -191,16 +191,16 @@ export default function AnalyticsDashboard({ apiBase }: Props) {
                 </div>
 
                 {/* By Source / UTM */}
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border border-slate-800/60 overflow-hidden">
                     <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-                        <p className="text-sm font-semibold text-gray-700">Traffic Sources</p>
+                        <p className="text-sm font-semibold text-slate-300">Traffic Sources</p>
                         <span className="text-xs text-gray-400">via UTM tracking</span>
                     </div>
                     <table className="min-w-full text-sm">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-slate-800/30">
                             <tr>
                                 {['Source', 'Bookings', 'Revenue', 'Ad Spend'].map(h => (
-                                    <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">{h}</th>
+                                    <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-slate-400 uppercase">{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -209,19 +209,19 @@ export default function AnalyticsDashboard({ apiBase }: Props) {
                                 <tr><td colSpan={4} className="px-4 py-6 text-center text-gray-400 text-xs">No UTM data yet — bookings will show source once UTM tracking is active</td></tr>
                             )}
                             {bySource.map(s => (
-                                <tr key={s.utm_source} className="hover:bg-gray-50">
-                                    <td className="px-4 py-2 font-medium text-gray-900 text-xs capitalize">{s.utm_source}</td>
-                                    <td className="px-4 py-2 text-gray-600 text-xs">{s.booking_count}</td>
-                                    <td className="px-4 py-2 text-gray-900 font-medium text-xs">{fmtMoney(s.revenue_cents)}</td>
+                                <tr key={s.utm_source} className="hover:bg-slate-800/30">
+                                    <td className="px-4 py-2 font-medium text-white text-xs capitalize">{s.utm_source}</td>
+                                    <td className="px-4 py-2 text-slate-400 text-xs">{s.booking_count}</td>
+                                    <td className="px-4 py-2 text-white font-medium text-xs">{fmtMoney(s.revenue_cents)}</td>
                                     <td className="px-4 py-2 text-gray-400 text-xs">—</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                     {/* Google Ads connect placeholder */}
-                    <div className="px-5 py-3 bg-gray-50 border-t border-gray-100">
-                        <p className="text-xs text-gray-500">
-                            <span className="font-medium text-gray-700">Connect Google Ads</span> to unlock the Ad Spend column and see ROAS per campaign automatically.
+                    <div className="px-5 py-3 bg-slate-800/30 border-t border-gray-100">
+                        <p className="text-xs text-slate-400">
+                            <span className="font-medium text-slate-300">Connect Google Ads</span> to unlock the Ad Spend column and see ROAS per campaign automatically.
                         </p>
                     </div>
                 </div>
@@ -238,10 +238,10 @@ function StatCard({ icon, label, value, sub, color }: { icon: React.ReactNode; l
         amber: 'bg-amber-50 text-amber-600',
     };
     return (
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border border-slate-800/60 p-5">
             <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-3 ${colors[color]}`}>{icon}</div>
-            <p className="text-xs text-gray-500 mb-0.5">{label}</p>
-            <p className="text-2xl font-bold text-gray-900">{value}</p>
+            <p className="text-xs text-slate-400 mb-0.5">{label}</p>
+            <p className="text-2xl font-bold text-white">{value}</p>
             <p className="text-xs text-gray-400 mt-0.5">{sub}</p>
         </div>
     );

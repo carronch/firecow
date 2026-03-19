@@ -149,7 +149,7 @@ function AvailabilityPanel({ tour, agentApiBase, agentAdminKey }: AvailabilityPa
 
     const monthName = new Date(year, month - 1).toLocaleString('en-US', { month: 'long', year: 'numeric' });
     const fmtPrice = (cents: number | null) => cents != null ? `$${(cents / 100).toFixed(0)}` : '—';
-    const inp = 'border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500';
+    const inp = 'border border-slate-700 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500 bg-slate-950/50';
 
     return (
         <div className="p-4 bg-amber-50 border-t border-amber-100 space-y-3">
@@ -157,7 +157,7 @@ function AvailabilityPanel({ tour, agentApiBase, agentAdminKey }: AvailabilityPa
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <button onClick={prevMonth} className="p-1 rounded hover:bg-amber-100"><ChevronLeft size={14} /></button>
-                    <span className="text-sm font-semibold text-gray-700 w-36 text-center">{monthName}</span>
+                    <span className="text-sm font-semibold text-slate-300 w-36 text-center">{monthName}</span>
                     <button onClick={nextMonth} className="p-1 rounded hover:bg-amber-100"><ChevronRight size={14} /></button>
                 </div>
                 <button
@@ -172,28 +172,28 @@ function AvailabilityPanel({ tour, agentApiBase, agentAdminKey }: AvailabilityPa
 
             {/* Add slot form */}
             {adding && (
-                <div className="grid grid-cols-2 gap-2 p-3 bg-white border border-amber-200 rounded-lg text-xs">
+                <div className="grid grid-cols-2 gap-2 p-3 bg-slate-900/40 backdrop-blur-md border border-amber-200 rounded-lg text-xs">
                     <div>
-                        <label className="block text-gray-500 mb-0.5">Date*</label>
+                        <label className="block text-slate-400 mb-0.5">Date*</label>
                         <input type="date" className={`${inp} w-full`} value={newDate} onChange={e => setNewDate(e.target.value)} />
                     </div>
                     <div>
-                        <label className="block text-gray-500 mb-0.5">Time Slot (optional)</label>
+                        <label className="block text-slate-400 mb-0.5">Time Slot (optional)</label>
                         <input className={`${inp} w-full`} placeholder="e.g. 09:00" value={newTimeSlot} onChange={e => setNewTimeSlot(e.target.value)} />
                     </div>
                     <div>
-                        <label className="block text-gray-500 mb-0.5">Slots Total</label>
+                        <label className="block text-slate-400 mb-0.5">Slots Total</label>
                         <input type="number" className={`${inp} w-full`} value={newSlotsTotal} min={1} onChange={e => setNewSlotsTotal(Number(e.target.value))} />
                     </div>
                     <div>
-                        <label className="block text-gray-500 mb-0.5">Price Override (USD, optional)</label>
+                        <label className="block text-slate-400 mb-0.5">Price Override (USD, optional)</label>
                         <input className={`${inp} w-full`} placeholder="e.g. 350" value={newPriceOverride} onChange={e => setNewPriceOverride(e.target.value)} />
                     </div>
                     <div className="col-span-2 flex gap-2 mt-1">
                         <button onClick={addSlots} disabled={saving} className="flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50">
                             <Check size={12} /> {saving ? 'Saving…' : 'Save Slot'}
                         </button>
-                        <button onClick={() => { setAdding(false); setPanelError(null); }} className="flex items-center gap-1 px-3 py-1.5 border border-gray-300 rounded hover:bg-gray-50">
+                        <button onClick={() => { setAdding(false); setPanelError(null); }} className="flex items-center gap-1 px-3 py-1.5 border border-slate-700 rounded hover:bg-slate-800/30">
                             <X size={12} /> Cancel
                         </button>
                     </div>
@@ -208,7 +208,7 @@ function AvailabilityPanel({ tour, agentApiBase, agentAdminKey }: AvailabilityPa
             ) : (
                 <table className="min-w-full text-xs border-collapse">
                     <thead>
-                        <tr className="text-gray-500">
+                        <tr className="text-slate-400">
                             <th className="text-left pb-1 pr-4 font-medium">Date</th>
                             <th className="text-left pb-1 pr-4 font-medium">Time</th>
                             <th className="text-right pb-1 pr-4 font-medium">Available</th>
@@ -220,11 +220,11 @@ function AvailabilityPanel({ tour, agentApiBase, agentAdminKey }: AvailabilityPa
                     <tbody className="divide-y divide-amber-100">
                         {rows.map(row => (
                             <tr key={row.id} className={row.is_blocked ? 'opacity-50' : ''}>
-                                <td className="py-1 pr-4 font-medium text-gray-800">{row.date}</td>
-                                <td className="py-1 pr-4 text-gray-600">{row.time_slot ?? 'All day'}</td>
-                                <td className="py-1 pr-4 text-right text-gray-800">{row.slots_total - row.slots_booked}</td>
-                                <td className="py-1 pr-4 text-right text-gray-500">{row.slots_total}</td>
-                                <td className="py-1 pr-4 text-right text-gray-600">{fmtPrice(row.price_override)}</td>
+                                <td className="py-1 pr-4 font-medium text-slate-200">{row.date}</td>
+                                <td className="py-1 pr-4 text-slate-400">{row.time_slot ?? 'All day'}</td>
+                                <td className="py-1 pr-4 text-right text-slate-200">{row.slots_total - row.slots_booked}</td>
+                                <td className="py-1 pr-4 text-right text-slate-400">{row.slots_total}</td>
+                                <td className="py-1 pr-4 text-right text-slate-400">{fmtPrice(row.price_override)}</td>
                                 <td className="py-1 text-center">
                                     <button
                                         onClick={() => toggleBlocked(row)}
@@ -370,56 +370,56 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
 
     const supplierName = (id: string) => suppliers.find(s => s.id === id)?.name ?? id;
     const fmtPrice = (cents: number) => `$${Math.round(Number(cents) / 100)}`;
-    const inp = 'w-full border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500';
-    const sel = `${inp} bg-white`;
+    const inp = 'w-full border border-slate-700 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500 bg-slate-950/50';
+    const sel = `${inp} bg-slate-900/40 backdrop-blur-md`;
 
     const EditFields = ({ data, onChange }: { data: EditRow; onChange: (d: EditRow) => void }) => (
         <div className="grid grid-cols-2 gap-2 p-3 bg-blue-50 rounded-lg text-xs">
             <div>
-                <label className="block text-gray-500 mb-0.5">Name*</label>
+                <label className="block text-slate-400 mb-0.5">Name*</label>
                 <input className={inp} value={data.name} onChange={e => onChange({ ...data, name: e.target.value })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Slug*</label>
+                <label className="block text-slate-400 mb-0.5">Slug*</label>
                 <input className={inp} value={data.slug} onChange={e => onChange({ ...data, slug: e.target.value })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Supplier*</label>
+                <label className="block text-slate-400 mb-0.5">Supplier*</label>
                 <select className={sel} value={data.supplier_id} onChange={e => onChange({ ...data, supplier_id: e.target.value })}>
                     <option value="">— select —</option>
                     {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Type</label>
+                <label className="block text-slate-400 mb-0.5">Type</label>
                 <select className={sel} value={data.type} onChange={e => onChange({ ...data, type: e.target.value })}>
                     {TOUR_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Duration</label>
+                <label className="block text-slate-400 mb-0.5">Duration</label>
                 <input className={inp} placeholder="e.g. 6 Hours" value={data.duration} onChange={e => onChange({ ...data, duration: e.target.value })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Max Capacity</label>
+                <label className="block text-slate-400 mb-0.5">Max Capacity</label>
                 <input className={inp} type="number" value={data.max_capacity} onChange={e => onChange({ ...data, max_capacity: Number(e.target.value) })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Base Price (cents)</label>
+                <label className="block text-slate-400 mb-0.5">Base Price (cents)</label>
                 <input className={inp} type="number" value={data.base_price} onChange={e => onChange({ ...data, base_price: Number(e.target.value) })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">High Season Price (cents)</label>
+                <label className="block text-slate-400 mb-0.5">High Season Price (cents)</label>
                 <input className={inp} type="number" value={data.high_season_price} onChange={e => onChange({ ...data, high_season_price: Number(e.target.value) })} />
             </div>
             <div className="col-span-2">
-                <label className="block text-gray-500 mb-0.5">Hero Image</label>
+                <label className="block text-slate-400 mb-0.5">Hero Image</label>
                 <div className="flex gap-2 items-center">
                     <input className={`${inp} flex-1`} placeholder="https://…" value={data.hero_image_url}
                         onChange={e => onChange({ ...data, hero_image_url: e.target.value })} />
                     <button type="button"
                         onClick={() => (data === editData ? fileRef : newFileRef).current?.click()}
-                        className="flex items-center gap-1 px-2 py-1 border border-gray-300 rounded text-xs hover:bg-gray-50 whitespace-nowrap"
+                        className="flex items-center gap-1 px-2 py-1 border border-slate-700 rounded text-xs hover:bg-slate-800/30 whitespace-nowrap"
                         disabled={uploading}
                     >
                         <Upload size={12} /> {uploading ? 'Uploading…' : 'Upload'}
@@ -430,7 +430,7 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
                 )}
             </div>
             <div className="col-span-2">
-                <label className="block text-gray-500 mb-0.5">Description</label>
+                <label className="block text-slate-400 mb-0.5">Description</label>
                 <textarea className={inp} rows={2} value={data.description} onChange={e => onChange({ ...data, description: e.target.value })} />
             </div>
         </div>
@@ -444,14 +444,14 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
                 onChange={e => { const f = e.target.files?.[0]; if (f) uploadImage(f, url => setNewRow(d => ({ ...d, hero_image_url: url }))); e.target.value = ''; }} />
 
             <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-500">{rows.length} tours</p>
+                <p className="text-sm text-slate-400">{rows.length} tours</p>
                 <div className="flex gap-2">
-                    <button onClick={refresh} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button onClick={refresh} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-slate-700 rounded-lg hover:bg-slate-800/30">
                         <RefreshCw size={13} /> Refresh
                     </button>
                     <button
                         onClick={() => { setAdding(true); setEditingId(null); setNewRow({ ...EMPTY_TOUR, supplier_id: suppliers[0]?.id ?? '' }); }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white rounded-lg hover:opacity-90"
                     >
                         <Plus size={14} /> Add Tour
                     </button>
@@ -463,26 +463,26 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
             <div className="space-y-2">
                 {/* Add new row form */}
                 {adding && (
-                    <div className="bg-white rounded-xl border-2 border-green-300 p-4">
-                        <p className="text-sm font-semibold text-gray-700 mb-3">New Tour</p>
+                    <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border-2 border-green-300 p-4">
+                        <p className="text-sm font-semibold text-slate-300 mb-3">New Tour</p>
                         <EditFields data={newRow} onChange={setNewRow} />
                         <div className="flex gap-2 mt-3">
                             <button onClick={addTour} disabled={saving} className="flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50">
                                 <Check size={13} /> {saving ? 'Adding…' : 'Add Tour'}
                             </button>
-                            <button onClick={() => { setAdding(false); setError(null); }} className="flex items-center gap-1 px-3 py-1.5 border border-gray-300 text-sm rounded-lg hover:bg-gray-50">
+                            <button onClick={() => { setAdding(false); setError(null); }} className="flex items-center gap-1 px-3 py-1.5 border border-slate-700 text-sm rounded-lg hover:bg-slate-800/30">
                                 <X size={13} /> Cancel
                             </button>
                         </div>
                     </div>
                 )}
 
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead className="bg-gray-50">
+                <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border border-slate-800/60 overflow-hidden">
+                    <table className="min-w-full divide-y divide-slate-800/60 text-sm">
+                        <thead className="bg-slate-800/30">
                             <tr>
                                 {['', 'Name', 'Supplier', 'Type', 'Duration', 'Base', 'Active', ''].map(h => (
-                                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -492,7 +492,7 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
                             )}
                             {rows.map(t => (
                                 <React.Fragment key={t.id}>
-                                    <tr className="hover:bg-gray-50">
+                                    <tr className="hover:bg-slate-800/30">
                                         <td className="px-3 py-2 w-12">
                                             {t.hero_image_url
                                                 ? <img src={t.hero_image_url} alt="" className="h-9 w-12 object-cover rounded" />
@@ -500,17 +500,17 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
                                             }
                                         </td>
                                         <td className="px-4 py-2">
-                                            <div className="font-medium text-gray-900">{t.name}</div>
+                                            <div className="font-medium text-white">{t.name}</div>
                                             <div className="text-gray-400 text-xs">{t.slug}</div>
                                         </td>
-                                        <td className="px-4 py-2 text-gray-600 text-xs">{supplierName(t.supplier_id)}</td>
-                                        <td className="px-4 py-2 text-gray-600 text-xs capitalize">{t.type}</td>
-                                        <td className="px-4 py-2 text-gray-600 text-xs">{t.duration || '—'}</td>
-                                        <td className="px-4 py-2 text-gray-900 text-xs">{fmtPrice(t.base_price)}</td>
+                                        <td className="px-4 py-2 text-slate-400 text-xs">{supplierName(t.supplier_id)}</td>
+                                        <td className="px-4 py-2 text-slate-400 text-xs capitalize">{t.type}</td>
+                                        <td className="px-4 py-2 text-slate-400 text-xs">{t.duration || '—'}</td>
+                                        <td className="px-4 py-2 text-white text-xs">{fmtPrice(t.base_price)}</td>
                                         <td className="px-4 py-2">
                                             <button
                                                 onClick={() => toggleActive(t)}
-                                                className={`px-2 py-0.5 rounded-full text-xs font-medium ${t.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}
+                                                className={`px-2 py-0.5 rounded-full text-xs font-medium ${t.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-slate-400'}`}
                                             >
                                                 {t.is_active ? 'Active' : 'Off'}
                                             </button>
@@ -545,10 +545,10 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
                                             <td colSpan={8} className="px-4 pb-3">
                                                 <EditFields data={editData} onChange={setEditData} />
                                                 <div className="flex gap-2 mt-2">
-                                                    <button onClick={() => saveEdit(t.id)} disabled={saving} className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                                                    <button onClick={() => saveEdit(t.id)} disabled={saving} className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white text-sm rounded-lg hover:opacity-90 disabled:opacity-50">
                                                         <Check size={13} /> {saving ? 'Saving…' : 'Save'}
                                                     </button>
-                                                    <button onClick={cancelEdit} className="flex items-center gap-1 px-3 py-1.5 border border-gray-300 text-sm rounded-lg hover:bg-gray-50">
+                                                    <button onClick={cancelEdit} className="flex items-center gap-1 px-3 py-1.5 border border-slate-700 text-sm rounded-lg hover:bg-slate-800/30">
                                                         <X size={13} /> Cancel
                                                     </button>
                                                 </div>

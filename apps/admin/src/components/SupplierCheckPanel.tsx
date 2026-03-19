@@ -125,18 +125,18 @@ export default function SupplierCheckPanel({ supplier, apiBase, onClose, onStatu
 
             {/* Drawer */}
             <div
-                className={`fixed top-0 right-0 h-full w-[480px] max-w-full bg-white shadow-2xl z-50 flex flex-col transition-transform duration-300 ${
+                className={`fixed top-0 right-0 h-full w-[480px] max-w-full bg-slate-900/40 backdrop-blur-md shadow-2xl z-50 flex flex-col transition-transform duration-300 ${
                     isOpen ? 'translate-x-0' : 'translate-x-full'
                 }`}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 shrink-0">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800/60 shrink-0">
                     <div className="flex items-center gap-3 min-w-0">
                         <div className="min-w-0">
-                            <h2 className="font-semibold text-gray-900 truncate">
+                            <h2 className="font-semibold text-white truncate">
                                 {supplier?.name ?? ''}
                             </h2>
-                            <p className="text-xs text-gray-500">Calendar availability check — next 60 days</p>
+                            <p className="text-xs text-slate-400">Calendar availability check — next 60 days</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
@@ -145,14 +145,14 @@ export default function SupplierCheckPanel({ supplier, apiBase, onClose, onStatu
                                 href={supplier.calendar_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-gray-300 rounded-lg hover:bg-gray-50 text-gray-700"
+                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border border-slate-700 rounded-lg hover:bg-slate-800/30 text-slate-300"
                             >
                                 <ExternalLink size={12} /> View Calendar
                             </a>
                         )}
                         <button
                             onClick={onClose}
-                            className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
+                            className="p-1.5 text-gray-400 hover:text-slate-400 hover:bg-gray-100 rounded"
                         >
                             <X size={18} />
                         </button>
@@ -166,7 +166,7 @@ export default function SupplierCheckPanel({ supplier, apiBase, onClose, onStatu
                             WhatsApp message for {formatDate(waDate)}
                         </p>
                         <textarea
-                            className="w-full text-sm border border-green-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-green-500 bg-white resize-none"
+                            className="w-full text-sm border border-green-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-green-500 bg-slate-900/40 backdrop-blur-md resize-none"
                             rows={3}
                             value={waMessage}
                             onChange={e => setWaMessage(e.target.value)}
@@ -180,7 +180,7 @@ export default function SupplierCheckPanel({ supplier, apiBase, onClose, onStatu
                             </button>
                             <button
                                 onClick={() => setWaDate(null)}
-                                className="px-4 py-1.5 text-xs font-medium border border-gray-300 rounded-lg hover:bg-gray-50"
+                                className="px-4 py-1.5 text-xs font-medium border border-slate-700 rounded-lg hover:bg-slate-800/30"
                             >
                                 Cancel
                             </button>
@@ -204,7 +204,7 @@ export default function SupplierCheckPanel({ supplier, apiBase, onClose, onStatu
                                 }`}
                             >
                                 <div className="flex-1 min-w-0">
-                                    <span className={`text-sm ${seasonName ? 'font-semibold text-amber-900' : 'text-gray-700'}`}>
+                                    <span className={`text-sm ${seasonName ? 'font-semibold text-amber-900' : 'text-slate-300'}`}>
                                         {formatDate(date)}
                                     </span>
                                     {seasonName && (
@@ -223,7 +223,7 @@ export default function SupplierCheckPanel({ supplier, apiBase, onClose, onStatu
                                 {supplier?.contact_whatsapp && (
                                     <button
                                         onClick={() => openWa(date)}
-                                        className="shrink-0 text-xs px-2 py-1 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50"
+                                        className="shrink-0 text-xs px-2 py-1 border border-slate-700 rounded-lg text-slate-400 hover:bg-slate-800/30"
                                         title="Ask via WhatsApp"
                                     >
                                         💬

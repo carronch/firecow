@@ -166,55 +166,55 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
     };
 
     const supplierName = (id: string) => suppliers.find(s => s.id === id)?.name ?? id;
-    const inp = 'w-full border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500';
-    const sel = `${inp} bg-white`;
+    const inp = 'w-full border border-slate-700 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500 bg-slate-950/50';
+    const sel = `${inp} bg-slate-900/40 backdrop-blur-md`;
 
     const SiteForm = ({ data, onChange }: { data: typeof EMPTY_SITE; onChange: (d: typeof EMPTY_SITE) => void }) => (
         <div className="grid grid-cols-2 gap-2 text-xs">
             <div>
-                <label className="block text-gray-500 mb-0.5">Slug*</label>
+                <label className="block text-slate-400 mb-0.5">Slug*</label>
                 <input className={inp} placeholder="isla-tortuga-costa-rica" value={data.slug} onChange={e => onChange({ ...data, slug: e.target.value })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Domain</label>
+                <label className="block text-slate-400 mb-0.5">Domain</label>
                 <input className={inp} placeholder="mysite.com" value={data.domain} onChange={e => onChange({ ...data, domain: e.target.value })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Supplier</label>
+                <label className="block text-slate-400 mb-0.5">Supplier</label>
                 <select className={sel} value={data.supplier_id} onChange={e => onChange({ ...data, supplier_id: e.target.value })}>
                     <option value="">— none —</option>
                     {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">CF Project Name</label>
+                <label className="block text-slate-400 mb-0.5">CF Project Name</label>
                 <input className={inp} placeholder="my-cf-pages-project" value={data.cf_project_name} onChange={e => onChange({ ...data, cf_project_name: e.target.value })} />
             </div>
             <div className="col-span-2">
-                <label className="block text-gray-500 mb-0.5">CF Deploy Hook URL</label>
+                <label className="block text-slate-400 mb-0.5">CF Deploy Hook URL</label>
                 <input className={inp} placeholder="https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/…" value={data.cf_deploy_hook} onChange={e => onChange({ ...data, cf_deploy_hook: e.target.value })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Tagline</label>
+                <label className="block text-slate-400 mb-0.5">Tagline</label>
                 <input className={inp} placeholder="Your adventure starts here" value={data.tagline} onChange={e => onChange({ ...data, tagline: e.target.value })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">WhatsApp Number</label>
+                <label className="block text-slate-400 mb-0.5">WhatsApp Number</label>
                 <input className={inp} placeholder="+50612345678" value={data.whatsapp_number} onChange={e => onChange({ ...data, whatsapp_number: e.target.value })} />
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Primary Color</label>
+                <label className="block text-slate-400 mb-0.5">Primary Color</label>
                 <div className="flex gap-1 items-center">
                     <input type="color" value={data.primary_color} onChange={e => onChange({ ...data, primary_color: e.target.value })} className="h-7 w-10 border rounded cursor-pointer" />
                     <input className={`${inp} flex-1`} value={data.primary_color} onChange={e => onChange({ ...data, primary_color: e.target.value })} />
                 </div>
             </div>
             <div>
-                <label className="block text-gray-500 mb-0.5">Meta Title</label>
+                <label className="block text-slate-400 mb-0.5">Meta Title</label>
                 <input className={inp} value={data.meta_title} onChange={e => onChange({ ...data, meta_title: e.target.value })} />
             </div>
             <div className="col-span-2">
-                <label className="block text-gray-500 mb-0.5">Meta Description</label>
+                <label className="block text-slate-400 mb-0.5">Meta Description</label>
                 <textarea className={inp} rows={2} value={data.meta_description} onChange={e => onChange({ ...data, meta_description: e.target.value })} />
             </div>
         </div>
@@ -223,12 +223,12 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-500">{sites.length} sites</p>
+                <p className="text-sm text-slate-400">{sites.length} sites</p>
                 <div className="flex gap-2">
-                    <button onClick={refresh} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button onClick={refresh} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-slate-700 rounded-lg hover:bg-slate-800/30">
                         <RefreshCw size={13} /> Refresh
                     </button>
-                    <button onClick={() => { setShowCreate(true); setEditingId(null); }} className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <button onClick={() => { setShowCreate(true); setEditingId(null); }} className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white rounded-lg hover:opacity-90">
                         <Plus size={14} /> New Site
                     </button>
                 </div>
@@ -239,14 +239,14 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
 
             {/* Create form */}
             {showCreate && (
-                <div className="bg-white rounded-xl border-2 border-blue-300 p-5">
-                    <p className="text-sm font-semibold text-gray-700 mb-3">Create New Site</p>
+                <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border-2 border-blue-300 p-5">
+                    <p className="text-sm font-semibold text-slate-300 mb-3">Create New Site</p>
                     <SiteForm data={newSite} onChange={setNewSite} />
                     <div className="flex gap-2 mt-3">
-                        <button onClick={createSite} disabled={saving} className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                        <button onClick={createSite} disabled={saving} className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white text-sm rounded-lg hover:opacity-90 disabled:opacity-50">
                             <Check size={13} /> {saving ? 'Creating…' : 'Create Site'}
                         </button>
-                        <button onClick={() => { setShowCreate(false); setError(null); }} className="flex items-center gap-1 px-3 py-1.5 border border-gray-300 text-sm rounded-lg hover:bg-gray-50">
+                        <button onClick={() => { setShowCreate(false); setError(null); }} className="flex items-center gap-1 px-3 py-1.5 border border-slate-700 text-sm rounded-lg hover:bg-slate-800/30">
                             <X size={13} /> Cancel
                         </button>
                     </div>
@@ -255,18 +255,18 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
 
             <div className="space-y-2">
                 {sites.length === 0 && !showCreate && (
-                    <div className="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400">No sites yet.</div>
+                    <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border border-slate-800/60 p-10 text-center text-gray-400">No sites yet.</div>
                 )}
                 {sites.map(s => {
                     const needsDeploy = pendingDeploy.has(s.id);
                     return (
-                        <div key={s.id} className={`bg-white rounded-xl border overflow-hidden ${needsDeploy ? 'border-amber-300' : 'border-gray-200'}`}>
+                        <div key={s.id} className={`bg-slate-900/40 backdrop-blur-md rounded-xl border overflow-hidden ${needsDeploy ? 'border-amber-300' : 'border-slate-800/60'}`}>
                             <div className="flex items-center gap-4 px-5 py-3">
                                 <div style={{ background: s.primary_color || '#0ea5e9' }} className="w-3 h-3 rounded-full flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap">
-                                        <span className="font-semibold text-gray-900">{s.slug}</span>
-                                        <button onClick={() => toggleLive(s)} className={`px-2 py-0.5 rounded-full text-xs font-medium ${s.is_live ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                                        <span className="font-semibold text-white">{s.slug}</span>
+                                        <button onClick={() => toggleLive(s)} className={`px-2 py-0.5 rounded-full text-xs font-medium ${s.is_live ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-slate-400'}`}>
                                             {s.is_live ? 'Live' : 'Staging'}
                                         </button>
                                         {needsDeploy && (
@@ -289,7 +289,7 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
                                         className={`flex items-center gap-1 px-2.5 py-1.5 text-xs border rounded-lg disabled:opacity-40 transition-colors ${
                                             needsDeploy && s.cf_deploy_hook
                                                 ? 'bg-amber-500 border-amber-500 text-white hover:bg-amber-600'
-                                                : 'border-gray-300 hover:bg-gray-50'
+                                                : 'border-slate-700 hover:bg-slate-800/30'
                                         }`}
                                     >
                                         <Zap size={12} className={deploying === s.id ? 'animate-pulse text-yellow-300' : needsDeploy ? '' : ''} />
@@ -313,13 +313,13 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
                             </div>
 
                             {editingId === s.id && (
-                                <div className="border-t border-gray-200 px-5 py-4 bg-blue-50">
+                                <div className="border-t border-slate-800/60 px-5 py-4 bg-blue-50">
                                     <SiteForm data={editData} onChange={setEditData} />
                                     <div className="flex gap-2 mt-3">
-                                        <button onClick={() => saveEdit(s.id)} disabled={saving} className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                                        <button onClick={() => saveEdit(s.id)} disabled={saving} className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white text-sm rounded-lg hover:opacity-90 disabled:opacity-50">
                                             <Check size={13} /> {saving ? 'Saving…' : 'Save'}
                                         </button>
-                                        <button onClick={() => setEditingId(null)} className="flex items-center gap-1 px-3 py-1.5 border border-gray-300 text-sm rounded-lg hover:bg-gray-50 bg-white">
+                                        <button onClick={() => setEditingId(null)} className="flex items-center gap-1 px-3 py-1.5 border border-slate-700 text-sm rounded-lg hover:bg-slate-800/30 bg-slate-900/40 backdrop-blur-md">
                                             <X size={13} /> Cancel
                                         </button>
                                     </div>

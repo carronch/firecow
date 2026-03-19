@@ -150,19 +150,19 @@ export default function AgentsTable({ initialKeys, agentApiBase, agentAdminKey }
 
     const fmtRevenue = (cents: number) => `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: 0 })}`;
     const fmtDate = (iso: string | null) => iso ? iso.slice(0, 10) : '—';
-    const inp = 'w-full border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500';
+    const inp = 'w-full border border-slate-700 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500 bg-slate-950/50';
 
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-500">{rows.length} agent key{rows.length !== 1 ? 's' : ''}</p>
+                <p className="text-sm text-slate-400">{rows.length} agent key{rows.length !== 1 ? 's' : ''}</p>
                 <div className="flex gap-2">
-                    <button onClick={refresh} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button onClick={refresh} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-slate-700 rounded-lg hover:bg-slate-800/30">
                         <RefreshCw size={13} /> Refresh
                     </button>
                     <button
                         onClick={() => { setAdding(a => !a); setError(null); setGeneratedKey(null); }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white rounded-lg hover:opacity-90"
                     >
                         <Plus size={14} /> Generate Key
                     </button>
@@ -176,7 +176,7 @@ export default function AgentsTable({ initialKeys, agentApiBase, agentAdminKey }
                 <div className="p-4 bg-green-50 border border-green-200 rounded-xl space-y-2">
                     <p className="text-sm font-semibold text-green-800">Key generated — save it now, it cannot be retrieved again.</p>
                     <div className="flex items-center gap-2">
-                        <code className="flex-1 font-mono text-xs bg-white border border-green-200 rounded px-3 py-2 break-all">{generatedKey}</code>
+                        <code className="flex-1 font-mono text-xs bg-slate-900/40 backdrop-blur-md border border-green-200 rounded px-3 py-2 break-all">{generatedKey}</code>
                         <button onClick={copyKey} className="flex items-center gap-1 px-3 py-2 text-xs bg-green-600 text-white rounded hover:bg-green-700 whitespace-nowrap">
                             <Copy size={12} /> {copied ? 'Copied!' : 'Copy'}
                         </button>
@@ -187,26 +187,26 @@ export default function AgentsTable({ initialKeys, agentApiBase, agentAdminKey }
 
             {/* New key form */}
             {adding && !generatedKey && (
-                <div className="bg-white rounded-xl border-2 border-green-300 p-4 space-y-3">
-                    <p className="text-sm font-semibold text-gray-700">New Agent Key</p>
+                <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border-2 border-green-300 p-4 space-y-3">
+                    <p className="text-sm font-semibold text-slate-300">New Agent Key</p>
                     <div className="grid grid-cols-2 gap-3 text-xs">
                         <div>
-                            <label className="block text-gray-500 mb-0.5">Agent Name*</label>
+                            <label className="block text-slate-400 mb-0.5">Agent Name*</label>
                             <input className={inp} placeholder="e.g. Airbnb Experiences" value={form.agent_name}
                                 onChange={e => setForm(f => ({ ...f, agent_name: e.target.value }))} />
                         </div>
                         <div>
-                            <label className="block text-gray-500 mb-0.5">Contact Email</label>
+                            <label className="block text-slate-400 mb-0.5">Contact Email</label>
                             <input className={inp} type="email" placeholder="agent@example.com" value={form.agent_email}
                                 onChange={e => setForm(f => ({ ...f, agent_email: e.target.value }))} />
                         </div>
                         <div>
-                            <label className="block text-gray-500 mb-0.5">Markup % (e.g. 15 for 15%)</label>
+                            <label className="block text-slate-400 mb-0.5">Markup % (e.g. 15 for 15%)</label>
                             <input className={inp} type="number" min="0" step="0.1" placeholder="15" value={form.markup_pct}
                                 onChange={e => setForm(f => ({ ...f, markup_pct: e.target.value }))} />
                         </div>
                         <div>
-                            <label className="block text-gray-500 mb-0.5">Fixed Fee USD (e.g. 25)</label>
+                            <label className="block text-slate-400 mb-0.5">Fixed Fee USD (e.g. 25)</label>
                             <input className={inp} type="number" min="0" step="0.01" placeholder="25.00" value={form.markup_fixed_cents}
                                 onChange={e => setForm(f => ({ ...f, markup_fixed_cents: e.target.value }))} />
                         </div>
@@ -218,19 +218,19 @@ export default function AgentsTable({ initialKeys, agentApiBase, agentAdminKey }
                             <Check size={13} /> {saving ? 'Generating…' : 'Generate Key'}
                         </button>
                         <button onClick={() => { setAdding(false); setError(null); }}
-                            className="flex items-center gap-1 px-3 py-1.5 border border-gray-300 text-sm rounded-lg hover:bg-gray-50">
+                            className="flex items-center gap-1 px-3 py-1.5 border border-slate-700 text-sm rounded-lg hover:bg-slate-800/30">
                             <X size={13} /> Cancel
                         </button>
                     </div>
                 </div>
             )}
 
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead className="bg-gray-50">
+            <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border border-slate-800/60 overflow-hidden">
+                <table className="min-w-full divide-y divide-slate-800/60 text-sm">
+                    <thead className="bg-slate-800/30">
                         <tr>
                             {['Agent', 'Key Prefix', 'Markup', 'Bookings', 'Revenue', 'Last Used', 'Active', ''].map(h => (
-                                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">{h}</th>
+                                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">{h}</th>
                             ))}
                         </tr>
                     </thead>
@@ -240,18 +240,18 @@ export default function AgentsTable({ initialKeys, agentApiBase, agentAdminKey }
                         )}
                         {rows.map(row => (
                             <React.Fragment key={row.id}>
-                                <tr className="hover:bg-gray-50">
+                                <tr className="hover:bg-slate-800/30">
                                     <td className="px-4 py-3">
-                                        <div className="font-medium text-gray-900">{row.agent_name}</div>
+                                        <div className="font-medium text-white">{row.agent_name}</div>
                                         {row.agent_email && <div className="text-gray-400 text-xs">{row.agent_email}</div>}
                                     </td>
                                     <td className="px-4 py-3">
                                         <code className="font-mono text-xs bg-gray-100 rounded px-1.5 py-0.5">{row.key_prefix}…</code>
                                     </td>
-                                    <td className="px-4 py-3 text-gray-600 text-xs">{fmtMarkup(row)}</td>
-                                    <td className="px-4 py-3 text-gray-700 text-xs">{row.total_bookings.toLocaleString()}</td>
-                                    <td className="px-4 py-3 text-gray-700 text-xs">{fmtRevenue(row.total_revenue)}</td>
-                                    <td className="px-4 py-3 text-gray-500 text-xs">{fmtDate(row.last_used_at)}</td>
+                                    <td className="px-4 py-3 text-slate-400 text-xs">{fmtMarkup(row)}</td>
+                                    <td className="px-4 py-3 text-slate-300 text-xs">{row.total_bookings.toLocaleString()}</td>
+                                    <td className="px-4 py-3 text-slate-300 text-xs">{fmtRevenue(row.total_revenue)}</td>
+                                    <td className="px-4 py-3 text-slate-400 text-xs">{fmtDate(row.last_used_at)}</td>
                                     <td className="px-4 py-3">
                                         <button onClick={() => toggleActive(row)}
                                             className={`flex items-center gap-1 text-xs ${row.is_active ? 'text-green-600' : 'text-gray-400'}`}>
@@ -271,29 +271,29 @@ export default function AgentsTable({ initialKeys, agentApiBase, agentAdminKey }
                                         <td colSpan={8} className="px-4 pb-3">
                                             <div className="grid grid-cols-2 gap-3 p-3 bg-blue-50 rounded-lg text-xs">
                                                 <div>
-                                                    <label className="block text-gray-500 mb-0.5">Agent Name</label>
+                                                    <label className="block text-slate-400 mb-0.5">Agent Name</label>
                                                     <input className={inp} value={editForm.agent_name ?? ''} onChange={e => setEditForm(f => ({ ...f, agent_name: e.target.value }))} />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-gray-500 mb-0.5">Contact Email</label>
+                                                    <label className="block text-slate-400 mb-0.5">Contact Email</label>
                                                     <input className={inp} type="email" value={editForm.agent_email ?? ''} onChange={e => setEditForm(f => ({ ...f, agent_email: e.target.value }))} />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-gray-500 mb-0.5">Markup % (e.g. 15)</label>
+                                                    <label className="block text-slate-400 mb-0.5">Markup % (e.g. 15)</label>
                                                     <input className={inp} type="number" min="0" step="0.1" value={editForm.markup_pct ?? ''} onChange={e => setEditForm(f => ({ ...f, markup_pct: e.target.value }))} />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-gray-500 mb-0.5">Fixed Fee USD</label>
+                                                    <label className="block text-slate-400 mb-0.5">Fixed Fee USD</label>
                                                     <input className={inp} type="number" min="0" step="0.01" value={editForm.markup_fixed_cents ?? ''} onChange={e => setEditForm(f => ({ ...f, markup_fixed_cents: e.target.value }))} />
                                                 </div>
                                             </div>
                                             <div className="flex gap-2 mt-2">
                                                 <button onClick={() => saveEdit(row.id)} disabled={saving}
-                                                    className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                                                    className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white text-sm rounded-lg hover:opacity-90 disabled:opacity-50">
                                                     <Check size={13} /> {saving ? 'Saving…' : 'Save'}
                                                 </button>
                                                 <button onClick={() => setEditingId(null)}
-                                                    className="flex items-center gap-1 px-3 py-1.5 border border-gray-300 text-sm rounded-lg hover:bg-gray-50">
+                                                    className="flex items-center gap-1 px-3 py-1.5 border border-slate-700 text-sm rounded-lg hover:bg-slate-800/30">
                                                     <X size={13} /> Cancel
                                                 </button>
                                             </div>

@@ -155,19 +155,19 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
     };
 
     const cell = 'px-4 py-2.5 text-sm';
-    const input = 'w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500';
+    const input = 'w-full border border-slate-700 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500 bg-slate-950/50';
 
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-500">{rows.length} suppliers</p>
+                <p className="text-sm text-slate-400">{rows.length} suppliers</p>
                 <div className="flex gap-2">
-                    <button onClick={refresh} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button onClick={refresh} className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-slate-700 rounded-lg hover:bg-slate-800/30">
                         <RefreshCw size={13} /> Refresh
                     </button>
                     <button
                         onClick={() => { setAdding(true); setEditingId(null); }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white rounded-lg hover:opacity-90"
                     >
                         <Plus size={14} /> Add Supplier
                     </button>
@@ -176,12 +176,12 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
 
             {error && <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
 
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead className="bg-gray-50">
+            <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border border-slate-800/60 overflow-hidden">
+                <table className="min-w-full divide-y divide-slate-800/60 text-sm">
+                    <thead className="bg-slate-800/30">
                         <tr>
                             {['Name', 'Email', 'WhatsApp', 'Location', nextSeasonName ? `${nextSeasonName} Status` : 'Season Status', ''].map(h => (
-                                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>
+                                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">{h}</th>
                             ))}
                         </tr>
                     </thead>
@@ -196,16 +196,16 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
                                 <td className={`${cell} whitespace-nowrap`}>
                                     <div className="flex gap-1">
                                         <button onClick={() => saveEdit(s.id)} disabled={saving} className="flex items-center gap-1 px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50"><Check size={12} />Save</button>
-                                        <button onClick={cancelEdit} className="flex items-center gap-1 px-2 py-1 border border-gray-300 text-xs rounded hover:bg-gray-50"><X size={12} />Cancel</button>
+                                        <button onClick={cancelEdit} className="flex items-center gap-1 px-2 py-1 border border-slate-700 text-xs rounded hover:bg-slate-800/30"><X size={12} />Cancel</button>
                                     </div>
                                 </td>
                             </tr>
                         ) : (
-                            <tr key={s.id} className="hover:bg-gray-50">
-                                <td className={`${cell} font-medium text-gray-900`}>{s.name}</td>
-                                <td className={`${cell} text-gray-600`}>{s.contact_email || '—'}</td>
-                                <td className={`${cell} text-gray-600`}>{s.contact_whatsapp || '—'}</td>
-                                <td className={`${cell} text-gray-600`}>{s.location || '—'}</td>
+                            <tr key={s.id} className="hover:bg-slate-800/30">
+                                <td className={`${cell} font-medium text-white`}>{s.name}</td>
+                                <td className={`${cell} text-slate-400`}>{s.contact_email || '—'}</td>
+                                <td className={`${cell} text-slate-400`}>{s.contact_whatsapp || '—'}</td>
+                                <td className={`${cell} text-slate-400`}>{s.location || '—'}</td>
                                 <td className={cell}>
                                     {(() => {
                                         const status = seasonStatuses.get(s.id) ?? 'unverified';
@@ -243,7 +243,7 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
                                 <td className={`${cell} whitespace-nowrap`}>
                                     <div className="flex gap-1">
                                         <button onClick={addSupplier} disabled={saving} className="flex items-center gap-1 px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50"><Check size={12} />Add</button>
-                                        <button onClick={() => { setAdding(false); setNewRow(EMPTY); }} className="flex items-center gap-1 px-2 py-1 border border-gray-300 text-xs rounded hover:bg-gray-50"><X size={12} />Cancel</button>
+                                        <button onClick={() => { setAdding(false); setNewRow(EMPTY); }} className="flex items-center gap-1 px-2 py-1 border border-slate-700 text-xs rounded hover:bg-slate-800/30"><X size={12} />Cancel</button>
                                     </div>
                                 </td>
                             </tr>

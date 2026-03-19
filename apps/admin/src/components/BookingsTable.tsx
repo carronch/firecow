@@ -20,7 +20,7 @@ const STATUS_STYLES: Record<string, string> = {
     confirmed:  'bg-green-100 text-green-800',
     refunded:   'bg-yellow-100 text-yellow-800',
     cancelled:  'bg-red-100 text-red-800',
-    pending:    'bg-gray-100 text-gray-700',
+    pending:    'bg-gray-100 text-slate-300',
 };
 
 const STATUSES = ['confirmed', 'pending', 'refunded', 'cancelled'];
@@ -107,16 +107,16 @@ export default function BookingsTable({ initialBookings, apiBase }: Props) {
 
     const fmt = (iso: string) => iso ? new Date(iso).toLocaleDateString() : '—';
     const fmtMoney = (n: number) => `$${(Number(n) / 100).toFixed(2)}`;
-    const inp = 'w-full border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500';
+    const inp = 'w-full border border-slate-700 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-sky-500 focus:border-sky-500 bg-slate-950/50';
 
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-500">{bookings.length} bookings</p>
+                <p className="text-sm text-slate-400">{bookings.length} bookings</p>
                 <button
                     onClick={refresh}
                     disabled={loading}
-                    className="flex items-center gap-2 px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm border border-slate-700 rounded-lg hover:bg-slate-800/30 disabled:opacity-50"
                 >
                     <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
                     Refresh
@@ -129,13 +129,13 @@ export default function BookingsTable({ initialBookings, apiBase }: Props) {
                 </div>
             )}
 
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="bg-slate-900/40 backdrop-blur-md rounded-xl border border-slate-800/60 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 text-sm">
-                        <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-slate-800/60 text-sm">
+                        <thead className="bg-slate-800/30">
                             <tr>
                                 {['Customer', 'Tour / Site', 'Date', 'Guests', 'Total', 'Status', 'Notes', 'Created', ''].map(h => (
-                                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                    <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider whitespace-nowrap">
                                         {h}
                                     </th>
                                 ))}
@@ -151,20 +151,20 @@ export default function BookingsTable({ initialBookings, apiBase }: Props) {
                             )}
                             {bookings.map(b => (
                                 <React.Fragment key={b.id}>
-                                    <tr className={`hover:bg-gray-50 ${editingId === b.id ? 'bg-blue-50' : ''}`}>
+                                    <tr className={`hover:bg-slate-800/30 ${editingId === b.id ? 'bg-blue-50' : ''}`}>
                                         <td className="px-4 py-3">
-                                            <div className="font-medium text-gray-900">{b.customer_name || '—'}</div>
+                                            <div className="font-medium text-white">{b.customer_name || '—'}</div>
                                             <div className="text-gray-400 text-xs">{b.customer_email}</div>
                                         </td>
-                                        <td className="px-4 py-3 text-gray-600">
+                                        <td className="px-4 py-3 text-slate-400">
                                             <div className="text-xs font-mono">{b.tour_id?.slice(0, 8)}…</div>
                                             <div className="text-gray-400 text-xs">{b.site_id}</div>
                                         </td>
-                                        <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{fmt(b.booking_date)}</td>
-                                        <td className="px-4 py-3 text-gray-600 text-center">{b.party_size}</td>
-                                        <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{fmtMoney(b.total_amount)}</td>
+                                        <td className="px-4 py-3 text-slate-400 whitespace-nowrap">{fmt(b.booking_date)}</td>
+                                        <td className="px-4 py-3 text-slate-400 text-center">{b.party_size}</td>
+                                        <td className="px-4 py-3 font-medium text-white whitespace-nowrap">{fmtMoney(b.total_amount)}</td>
                                         <td className="px-4 py-3">
-                                            <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${STATUS_STYLES[b.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                                            <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${STATUS_STYLES[b.status] ?? 'bg-gray-100 text-slate-400'}`}>
                                                 {b.status}
                                             </span>
                                         </td>
@@ -196,35 +196,35 @@ export default function BookingsTable({ initialBookings, apiBase }: Props) {
                                             <td colSpan={9} className="px-4 pb-4 pt-1">
                                                 <div className="grid grid-cols-4 gap-3 text-xs">
                                                     <div>
-                                                        <label className="block text-gray-500 mb-0.5">Booking Date</label>
+                                                        <label className="block text-slate-400 mb-0.5">Booking Date</label>
                                                         <input type="date" className={inp} value={editData.booking_date}
                                                             onChange={e => setEditData(d => ({ ...d, booking_date: e.target.value }))} />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-gray-500 mb-0.5">Party Size</label>
+                                                        <label className="block text-slate-400 mb-0.5">Party Size</label>
                                                         <input type="number" min={1} className={inp} value={editData.party_size}
                                                             onChange={e => setEditData(d => ({ ...d, party_size: Number(e.target.value) }))} />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-gray-500 mb-0.5">Status</label>
-                                                        <select className={`${inp} bg-white`} value={editData.status}
+                                                        <label className="block text-slate-400 mb-0.5">Status</label>
+                                                        <select className={`${inp} bg-slate-900/40 backdrop-blur-md`} value={editData.status}
                                                             onChange={e => setEditData(d => ({ ...d, status: e.target.value }))}>
                                                             {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                                                         </select>
                                                     </div>
                                                     <div>
-                                                        <label className="block text-gray-500 mb-0.5">Notes</label>
+                                                        <label className="block text-slate-400 mb-0.5">Notes</label>
                                                         <input className={inp} value={editData.notes}
                                                             onChange={e => setEditData(d => ({ ...d, notes: e.target.value }))} />
                                                     </div>
                                                 </div>
                                                 <div className="flex gap-2 mt-2">
                                                     <button onClick={() => saveEdit(b.id)} disabled={saving}
-                                                        className="flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 disabled:opacity-50">
+                                                        className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white text-xs rounded-lg hover:opacity-90 disabled:opacity-50">
                                                         <Check size={12} /> {saving ? 'Saving…' : 'Save'}
                                                     </button>
                                                     <button onClick={() => setEditingId(null)}
-                                                        className="flex items-center gap-1 px-3 py-1.5 border border-gray-300 text-xs rounded-lg hover:bg-gray-50 bg-white">
+                                                        className="flex items-center gap-1 px-3 py-1.5 border border-slate-700 text-xs rounded-lg hover:bg-slate-800/30 bg-slate-900/40 backdrop-blur-md">
                                                         <X size={12} /> Cancel
                                                     </button>
                                                 </div>
