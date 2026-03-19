@@ -17,6 +17,9 @@ interface Site {
     whatsapp_number: string;
     twilio_number: string;
     is_live: number;
+    tagline_es?: string;
+    meta_title_es?: string;
+    meta_description_es?: string;
 }
 
 interface Supplier { id: string; name: string; }
@@ -25,6 +28,7 @@ const EMPTY_SITE = {
     slug: '', domain: '', cf_project_name: '', cf_deploy_hook: '',
     supplier_id: '', tour_ids: '[]', tagline: '', primary_color: '#0ea5e9',
     meta_title: '', meta_description: '', whatsapp_number: '', twilio_number: '', is_live: 0,
+    tagline_es: '', meta_title_es: '', meta_description_es: '',
 };
 
 interface Props {
@@ -109,6 +113,7 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
             tour_ids: s.tour_ids, tagline: s.tagline, primary_color: s.primary_color,
             meta_title: s.meta_title, meta_description: s.meta_description,
             whatsapp_number: s.whatsapp_number, twilio_number: s.twilio_number || '', is_live: s.is_live,
+            tagline_es: s.tagline_es || '', meta_title_es: s.meta_title_es || '', meta_description_es: s.meta_description_es || '',
         });
     };
 
@@ -227,6 +232,10 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
                 <input className={inp} placeholder="Your adventure starts here" value={data.tagline} onChange={e => onChange({ ...data, tagline: e.target.value })} />
             </div>
             <div>
+                <label className="block text-slate-400 mb-0.5">Tagline (ES)</label>
+                <input className={inp} placeholder="Tu aventura comienza aquí" value={data.tagline_es || ''} onChange={e => onChange({ ...data, tagline_es: e.target.value })} />
+            </div>
+            <div>
                 <label className="block text-slate-400 mb-0.5">WhatsApp Number</label>
                 <input className={inp} placeholder="+50612345678" value={data.whatsapp_number} onChange={e => onChange({ ...data, whatsapp_number: e.target.value })} />
             </div>
@@ -241,9 +250,17 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
                 <label className="block text-slate-400 mb-0.5">Meta Title</label>
                 <input className={inp} value={data.meta_title} onChange={e => onChange({ ...data, meta_title: e.target.value })} />
             </div>
+            <div>
+                <label className="block text-slate-400 mb-0.5">Meta Title (ES)</label>
+                <input className={inp} value={data.meta_title_es || ''} onChange={e => onChange({ ...data, meta_title_es: e.target.value })} />
+            </div>
             <div className="col-span-2">
                 <label className="block text-slate-400 mb-0.5">Meta Description</label>
                 <textarea className={inp} rows={2} value={data.meta_description} onChange={e => onChange({ ...data, meta_description: e.target.value })} />
+            </div>
+            <div className="col-span-2">
+                <label className="block text-slate-400 mb-0.5">Meta Description (ES)</label>
+                <textarea className={inp} rows={2} value={data.meta_description_es || ''} onChange={e => onChange({ ...data, meta_description_es: e.target.value })} />
             </div>
         </div>
     );

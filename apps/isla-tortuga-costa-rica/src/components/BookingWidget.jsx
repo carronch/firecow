@@ -93,7 +93,16 @@ function AvailabilityCalendar({ tourId, apiBase, onSelect, selected }) {
     );
 }
 
-export default function BookingWidget({ tours = [], initialTourId = null, apiBase = '' }) {
+export default function BookingWidget({ tours = [], initialTourId = null, apiBase = '', locale = 'en' }) {
+    const tChooseExp = locale === 'es' ? 'Elegir Experiencia' : 'Choose Experience';
+    const tDate = locale === 'es' ? 'Fecha' : 'Date';
+    const tSelectDate = locale === 'es' ? 'Seleccionar fecha' : 'Select date';
+    const tAdults = locale === 'es' ? 'Adultos' : 'Adults';
+    const tChildren = locale === 'es' ? 'Niños' : 'Children';
+    const tBookNow = locale === 'es' ? 'Reservar' : 'Book Now';
+    const tProcessing = locale === 'es' ? 'Procesando...' : 'Processing...';
+    const tSecure = locale === 'es' ? 'Reserva segura • Confirmación rápida' : 'Secure booking • Instant confirmation';
+
     const [selectedTourSlug, setSelectedTourSlug] = useState(initialTourId || (tours[0]?.slug || ''));
     const [date, setDate] = useState('');
     const [showCalendar, setShowCalendar] = useState(false);
@@ -185,7 +194,7 @@ export default function BookingWidget({ tours = [], initialTourId = null, apiBas
                         {!initialTourId && (
                             <div className="md:col-span-4">
                                 <label className="block text-blue-100 text-xs font-bold uppercase tracking-wider mb-2 ml-1">
-                                    Choose Experience
+                                    {tChooseExp}
                                 </label>
                                 <select
                                     value={selectedTourSlug}
@@ -201,13 +210,13 @@ export default function BookingWidget({ tours = [], initialTourId = null, apiBas
 
                         {/* Date — with availability calendar */}
                         <div className="col-span-1 relative">
-                            <label className="block text-blue-100 text-xs font-bold uppercase tracking-wider mb-2 ml-1">Date</label>
+                            <label className="block text-blue-100 text-xs font-bold uppercase tracking-wider mb-2 ml-1">{tDate}</label>
                             <button
                                 type="button"
                                 onClick={() => setShowCalendar(c => !c)}
                                 className="w-full bg-white/90 rounded-lg p-3 text-slate-900 font-medium text-sm text-left"
                             >
-                                {date || 'Select date'}
+                                {date || tSelectDate}
                             </button>
                             {showCalendar && (
                                 <div className="absolute top-full left-0 mt-2 z-50">
@@ -223,7 +232,7 @@ export default function BookingWidget({ tours = [], initialTourId = null, apiBas
 
                         {/* Adults */}
                         <div className="col-span-1">
-                            <label className="block text-blue-100 text-xs font-bold uppercase tracking-wider mb-2 ml-1">Adults</label>
+                            <label className="block text-blue-100 text-xs font-bold uppercase tracking-wider mb-2 ml-1">{tAdults}</label>
                             <input
                                 type="number"
                                 min="1"
@@ -235,7 +244,7 @@ export default function BookingWidget({ tours = [], initialTourId = null, apiBas
 
                         {/* Children */}
                         <div className="col-span-1">
-                            <label className="block text-blue-100 text-xs font-bold uppercase tracking-wider mb-2 ml-1">Children</label>
+                            <label className="block text-blue-100 text-xs font-bold uppercase tracking-wider mb-2 ml-1">{tChildren}</label>
                             <input
                                 type="number"
                                 min="0"
@@ -252,7 +261,7 @@ export default function BookingWidget({ tours = [], initialTourId = null, apiBas
                                 disabled={loading || !date}
                                 className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-400 text-white font-bold py-3 px-4 rounded-lg shadow-lg flex items-center justify-center gap-2"
                             >
-                                {loading ? 'Processing...' : 'Book Now'}
+                                {loading ? tProcessing : tBookNow}
                                 {priceDisplay > 0 && <span className="text-xs bg-black/20 px-2 rounded">${priceDisplay}</span>}
                             </button>
                         </div>
@@ -267,7 +276,7 @@ export default function BookingWidget({ tours = [], initialTourId = null, apiBas
 
                 <div className="text-center mt-3">
                     <p className="text-blue-200 text-xs flex items-center justify-center gap-1 opacity-80">
-                        <span>Secure booking • Instant confirmation</span>
+                        <span>{tSecure}</span>
                     </p>
                 </div>
             </div>

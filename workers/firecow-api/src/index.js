@@ -1,4 +1,5 @@
 import { TwilioService } from './services/twilio.js';
+import { GoogleAdsService } from './services/google_ads.js';
 
 /**
  * FireCow API — Cloudflare Worker
@@ -227,16 +228,18 @@ export default {
         if (method === 'POST') {
           const body = await request.json();
           const { supplier_id, name, slug, type, description, duration, max_capacity,
-                  base_price, high_season_price, hero_image_url, gallery_images } = body;
+                  base_price, high_season_price, hero_image_url, gallery_images,
+                  name_es, description_es, duration_es } = body;
           if (!supplier_id || !name || !slug || !type) return err('supplier_id, name, slug, and type are required');
           const id = crypto.randomUUID();
           await DB.prepare(`
             INSERT INTO tours (id, supplier_id, name, slug, type, description, duration, max_capacity,
-              base_price, high_season_price, hero_image_url, gallery_images)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              base_price, high_season_price, hero_image_url, gallery_images,
+              name_es, description_es, duration_es)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `).bind(id, supplier_id, name, slug, type, description, duration, max_capacity ?? 12,
               base_price ?? 0, high_season_price, hero_image_url,
-              JSON.stringify(gallery_images ?? [])).run();
+              JSON.stringify(gallery_images ?? []), name_es, description_es, duration_es).run();
           const created = await DB.prepare('SELECT * FROM tours WHERE id = ?').bind(id).first();
           return json(created, 201);
         }
@@ -245,7 +248,8 @@ export default {
           const body = await request.json();
           const fields = ['name', 'slug', 'type', 'description', 'duration', 'max_capacity',
                           'base_price', 'high_season_price', 'stripe_product_id',
-                          'hero_image_url', 'gallery_images', 'is_active'];
+                          'hero_image_url', 'gallery_images', 'is_active',
+                          'name_es', 'description_es', 'duration_es'];
           const updates = fields.filter(f => body[f] !== undefined).map(f => `${f} = ?`).join(', ');
           const values = fields.filter(f => body[f] !== undefined).map(f =>
             f === 'gallery_images' ? JSON.stringify(body[f]) : body[f]
@@ -298,16 +302,19 @@ export default {
         if (method === 'POST') {
           const body = await request.json();
           const { slug, supplier_id, tour_ids, tagline, domain, cf_project_name,
-                  primary_color, meta_title, meta_description, whatsapp_number } = body;
+                  primary_color, meta_title, meta_description, whatsapp_number,
+                  tagline_es, meta_title_es, meta_description_es } = body;
           if (!slug) return err('slug is required');
           const id = crypto.randomUUID();
           await DB.prepare(`
             INSERT INTO sites (id, slug, domain, cf_project_name, supplier_id, tour_ids,
-              tagline, primary_color, meta_title, meta_description, whatsapp_number)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              tagline, primary_color, meta_title, meta_description, whatsapp_number,
+              tagline_es, meta_title_es, meta_description_es)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `).bind(id, slug, domain, cf_project_name, supplier_id,
               JSON.stringify(tour_ids ?? []), tagline, primary_color ?? '#0ea5e9',
-              meta_title, meta_description, whatsapp_number).run();
+              meta_title, meta_description, whatsapp_number,
+              tagline_es, meta_title_es, meta_description_es).run();
           const created = await DB.prepare('SELECT * FROM sites WHERE id = ?').bind(id).first();
           return json(created, 201);
         }
@@ -316,7 +323,8 @@ export default {
           const body = await request.json();
           const fields = ['slug', 'domain', 'cf_project_name', 'cf_deploy_hook', 'supplier_id',
                           'tour_ids', 'tagline', 'primary_color', 'meta_title',
-                          'meta_description', 'whatsapp_number', 'is_live'];
+                          'meta_description', 'whatsapp_number', 'is_live', 'twilio_number',
+                          'tagline_es', 'meta_title_es', 'meta_description_es'];
           const updates = fields.filter(f => body[f] !== undefined).map(f => `${f} = ?`).join(', ');
           const values = fields.filter(f => body[f] !== undefined).map(f =>
             f === 'tour_ids' ? JSON.stringify(body[f]) : body[f]
@@ -464,23 +472,38 @@ export default {
             ${dateClause}
             GROUP BY notes
           `).all();
-          // Parse UTM source from notes JSON
+          // Parse UTM source/campaign from notes JSON
           const parsed = results.map(r => {
             let utm_source = 'direct';
+            let utm_campaign = 'organic';
             try {
               const n = JSON.parse(r.notes || '{}');
               utm_source = n.utm_source || 'direct';
+              utm_campaign = n.utm_campaign || 'organic';
             } catch (_) {}
-            return { utm_source, booking_count: r.booking_count, revenue_cents: r.revenue_cents };
+            return { utm_source, utm_campaign, booking_count: r.booking_count, revenue_cents: r.revenue_cents };
           });
-          // Aggregate by utm_source
+          
+          // Aggregate by utm_source and utm_campaign
           const agg = {};
           for (const row of parsed) {
-            if (!agg[row.utm_source]) agg[row.utm_source] = { utm_source: row.utm_source, booking_count: 0, revenue_cents: 0 };
-            agg[row.utm_source].booking_count += row.booking_count;
-            agg[row.utm_source].revenue_cents += row.revenue_cents;
+            const key = `${row.utm_source}|${row.utm_campaign}`;
+            if (!agg[key]) agg[key] = { utm_source: row.utm_source, utm_campaign: row.utm_campaign, booking_count: 0, revenue_cents: 0 };
+            agg[key].booking_count += row.booking_count;
+            agg[key].revenue_cents += row.revenue_cents;
           }
-          return json(Object.values(agg).sort((a, b) => b.revenue_cents - a.revenue_cents));
+          
+          // Merge with Mock Google Ads API spend
+          const gaService = new GoogleAdsService(env);
+          const adSpends = await gaService.getCampaignSpend();
+          
+          const finalRows = Object.values(agg).map(row => {
+             const spend_cents = adSpends[row.utm_campaign] || 0;
+             const roas = spend_cents > 0 ? Math.round((row.revenue_cents / spend_cents) * 100) : null;
+             return { ...row, spend_cents, roas };
+          });
+
+          return json(finalRows.sort((a, b) => b.revenue_cents - a.revenue_cents));
         }
       }
 

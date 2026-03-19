@@ -335,8 +335,8 @@ STRIPE_SECRET_KEY=sk_live_...
 
 | Phase | Status | Summary |
 |---|---|---|
-| Phase 5 — Multi-language (ES/EN) | Deferred | i18n routing, translation objects, language toggle |
-| Phase 6 — Google Ads API / ROAS | Deferred | OAuth2, campaign spend fetch, ROAS per UTM campaign |
+| Phase 5 — Multi-language (ES/EN) | ✅ Complete | i18n routing, DB localized columns, translated Booking UI |
+| Phase 6 — Google Ads API / ROAS | Deferred | OAuth2 mock or real fetch, campaign spend fetch, ROAS per UTM campaign |
 
 ---
 

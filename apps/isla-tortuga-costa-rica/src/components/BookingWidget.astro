@@ -13,9 +13,9 @@ import BookingWidgetReact from './BookingWidget.jsx';
 
 
 
-// Fetch all tours for the dropdown if no tourId is specified, and for data attributes
 const allTours = await getCollection('tours');
 const tours = allTours.filter(t => !t.data.draft);
+const locale = Astro.currentLocale || 'en';
 ---
 
 <div class={className}>
@@ -23,5 +23,6 @@ const tours = allTours.filter(t => !t.data.draft);
         client:load 
         tours={tours} 
         initialTourId={tourId} 
+        locale={locale}
     />
 </div>

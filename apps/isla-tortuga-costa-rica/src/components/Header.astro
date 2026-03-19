@@ -5,18 +5,27 @@ import { siteConfig } from '../config/site.config';
 const siteName = siteConfig.siteName;
 const logoEmoji = siteConfig.siteEmoji;
 
+const locale = Astro.currentLocale || 'en';
+const base = locale === 'en' ? '' : `/${locale}`;
+
 const links = [
-  { text: 'Home', href: '/' },
-  { text: 'Tours', href: '/#experiences' },
-  { text: 'Why Us', href: '/why-us' },
-  { text: 'Reviews', href: '/#reviews' },
-  { text: 'Contact', href: '/#contact' }
+  { text: locale === 'en' ? 'Home' : 'Inicio', href: `${base}/` },
+  { text: 'Tours', href: `${base}/#experiences` },
+  { text: locale === 'en' ? 'Why Us' : 'Por Qué Nosotros', href: `${base}/why-us` },
+  { text: locale === 'en' ? 'Reviews' : 'Reseñas', href: `${base}/#reviews` },
+  { text: locale === 'en' ? 'Contact' : 'Contacto', href: `${base}/#contact` }
 ];
+
+// Simple path toggle logic for the EN/ES button
+const currentPath = Astro.url.pathname;
+const togglePath = locale === 'en' 
+  ? `/es${currentPath === '/' ? '' : currentPath}`
+  : currentPath.replace(/^\/es/, '') || '/';
 ---
 
 <header class="fixed w-full z-50 top-0 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-sm">
   <div class="container mx-auto px-4 h-20 flex items-center justify-between">
-    <a href="/" class="text-2xl font-extrabold font-heading text-slate-900 tracking-tighter flex items-center">
+    <a href={`${base}/`} class="text-2xl font-extrabold font-heading text-slate-900 tracking-tighter flex items-center">
       <span class="text-3xl mr-2">{logoEmoji}</span> {siteName}
     </a>
 
@@ -30,11 +39,20 @@ const links = [
         </a>
       ))}
       <a 
-        href="/tours/isla-tortuga" 
+        href={`${base}/tours/isla-tortuga`} 
         class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-bold shadow-lg transition flex items-center text-sm"
         aria-label="Book your tour now"
       >
-        <i class="fa-solid fa-calendar-check mr-2" aria-hidden="true"></i> Book Now
+        <i class="fa-solid fa-calendar-check mr-2" aria-hidden="true"></i> {locale === 'en' ? 'Book Now' : 'Reservar'}
+      </a>
+      
+      {/* Language Toggle */}
+      <a 
+        href={togglePath}
+        class="flex items-center justify-center w-8 h-8 rounded-full border-2 border-slate-200 text-slate-600 font-bold text-xs hover:border-blue-600 hover:text-blue-600 transition"
+        title={locale === 'en' ? "Cambiar a Español" : "Switch to English"}
+      >
+        {locale === 'en' ? 'ES' : 'EN'}
       </a>
     </nav>
 

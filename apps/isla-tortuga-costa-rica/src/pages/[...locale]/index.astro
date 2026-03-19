@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import HeroSection from '../../../components/HeroSection.astro';
+import TrustBanner from '../../../components/TrustBanner.astro';
+import ExperiencesGrid from '../../../components/ExperiencesGrid.astro';
+import WhatsIncluded from '../../../components/WhatsIncluded.astro';
+import Gallery from '../../../components/Gallery.astro';
+import Testimonials from '../../../components/Testimonials.astro';
+import Location from '../../../components/Location.astro';
+import ContactSection from '../../../components/ContactSection.astro';
+import { fetchSite, getGallery, displayPrice } from '../../../lib/api';
+
+// Fetch live data from D1 via the Worker API
+const SITE_SLUG = 'isla-tortuga-costa-rica';
+const site = await fetchSite(SITE_SLUG);
+const tour = site?.tours?.[0] ?? null;
+const galleryImages = getGallery(tour);
+const price = tour ? displayPrice(tour.base_price) : null;
+
+const isEs = Astro.currentLocale === 'es';
+
+const pageTitle = isEs 
+  ? ((site?.meta_title_es || site?.meta_title) ?? "Isla Tortuga Tour | Costa Rica")
+  : (site?.meta_title ?? "Tortuga Island Tour | Costa Rica");
+  
+const pageDescription = isEs
+  ? ((site?.meta_description_es || site?.meta_description) ?? "Reserva el mejor tour a Isla Tortuga.")
+  : (site?.meta_description ?? "Book the best Isla Tortuga day tour.");
+  
+const heroHeading = tour ? (isEs ? (tour.name_es || tour.name) : tour.name) : null;
+const heroSubheading = site ? (isEs ? (site.tagline_es || site.tagline) : site.tagline) : null;
+
+const schema = tour && site ? {
+  "@context": "https://schema.org",
+  "@type": "TouristAttraction",
+  "name": tour.name,
+  "description": pageDescription,
+  "url": Astro.url.href,
+  "image": galleryImages.length ? galleryImages[0] : tour.hero_image_url,
+  "offers": {
+    "@type": "Offer",
+    "price": tour.base_price / 100,
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  }
+} : undefined;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription} schema={schema}>
+  <Header whatsapp={site?.whatsapp_number} />
+  
+  <main>
+    <HeroSection 
+      heroImage={tour?.hero_image_url}
+      heading={heroHeading}
+      subheading={heroSubheading}
+    />
+    <TrustBanner />
+    <ExperiencesGrid tour={tour} price={price} />
+    <WhatsIncluded />
+    <Gallery images={galleryImages} />
+    <Testimonials />
+    <Location />
+    <ContactSection whatsapp={site?.whatsapp_number} />
+  </main>
+
+  <Footer />
+</BaseLayout>

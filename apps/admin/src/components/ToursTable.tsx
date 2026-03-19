@@ -15,6 +15,9 @@ interface Tour {
     hero_image_url: string;
     gallery_images: string;
     is_active: number;
+    name_es?: string;
+    description_es?: string;
+    duration_es?: string;
 }
 
 interface Supplier { id: string; name: string; }
@@ -36,6 +39,7 @@ const EMPTY_TOUR: EditRow = {
     supplier_id: '', name: '', slug: '', type: 'catamaran', description: '',
     duration: '', max_capacity: 12, base_price: 0, high_season_price: 0,
     hero_image_url: '', gallery_images: '[]', is_active: 1,
+    name_es: '', description_es: '', duration_es: '',
 };
 
 const TOUR_TYPES = ['catamaran', 'fishing', 'snorkeling', 'diving', 'kayaking', 'adventure', 'other'];
@@ -380,6 +384,10 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
                 <input className={inp} value={data.name} onChange={e => onChange({ ...data, name: e.target.value })} />
             </div>
             <div>
+                <label className="block text-slate-400 mb-0.5">Name (ES)</label>
+                <input className={inp} value={data.name_es || ''} onChange={e => onChange({ ...data, name_es: e.target.value })} />
+            </div>
+            <div>
                 <label className="block text-slate-400 mb-0.5">Slug*</label>
                 <input className={inp} value={data.slug} onChange={e => onChange({ ...data, slug: e.target.value })} />
             </div>
@@ -399,6 +407,10 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
             <div>
                 <label className="block text-slate-400 mb-0.5">Duration</label>
                 <input className={inp} placeholder="e.g. 6 Hours" value={data.duration} onChange={e => onChange({ ...data, duration: e.target.value })} />
+            </div>
+            <div>
+                <label className="block text-slate-400 mb-0.5">Duration (ES)</label>
+                <input className={inp} placeholder="e.g. 6 Horas" value={data.duration_es || ''} onChange={e => onChange({ ...data, duration_es: e.target.value })} />
             </div>
             <div>
                 <label className="block text-slate-400 mb-0.5">Max Capacity</label>
@@ -432,6 +444,10 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
             <div className="col-span-2">
                 <label className="block text-slate-400 mb-0.5">Description</label>
                 <textarea className={inp} rows={2} value={data.description} onChange={e => onChange({ ...data, description: e.target.value })} />
+            </div>
+            <div className="col-span-2">
+                <label className="block text-slate-400 mb-0.5">Description (ES)</label>
+                <textarea className={inp} rows={2} value={data.description_es || ''} onChange={e => onChange({ ...data, description_es: e.target.value })} />
             </div>
         </div>
     );
