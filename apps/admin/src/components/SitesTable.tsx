@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { Plus, RefreshCw, Zap, Pencil, Check, X, Globe, Copy } from 'lucide-react';
+import { Plus, RefreshCw, Zap, Pencil, Check, X, Globe, Copy, Phone, ShieldCheck } from 'lucide-react';
+import GbpLaunchKit from './GbpLaunchKit';
 
 interface Site {
     id: string;
@@ -14,6 +15,7 @@ interface Site {
     meta_title: string;
     meta_description: string;
     whatsapp_number: string;
+    twilio_number: string;
     is_live: number;
 }
 
@@ -22,7 +24,7 @@ interface Supplier { id: string; name: string; }
 const EMPTY_SITE = {
     slug: '', domain: '', cf_project_name: '', cf_deploy_hook: '',
     supplier_id: '', tour_ids: '[]', tagline: '', primary_color: '#0ea5e9',
-    meta_title: '', meta_description: '', whatsapp_number: '', is_live: 0,
+    meta_title: '', meta_description: '', whatsapp_number: '', twilio_number: '', is_live: 0,
 };
 
 interface Props {
@@ -43,6 +45,12 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
     const [deployMsg, setDeployMsg] = useState<string | null>(null);
     // Track sites saved but not yet deployed
     const [pendingDeploy, setPendingDeploy] = useState<Set<string>>(new Set());
+
+    // Twilio & GBP State
+    const [provisioningSite, setProvisioningSite] = useState<string | null>(null);
+    const [provisionCountry, setProvisionCountry] = useState('CR');
+    const [provisioning, setProvisioning] = useState(false);
+    const [showGbpKit, setShowGbpKit] = useState<Site | null>(null);
 
     const refresh = useCallback(async () => {
         const res = await fetch(`${apiBase}/api/sites`);
@@ -73,6 +81,26 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
         }
     };
 
+    const provisionTwilioNumber = async (siteId: string) => {
+        setProvisioning(true);
+        setError(null);
+        try {
+            const res = await fetch(`${apiBase}/api/twilio/provision`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ site_id: siteId, countryCode: provisionCountry }),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            const data = await res.json();
+            setSites(ss => ss.map(s => s.id === siteId ? { ...s, twilio_number: data.twilio_number } : s));
+            setProvisioningSite(null);
+        } catch (e: any) {
+            setError('Provision failed: ' + e.message);
+        } finally {
+            setProvisioning(false);
+        }
+    };
+
     const startEdit = (s: Site) => {
         setEditingId(s.id);
         setEditData({
@@ -80,7 +108,7 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
             cf_deploy_hook: s.cf_deploy_hook, supplier_id: s.supplier_id,
             tour_ids: s.tour_ids, tagline: s.tagline, primary_color: s.primary_color,
             meta_title: s.meta_title, meta_description: s.meta_description,
-            whatsapp_number: s.whatsapp_number, is_live: s.is_live,
+            whatsapp_number: s.whatsapp_number, twilio_number: s.twilio_number || '', is_live: s.is_live,
         });
     };
 
@@ -278,10 +306,28 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
                                     </div>
                                     <div className="text-gray-400 text-xs mt-0.5 flex items-center gap-3">
                                         {s.domain && <span className="flex items-center gap-1"><Globe size={10} />{s.domain}</span>}
+                                        {s.twilio_number && <span className="flex items-center gap-1 text-green-400"><Phone size={10} />{s.twilio_number}</span>}
                                         <span>{supplierName(s.supplier_id)}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-1.5">
+                                    <button
+                                        onClick={() => { setProvisioningSite(s.id); setEditingId(null); }}
+                                        disabled={!!s.twilio_number}
+                                        title={s.twilio_number ? `Number provisioned: ${s.twilio_number}` : 'Provision Twilio Number'}
+                                        className={`p-1.5 rounded disabled:opacity-40 transition-colors ${
+                                            provisioningSite === s.id ? 'bg-green-100 text-green-600' : 'text-gray-400 hover:text-green-600 hover:bg-green-50'
+                                        }`}
+                                    >
+                                        <Phone size={14} />
+                                    </button>
+                                    <button
+                                        onClick={() => setShowGbpKit(s)}
+                                        title="Generate GBP Launch Kit"
+                                        className="p-1.5 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded transition-colors"
+                                    >
+                                        <ShieldCheck size={14} />
+                                    </button>
                                     <button
                                         onClick={() => triggerDeploy(s)}
                                         disabled={deploying === s.id || !s.cf_deploy_hook}
@@ -325,10 +371,47 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
                                     </div>
                                 </div>
                             )}
+
+                            {provisioningSite === s.id && (
+                                <div className="border-t border-slate-800/60 px-5 py-4 bg-slate-900/60 backdrop-blur">
+                                    <p className="text-sm font-semibold text-slate-300 mb-2">Provision Local Virtual Number via Twilio</p>
+                                    <p className="text-xs text-slate-400 mb-3">Select the country of this supplier to provision a localized number.</p>
+                                    <div className="flex gap-2 items-center">
+                                        <select 
+                                            className={`${sel} w-auto`}
+                                            value={provisionCountry} 
+                                            onChange={e => setProvisionCountry(e.target.value)}
+                                        >
+                                            <option value="CR">Costa Rica (+506)</option>
+                                            <option value="US">United States (+1)</option>
+                                            <option value="MX">Mexico (+52)</option>
+                                            <option value="PA">Panama (+507)</option>
+                                        </select>
+                                        <button onClick={() => provisionTwilioNumber(s.id)} disabled={provisioning} className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 border-0 text-white text-sm rounded-lg hover:opacity-90 disabled:opacity-50">
+                                            <Phone size={13} /> {provisioning ? 'Purchasing API...' : 'Purchase Number'}
+                                        </button>
+                                        <button onClick={() => setProvisioningSite(null)} className="flex items-center gap-1 px-3 py-1.5 border border-slate-700 text-sm rounded-lg hover:bg-slate-800/30 text-white">
+                                            <X size={13} /> Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     );
                 })}
             </div>
+
+            {/* GBP Launch Kit Modal */}
+            {showGbpKit && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div className="relative w-full max-w-3xl">
+                        <button onClick={() => setShowGbpKit(null)} className="absolute -top-4 -right-4 bg-slate-800 hover:bg-red-500 text-white p-2 text-xs font-bold rounded-full border-2 border-emerald-500 z-50 transition-colors">
+                            <X size={16} />
+                        </button>
+                        <GbpLaunchKit site={showGbpKit} />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

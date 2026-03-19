@@ -1,0 +1,22 @@
+---
+import AdminLayout from '../layouts/AdminLayout.astro';
+import ReviewersTable from '../components/ReviewersTable';
+import { getSites, API_BASE, type Site } from '../lib/api';
+
+export const prerender = false;
+
+let sites: Site[] = [];
+try { 
+    sites = await getSites(); 
+} catch (e) {
+    console.error(e);
+}
+---
+
+<AdminLayout title="Review Gig Pool" active="reviewers">
+    <ReviewersTable
+        client:load
+        sites={sites}
+        apiBase={API_BASE}
+    />
+</AdminLayout>

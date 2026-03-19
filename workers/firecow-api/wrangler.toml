@@ -13,6 +13,9 @@ bucket_name = "firecow-media"
 
 [vars]
 ENVIRONMENT = "production"
+TWILIO_ACCOUNT_SID = ""
+TWILIO_AUTH_TOKEN = ""
+TWILIO_WHATSAPP_NUMBER = ""
 
 [triggers]
 crons = ["*/30 * * * *"]

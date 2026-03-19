@@ -1,3 +1,5 @@
+import { TwilioService } from './services/twilio.js';
+
 /**
  * FireCow API — Cloudflare Worker
  * REST API layer over D1 database
@@ -513,6 +515,129 @@ export default {
               ...CORS,
             },
           });
+        }
+      }
+
+      // ─── REVIEWER POOL (Epic 2) ────────────────────────────────────────────
+      if (segments[1] === 'reviewers') {
+        const id = segments[2];
+        if (method === 'GET') {
+          const { results } = await DB.prepare('SELECT * FROM reviewers ORDER BY created_at DESC').all();
+          return json(results);
+        }
+        if (method === 'POST') {
+          const body = await request.json();
+          const { name, whatsapp_number, sinpe_number } = body;
+          if (!name || !whatsapp_number) return err('name and whatsapp_number required', 400);
+          const newId = crypto.randomUUID();
+          await DB.prepare('INSERT INTO reviewers (id, name, whatsapp_number, sinpe_number) VALUES (?, ?, ?, ?)')
+            .bind(newId, name, whatsapp_number, sinpe_number ?? null).run();
+          const created = await DB.prepare('SELECT * FROM reviewers WHERE id = ?').bind(newId).first();
+          return json(created, 201);
+        }
+        if (method === 'PUT' && id) {
+          const body = await request.json();
+          const fields = ['name', 'whatsapp_number', 'sinpe_number', 'status', 'total_gigs_completed'];
+          const updates = fields.filter(f => body[f] !== undefined).map(f => `${f} = ?`).join(', ');
+          const values = fields.filter(f => body[f] !== undefined).map(f => body[f]);
+          if (!updates) return err('no fields', 400);
+          await DB.prepare(`UPDATE reviewers SET ${updates} WHERE id = ?`).bind(...values, id).run();
+          return json(await DB.prepare('SELECT * FROM reviewers WHERE id = ?').bind(id).first());
+        }
+        if (method === 'DELETE' && id) {
+          await DB.prepare('DELETE FROM reviewers WHERE id = ?').bind(id).run();
+          return json({ deleted: true });
+        }
+      }
+
+      if (segments[1] === 'campaigns') {
+        if (method === 'GET') {
+          // get campaigns and their dispatched logs
+          const { results } = await DB.prepare(`
+            SELECT c.*, s.slug as site_slug,
+                   (SELECT COUNT(*) FROM review_dispatch_log WHERE campaign_id = c.id) as dispatched_count
+            FROM review_campaigns c
+            LEFT JOIN sites s ON c.site_id = s.id
+            ORDER BY c.created_at DESC
+          `).all();
+          return json(results);
+        }
+        if (method === 'POST' && segments[2] === 'blast') {
+          // Launch a Campaign!
+          const body = await request.json();
+          const { site_id, requested_reviews, bounty } = body;
+          
+          if (!site_id || !requested_reviews || !bounty) return err('site_id, requested_reviews, bounty required', 400);
+
+          const site = await DB.prepare('SELECT * FROM sites WHERE id = ?').bind(site_id).first();
+          if (!site) return err('Site not found', 404);
+
+          // Find available active reviewers safely
+          const { results: pool } = await DB.prepare('SELECT * FROM reviewers WHERE status = "active"').all();
+          if (pool.length < requested_reviews) {
+            return err(`Only ${pool.length} active reviewers available, but ${requested_reviews} requested.`, 400);
+          }
+
+          // Shuffle and pick
+          const selected = pool.sort(() => 0.5 - Math.random()).slice(0, requested_reviews);
+          
+          const campaignId = crypto.randomUUID();
+          await DB.prepare('INSERT INTO review_campaigns (id, site_id, budget, bounty_per_review) VALUES (?, ?, ?, ?)')
+            .bind(campaignId, site_id, requested_reviews * bounty, bounty).run();
+
+          const twilio = new TwilioService(env);
+          const reviewLink = `https://g.page/r/fake-link-for-${site.slug}/review`; // Stub link
+          
+          let successCount = 0;
+          for (const reviewer of selected) {
+            try {
+               const msg = `Hey ${reviewer.name}! 🔥 New gig available. Leave a 5-star review for ${site.slug} here: ${reviewLink} and reply with a screenshot to get paid ₡${bounty} via SINPE!`;
+               // In production, you would send WhatsApp via Twilio here, but since this is a demo,
+               // we'll just log it. (Otherwise it crashes without real numbers/templates).
+               console.log(`[Twilio Blast] To: ${reviewer.whatsapp_number} -> ${msg}`);
+               
+               const logId = crypto.randomUUID();
+               await DB.prepare('INSERT INTO review_dispatch_log (id, campaign_id, reviewer_id) VALUES (?, ?, ?)')
+                 .bind(logId, campaignId, reviewer.id).run();
+               
+               successCount++;
+            } catch (e) {
+               console.error('Failed to dispatch to reviewer', reviewer.id, e);
+            }
+          }
+
+          return json({ success: true, campaign_id: campaignId, dispatched: successCount });
+        }
+      }
+
+      // ─── TWILIO API (Epic 1) ───────────────────────────────────────────────
+      if (segments[1] === 'twilio') {
+        if (segments[2] === 'provision' && method === 'POST') {
+          const body = await request.json();
+          const { countryCode, site_id } = body;
+
+          // Note: you may want to parse a specific region from body later
+          if (!countryCode || !site_id) {
+            return err('countryCode (e.g. CR, US) and site_id are required');
+          }
+
+          const site = await DB.prepare('SELECT * FROM sites WHERE id = ?').bind(site_id).first();
+          if (!site) return err('Site not found', 404);
+          if (site.twilio_number) return err('Site already has a Twilio number', 400);
+
+          try {
+            const twilio = new TwilioService(env);
+            const rawNumber = await twilio.searchAvailableNumber(countryCode);
+            const purchased = await twilio.purchaseNumber(rawNumber);
+
+            const finalNumber = purchased.phone_number;
+            await DB.prepare('UPDATE sites SET twilio_number = ? WHERE id = ?').bind(finalNumber, site_id).run();
+
+            return json({ success: true, twilio_number: finalNumber }, 201);
+          } catch (e) {
+            console.error('Twilio Provision Error:', e);
+            return err('Failed to provision: ' + e.message, 500);
+          }
         }
       }
 

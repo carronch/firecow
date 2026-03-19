@@ -3,7 +3,7 @@ import SeasonAlert from '../components/SeasonAlert';
 
 interface Props {
     title: string;
-    active: 'bookings' | 'suppliers' | 'tours' | 'sites' | 'calendar' | 'analytics' | 'agents';
+    active: 'bookings' | 'suppliers' | 'tours' | 'sites' | 'calendar' | 'analytics' | 'agents' | 'reviewers';
 }
 const { title, active } = Astro.props;
 const userEmail = Astro.locals.userEmail;
@@ -16,6 +16,7 @@ const nav = [
     { label: 'Tours',     href: '/tours',     key: 'tours'     },
     { label: 'Sites',     href: '/sites',     key: 'sites'     },
     { label: 'Agents',    href: '/agents',    key: 'agents'    },
+    { label: 'Review Pool', href: '/reviewers', key: 'reviewers' },
 ] as const;
 ---
 

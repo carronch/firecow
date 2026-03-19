@@ -295,3 +295,54 @@ Run these checks after setup:
 - [ ] Bulk tour assignment to multiple sites
 - [ ] SMS confirmation via Twilio
 - [ ] Admin notification email on new booking
+
+---
+
+## Guide: How to Provision a 100% Ready Client
+
+To take a new client from zero to fully operational online without triggering algorithmic bans, follow this exact sequence:
+
+### 1. Human Input via Admin Dashboard (`firecow-admin`)
+- **Add Supplier:** Go to the Suppliers tab and create their profile. You must input their precise FareHarbor/Checkfront Calendar URL so the background Cron system can begin syncing availability instantly.
+- **Add Tours:** Attach the required tours to the supplier. Set pricing and securely upload optimized Hero Images to Cloudflare R2 via the dashboard.
+- **Create the Site Database Entry:** Finally, create the Site. Link the tours, give it an exact `slug` (e.g. `papagayo-charters`), and define the `cf_deploy_hook` from Cloudflare Pages.
+
+### 2. Compile the Astro SSR Template
+- Click the **Deploy** button on the specific Site card within the dashboard.
+- This triggers the Cloudflare Pages deploy hook, which immediately clones our Astro Monorepo and dynamically queries the D1 Edge SQL database for exactly that site's parameters.
+- *Cloudflare automatically generates the JSON-LD SEO Schema strictly for Google during this build.*
+
+### 3. Domain Handling (Spaceship.com)
+- Manually purchase the target Domain on **Spaceship.com**.
+- Strip Spaceship's default DNS settings and point the **Nameservers** to Cloudflare.
+- Inside Cloudflare Pages, go to the deployed project > "Custom Domains", and enter the URL.
+- *Cloudflare absorbs the DNS resolution globally and instantly provisions Full Strict HTTPS SSL certificates.*
+
+### 4. Email Provisioning (Resend)
+- In the **Resend Dashboard**, click "Add Domain" and input the client's new Spaceship URL (e.g., `papagayo-charters.com`).
+- Copy the DKIM/SPF DNS records provided by Resend and paste them into your **Cloudflare DNS dashboard** for that URL.
+- This creates an official `info@papagayo-charters.com` inbox. This email *must* be used to register the Google Business Profile, proving to Google that you own the authorized domain infrastructure.
+
+### 5. Phone & Unified Inbox Setup (Twilio + Crisp)
+- In **Twilio**, purchase a local virtual phone number for the client's specific geographic region.
+- Go to the **Crisp Dashboard** > Plugins > Twilio SMS/WhatsApp, and bind the newly purchased phone number to the client's unified inbox routing rules.
+- You now have a verifiable local phone number ready for the GBP application, and all incoming customer texts/WhatsApp messages instantly route to your human agents in Crisp.
+
+### 6. Google Business Profile (GBP) - The 2025 Verification Protocol
+Google's 2025 algorithm relies almost entirely on **Live Video Verification** for Service Area Businesses (tours/charters) to prevent spam. NEVER use APIs to auto-create profiles. Follow this exact manual execution playbook:
+
+**A. Preparation (The Human Launch Kit):**
+- System generates the exact NAP schema, the newly provisioned Twilio Phone Number, and the official Resend email (`info@client.com`).
+- *Warning:* Ensure the client has their Business Registration, Utility Bills, and Licenses ready.
+
+**B. Profile Creation:**
+- A team member manually creates the profile using the exact data.
+- **Set as Service Area Business (SAB):** You MUST clear/hide the physical street address and only define service areas (up to 20 zip codes/cities). Listing a home address publicly for a tour op guarantees an algorithmic suspension.
+
+**C. The Video Verification Execution:**
+- The client must use a mobile phone to record a **continuous, unedited video (30s - 5m)**.
+- **What to film:** They must show street signs/landmarks of their operational base (even if a home driveway), physically unlock a branded company vehicle or show branded equipment (boats/ATVs), and show marketing materials or business licenses on hand.
+- Do not edit the video or show faces excessively.
+
+**D. The 14-Day Freeze Rule:**
+- Once approved, **DO NOT MAKE ANY EDITS FOR 14 DAYS.** Changing the business name, categories, or address immediately after verification will trigger an instant "Suspicious Activity" suspension lock-out. Let the data burn into Google's local graph first.

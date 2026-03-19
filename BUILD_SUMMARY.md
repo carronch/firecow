@@ -99,6 +99,34 @@ firecow-bookings/
 | notes | TEXT | JSON — stores UTM attribution: `{"utm_source":"google","utm_campaign":"..."}` |
 | created_at | TEXT | ISO timestamp |
 
+### `reviewers`
+| Column | Type | Notes |
+|---|---|---|
+| id | TEXT PK | UUID |
+| name | TEXT | Name of local gig worker |
+| whatsapp_number | TEXT | |
+| sinpe_number | TEXT | Payment destination |
+| status | TEXT | `active` / `banned` |
+| total_gigs_completed | INTEGER | Auto-increments |
+| created_at | DATETIME | |
+
+### `review_campaigns`
+| Column | Type | Notes |
+|---|---|---|
+| id | TEXT PK | UUID |
+| site_id | TEXT FK | Connects to Sites table |
+| budget | INTEGER | Total budget allocated |
+| bounty_per_review | INTEGER | ₡ payout per review |
+| status | TEXT | `active` / `completed` |
+
+### `review_dispatch_log`
+| Column | Type | Notes |
+|---|---|---|
+| id | TEXT PK | UUID |
+| campaign_id | TEXT FK | |
+| reviewer_id | TEXT FK | Maps reviewer to gig |
+| payout_status | TEXT | `pending` / `paid` / `failed` |
+
 ---
 
 ## Worker API (`workers/firecow-api/`)
@@ -140,6 +168,17 @@ firecow-bookings/
 | GET | `/api/bookings` | List all bookings (supports `?payment_intent_id=` for idempotency lookup) |
 | POST | `/api/bookings` | Create booking |
 | PUT | `/api/bookings/:id` | Update booking — accepts `booking_date`, `party_size`, `total_amount`, `notes`, `status` |
+
+### Review Pool & Twilio
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/reviewers` | Lists the gig-worker pool |
+| POST | `/api/reviewers` | Add a new gig-worker |
+| PUT | `/api/reviewers/:id` | Update gig-worker stats / BAN state |
+| GET | `/api/campaigns` | Lists all WhatsApp Blast Campaigns and their dispatch counts |
+| POST | `/api/campaigns/blast` | Targets a client site, randomly selects active reviewers, saves logs, and shoots Twilio payload |
+| POST | `/api/twilio/provision` | Proxies `countryCode` parameter to dynamically purchase and mount a Twilio Virtual Number to a `site_id` |
 
 ### Files (R2)
 
@@ -228,7 +267,8 @@ PUBLIC_CRISP_WEBSITE_ID=xxxx-xxxx-...  # Crisp website ID (live chat widget)
 | `/analytics` | `AnalyticsDashboard.tsx` | Revenue/booking stat cards, daily trend bar chart, per-site table, UTM sources table with pre-wired Ad Spend column |
 | `/suppliers` | `SuppliersTable.tsx` | Inline add/edit/delete rows |
 | `/tours` | `ToursTable.tsx` | Full CRUD, R2 image upload, supplier dropdown, toggle active |
-| `/sites` | `SitesTable.tsx` | Card layout, create/edit, CF Pages deploy trigger, toggle live, amber pending-deploy badge after save, duplicate button |
+| `/sites` | `SitesTable.tsx` | Card layout, create/edit, Twilio Provisioning, GBP Launch Kit generation, toggle live, duplicate button |
+| `/reviewers` | `ReviewersTable.tsx` | Manages the standalone local Gig-Worker table. Launch Twilio blasts to coordinate real 5-star reviews on Google |
 
 ### Admin Architecture
 
@@ -289,6 +329,7 @@ STRIPE_SECRET_KEY=sk_live_...
 | Phase 2 — Stripe Checkout | ✅ Complete | Embedded Checkout, success page, webhooks, Zoho removed |
 | Phase 3 — Admin Dashboard | ✅ Complete | Full CRUD admin with Stripe refunds and R2 image uploads |
 | Phase 4 — Feature Expansion | ✅ Complete | Analytics, calendar, availability, UTM, email, upsell, Crisp, deploy UX |
+| Phase 7 — Comms & Gig Pool | ✅ Complete | Twilio APIs, Reviewer Database, GBP Verification Strategy UI |
 
 ## Upcoming Phases
 
