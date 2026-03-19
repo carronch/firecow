@@ -13,3 +13,6 @@ bucket_name = "firecow-media"
 
 [vars]
 ENVIRONMENT = "production"
+
+[triggers]
+crons = ["*/30 * * * *"]

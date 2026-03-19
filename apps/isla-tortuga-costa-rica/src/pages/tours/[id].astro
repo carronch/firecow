@@ -17,9 +17,24 @@ if (!tourEntry) {
 
 const tour = tourEntry.data;
 const pageTitle = `${tour.title} - FireCow Bookings`;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "TouristAttraction",
+  "name": tour.title,
+  "description": tour.description,
+  "url": Astro.url.href,
+  "image": tour.heroImage,
+  "offers": {
+    "@type": "Offer",
+    "price": typeof tour.price === 'number' ? tour.price : tour.price.adult,
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  }
+};
 ---
 
-<BaseLayout title={pageTitle}>
+<BaseLayout title={pageTitle} schema={schema}>
   <Header />
 
   <main class="min-h-screen bg-white">

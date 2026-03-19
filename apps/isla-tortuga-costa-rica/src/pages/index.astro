@@ -21,9 +21,24 @@ const price = tour ? displayPrice(tour.base_price) : null;
 
 const pageTitle = site?.meta_title ?? "Tortuga Island Tour | Costa Cat Cruises";
 const pageDescription = site?.meta_description ?? "Book the best Isla Tortuga day tour from Jacó, Costa Rica.";
+
+const schema = tour && site ? {
+  "@context": "https://schema.org",
+  "@type": "TouristAttraction",
+  "name": tour.name,
+  "description": pageDescription,
+  "url": Astro.url.href,
+  "image": galleryImages.length ? galleryImages[0] : tour.hero_image_url,
+  "offers": {
+    "@type": "Offer",
+    "price": tour.base_price / 100,
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  }
+} : undefined;
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription}>
+<BaseLayout title={pageTitle} description={pageDescription} schema={schema}>
   <Header whatsapp={site?.whatsapp_number} />
   
   <main>

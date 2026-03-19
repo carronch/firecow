@@ -522,4 +522,26 @@ export default {
       return err('Internal server error: ' + e.message, 500);
     }
   },
+
+  async scheduled(event, env, ctx) {
+    console.log(`Cron triggered at ${new Date().toISOString()}`);
+    const DB = env.DB;
+    try {
+      // 1. Fetch all suppliers with a calendar_url
+      const { results: suppliers } = await DB.prepare('SELECT id, calendar_url FROM suppliers WHERE calendar_url IS NOT NULL').all();
+      
+      for (const supplier of suppliers) {
+        if (!supplier.calendar_url) continue;
+        console.log(`Syncing calendar for supplier: ${supplier.id}`);
+        // 2. Integration point for external calendar APIs (FareHarbor, iCal, etc.)
+        // Example flow:
+        // const response = await fetch(supplier.calendar_url);
+        // const calendarData = await response.text();
+        // -> parse data -> verify newly blocked slots
+        // -> insert dummy 'confirmed' bookings into D1 with notes: '{"source":"external_cron_sync"}'
+      }
+    } catch (e) {
+      console.error('Cron Error:', e);
+    }
+  },
 };

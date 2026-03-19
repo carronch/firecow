@@ -4,9 +4,10 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  schema?: object;
 }
 
-const { title, description = "Book your next adventure with FireCow Bookings" } = Astro.props;
+const { title, description = "Book your next adventure with FireCow Bookings", schema } = Astro.props;
 ---
 
 <!doctype html>
@@ -17,6 +18,8 @@ const { title, description = "Book your next adventure with FireCow Bookings" } 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
     
     <!-- Performance hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
