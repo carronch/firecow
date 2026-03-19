@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FireCow Bookings | Technical Architecture</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Outfit:wght@300;400;600;800&display=swap');
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #030712;
+            color: white;
+            overflow-x: hidden;
+        }
+        .mono { font-family: 'Fira Code', monospace; }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 1rem;
+        }
+        .code-block {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            color: #38bdf8;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #38bdf8, #818cf8, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-sky-500/30">
+
+    <!-- Header / Terminal Intro -->
+    <header class="py-20 px-4 max-w-6xl mx-auto reveal active">
+        <div class="inline-block px-4 py-1 rounded border border-sky-500/30 text-sky-400 font-mono text-sm mb-6">
+            $ firecow status --verbose
+        </div>
+        <h1 class="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            The Multi-Site <br/> <span class="gradient-text">Booking Engine</span>
+        </h1>
+        <p class="text-xl text-gray-400 max-w-3xl mb-12">
+            This isn't a Wix site. This is a custom-built, headless Jamstack ecosystem designed to scale to hundreds of client operators using Cloudflare's Edge network.
+        </p>
+
+        <div class="flex items-center gap-4 mb-16 reveal" style="transition-delay: 150ms;">
+            <a href="https://isla-tortuga-costa-rica.pages.dev" target="_blank" class="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-sky-400 to-purple-500 text-white font-bold rounded-full hover:scale-105 transition-transform shadow-[0_0_20px_-5px_rgba(56,189,248,0.5)]">
+                View Live Tour Site
+            </a>
+            <a href="#architecture" class="inline-flex items-center justify-center px-8 py-4 bg-gray-900 border border-gray-800 text-gray-300 font-bold rounded-full hover:bg-gray-800 transition-colors">
+                Explore the APIs
+            </a>
+        </div>
+        
+        <!-- Tech Stack Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16 font-mono text-sm">
+            <div class="p-4 bg-gray-900 border border-gray-800 rounded flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+                <span>Astro SSR / React</span>
+            </div>
+            <div class="p-4 bg-gray-900 border border-gray-800 rounded flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                <span>Cloudflare Workers + D1</span>
+            </div>
+            <div class="p-4 bg-gray-900 border border-gray-800 rounded flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                <span>Stripe Checkout</span>
+            </div>
+            <div class="p-4 bg-gray-900 border border-gray-800 rounded flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                <span>Crisp + Twilio (Sync)</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Deep Dive Architecture -->
+    <main class="max-w-6xl mx-auto px-4 pb-32">
+        <div class="space-y-16">
+
+            <!-- 1. The Database & Admin -->
+            <div class="glass-card p-8 md:p-12 reveal">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-sky-500/20 text-sky-400 rounded flex items-center justify-center font-bold text-xl">1</div>
+                    <h2 class="text-3xl font-bold">The Brain: D1 Database & Admin UI</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <p class="text-gray-400 mb-6 leading-relaxed">
+                            Every client we onboard operates out of one centralized SQL database hosted entirely on the Edge (<span class="text-white font-semibold">Cloudflare D1 `firecow-db`</span>). Our internal team uses a custom-built React <strong class="text-white">Admin Dashboard (`apps/admin`)</strong> to input client details. No CMS bloat.
+                        </p>
+                        <ul class="space-y-3 text-sm text-gray-300 mb-6">
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span class="mono text-sky-300">suppliers</span> - Name, WhatsApp, External Calendars</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span class="mono text-sky-300">tours</span> - Price, Photos (Cloudflare R2), Capacity</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-sky-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> <span class="mono text-sky-300">sites</span> - Slugs, Colors, Deploy Hooks, Tours mapping</li>
+                        </ul>
+                    </div>
+                    <div class="code-block text-sm overflow-hidden">
+                        <span class="text-gray-500">// Worker REST API Route</span><br/><br/>
+                        <span class="text-purple-400">POST</span> /api/sites <span class="text-gray-400">{</span><br/>
+                        &nbsp;&nbsp;<span class="text-sky-300">"slug"</span>: <span class="text-green-300">"isla-tortuga"</span>,<br/>
+                        &nbsp;&nbsp;<span class="text-sky-300">"tour_ids"</span>: [<span class="text-green-300">"uuid-1"</span>, <span class="text-green-300">"uuid-2"</span>],<br/>
+                        &nbsp;&nbsp;<span class="text-sky-300">"cf_deploy_hook"</span>: <span class="text-green-300">"https://api.cloudflare.com..."</span><br/>
+                        <span class="text-gray-400">}</span><br/><br/>
+                        <span class="text-gray-500">// triggers instant site build</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Onboarding & Deployment -->
+            <div class="glass-card p-8 md:p-12 reveal">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-pink-500/20 text-pink-400 rounded flex items-center justify-center font-bold text-xl">2</div>
+                    <h2 class="text-3xl font-bold">Zero-to-One Deployment (Astro SSR)</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 flex-row-reverse">
+                    <div class="order-2 md:order-1 flex items-center justify-center bg-gray-900 border border-gray-800 rounded-xl p-6 relative">
+                        <div class="absolute w-full h-full bg-pink-500/5 blur-3xl"></div>
+                        <div class="text-center w-full z-10">
+                            <div class="text-xs text-gray-500 font-mono mb-2 uppercase">Astro SSR Template</div>
+                            <div class="h-1 bg-gradient-to-r from-transparent via-pink-500 to-transparent w-full mb-4"></div>
+                            <div class="text-pink-300 text-lg font-bold">100 Lighthouse Score</div>
+                            <p class="text-sm text-gray-400 mt-2">Dynamic JSON-LD Schema<br/>injected on route load.</p>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <p class="text-gray-400 mb-6 leading-relaxed">
+                            Once a client is in the Admin UI, clicking "Deploy" hits the Cloudflare Pages deploy hook. This pulls from our singular <strong class="text-white">Astro multi-site template (`apps/isla-tortuga-costa-rica`)</strong>. 
+                        </p>
+                        <p class="text-gray-400 leading-relaxed">
+                            Because it's Server-Side Rendered (SSR), when a customer visits the client's URL, Astro immediately fetches the specific client's colors, prices, and text directly from the API. It also automatically generates <strong class="text-white">JSON-LD Schema.org Structured Data</strong> in the HTML head. Perfect SEO out of the box.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. The Onboarding Flowchart -->
+            <div class="glass-card p-8 md:p-12 reveal">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-12 h-12 bg-rose-500/20 text-rose-400 rounded flex items-center justify-center font-bold text-xl">3</div>
+                    <h2 class="text-3xl font-bold">The Zero-Ban Provisioning Flow</h2>
+                </div>
+                
+                <div class="relative max-w-4xl mx-auto py-4">
+                    <!-- Vertical Line -->
+                    <div class="absolute left-6 top-6 bottom-6 w-0.5 bg-gray-800"></div>
+                    
+                    <div class="space-y-12">
+                        <!-- Step 1 -->
+                        <div class="relative pl-16 hover:-translate-y-1 transition-transform">
+                            <div class="absolute left-0 top-1 w-12 h-12 bg-gray-900 border-2 border-rose-500 rounded-full flex items-center justify-center font-bold text-rose-400 z-10 shadow-[0_0_15px_rgba(244,63,94,0.3)]">1</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Human Input (The Spreadsheet UI)</h3>
+                            <p class="text-gray-400 mb-4">Our agency team safely inputs the client's raw data into the custom React Admin Dashboard. This requires precisely three steps to provision a brand new site:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                <div class="bg-slate-900 border border-slate-800 p-4 rounded-lg">
+                                    <div class="text-rose-400 font-bold mb-1">A. Add Supplier</div>
+                                    <p class="text-xs text-gray-500">Input Company Name, WhatsApp, and the external Calendar API url (FareHarbor/Checkfront).</p>
+                                </div>
+                                <div class="bg-slate-900 border border-slate-800 p-4 rounded-lg">
+                                    <div class="text-rose-400 font-bold mb-1">B. Add Tours</div>
+                                    <p class="text-xs text-gray-500">Attach specific tours to the supplier. Set the price, descriptions, and securely upload Hero images to Cloudflare R2.</p>
+                                </div>
+                                <div class="bg-slate-900 border border-slate-800 p-4 rounded-lg">
+                                    <div class="text-rose-400 font-bold mb-1">C. Add Site</div>
+                                    <p class="text-xs text-gray-500">Link the Tours to the Site entity, assign a globally unique slug, and define the Cloudflare Pages deploy hook.</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-sm">Once these three database schemas are fulfilled, the Worker API safely sanitizes and commits the payload to the centralized D1 Edge Database.</p>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="relative pl-16 hover:-translate-y-1 transition-transform">
+                            <div class="absolute left-0 top-1 w-12 h-12 bg-gray-900 border-2 border-sky-500 rounded-full flex items-center justify-center font-bold text-sky-400 z-10 box-shadow">2</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Trigger Cloudflare Build Hook</h3>
+                            <p class="text-gray-400">The team clicks "Deploy" in the Admin Dashboard. This instantly POSTs to the unique Cloudflare Pages `deploy_hook` assigned exactly to that client's target URL. No human bot-like crawling.</p>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="relative pl-16 hover:-translate-y-1 transition-transform">
+                            <div class="absolute left-0 top-1 w-12 h-12 bg-gray-900 border-2 border-purple-500 rounded-full flex items-center justify-center font-bold text-purple-400 z-10">3</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Astro SSR Template Compilation</h3>
+                            <p class="text-gray-400">Cloudflare provisions our singular Astro Monorepo. Astro executes server-side (SSR) and dynamically queries the D1 Database for ONLY that single client's parameters without loading massive headless CMS bloat.</p>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="relative pl-16 hover:-translate-y-1 transition-transform">
+                            <div class="absolute left-0 top-1 w-12 h-12 bg-gray-900 border-2 border-green-500 rounded-full flex items-center justify-center font-bold text-green-400 z-10">4</div>
+                            <h3 class="text-xl font-bold text-white mb-2">SEO Schema Generation</h3>
+                            <p class="text-gray-400">During the split-second DOM render, Astro constructs a perfect `JSON-LD TouristAttraction` schema mapping the client's catalog, embedding it strictly into the HTML `<head>`. This guarantees Google parses the deeply nested catalog perfectly on Day 1.</p>
+                        </div>
+                        <!-- Step 5 -->
+                        <div class="relative pl-16 hover:-translate-y-1 transition-transform">
+                            <div class="absolute left-0 top-1 w-12 h-12 bg-gray-900 border-2 border-yellow-500 rounded-full flex items-center justify-center font-bold text-yellow-400 z-10 mb-8">5</div>
+                            <h3 class="text-xl font-bold text-white mb-2">Global Cron Job Registration</h3>
+                            <p class="text-gray-400">The site goes live across Cloudflare's 300+ data centers, and the backend Cron Automatically adds this new client to its 30-minute sync rotation to guarantee FareHarbor capacity matching.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <!-- 4. Availability Cron & Customer Service -->
+             <div class="glass-card p-8 md:p-12 reveal">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-green-500/20 text-green-400 rounded flex items-center justify-center font-bold text-xl">4</div>
+                    <h2 class="text-3xl font-bold">Real-Time Sync & Ops</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-3">No Double Bookings</h3>
+                        <p class="text-gray-400 mb-8 leading-relaxed">
+                            We built an autonomous <strong class="text-white">Cloudflare Cron Trigger</strong> living in `workers/firecow-api` that fires every 30 minutes. It reaches across all our active clients, fetches their external calendars (FareHarbor, Checkfront), and syncs back to our D1 database. The Astro Booking Widget always shows absolute truth.
+                        </p>
+
+                        <h3 class="text-xl font-bold text-white mb-3">Unified Customer Service</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            We don't juggle 50 phones. Every client website embeds our <strong class="text-white">Crisp Live Chat</strong> widget (`PUBLIC_CRISP_WEBSITE_ID`). Through Crisp's API and Twilio, all web chats, Instagram DMs, and WhatsApp messages from 100 different clients drop into ONE unified agency dashboard for our team to close the sale.
+                        </p>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 font-mono text-sm text-gray-400">
+                        <h4 class="text-white mb-4">The Stack Toolchain:</h4>
+                        <div class="space-y-4">
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-sky-300">Processing</span>
+                                <span>Stripe Embedded Checkout</span>
+                            </div>
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-sky-300">Confirmation</span>
+                                <span>Resend Edge HTTP API</span>
+                            </div>
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-sky-300">Sync Config</span>
+                                <span>wrangler.toml: [triggers] crons = ["*/30 * * * *"]</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sky-300">Attribution</span>
+                                <span>UTM JSON Notes -> Google Ads API (Phase 6)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. The API Ecosystem -->
+            <div class="glass-card p-8 md:p-12 reveal">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded flex items-center justify-center font-bold text-xl">5</div>
+                    <h2 class="text-3xl font-bold">External API Microservices</h2>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
+                    <!-- Stripe -->
+                    <a href="https://stripe.com/docs/api" target="_blank" class="block bg-gray-900/50 border border-gray-800 p-6 rounded-xl hover:border-purple-500/50 transition-colors group shadow-lg">
+                        <div class="font-bold text-white mb-2 flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-purple-500"></div> Stripe <span class="text-gray-700 group-hover:text-purple-400 text-xs ml-auto font-mono">↗</span>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed">Embedded Checkout modal prevents redirects. Automatic webhook routing back to D1 for guaranteed idempotent booking ledger sync.</p>
+                    </a>
+                    <!-- Resend -->
+                    <a href="https://resend.com/docs" target="_blank" class="block bg-gray-900/50 border border-gray-800 p-6 rounded-xl hover:border-red-500/50 transition-colors group shadow-lg">
+                        <div class="font-bold text-white mb-2 flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-red-400"></div> Resend <span class="text-gray-700 group-hover:text-red-400 text-xs ml-auto font-mono">↗</span>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed">Edge-compatible HTTP API for transactional emails. Sub-second delivery of booking confirmations and cross-selling upsells directly from the Worker.</p>
+                    </a>
+                    <!-- Google Ads -->
+                    <a href="https://developers.google.com/google-ads/api/docs/start" target="_blank" class="block bg-gray-900/50 border border-gray-800 p-6 rounded-xl hover:border-blue-500/50 transition-colors group shadow-lg">
+                        <div class="font-bold text-white mb-2 flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-blue-500"></div> Google Ads <span class="text-gray-700 group-hover:text-blue-400 text-xs ml-auto font-mono">↗</span>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed">Direct MCC API pipeline. Correlates deep-funnel UTM parameters with strict ROAS (Return On Ad Spend) mapping within our custom Analytics reporting.</p>
+                    </a>
+                    <!-- Cloudflare -->
+                    <a href="https://developers.cloudflare.com/workers/" target="_blank" class="block bg-gray-900/50 border border-gray-800 p-6 rounded-xl hover:border-orange-500/50 transition-colors group shadow-lg">
+                        <div class="font-bold text-white mb-2 flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-orange-500"></div> Cloudflare <span class="text-gray-700 group-hover:text-orange-400 text-xs ml-auto font-mono">↗</span>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed">D1 Edge SQL, Automated Cron Triggers, Pages SSR hosting, and R2 Object Storage. Infinite computing scale, Zero lock-in.</p>
+                    </a>
+                    <!-- Crisp -->
+                    <a href="https://docs.crisp.chat/guides/rest-api/quickstart/" target="_blank" class="block bg-gray-900/50 border border-gray-800 p-6 rounded-xl hover:border-sky-500/50 transition-colors group shadow-lg">
+                        <div class="font-bold text-white mb-2 flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-sky-500"></div> Crisp Chat <span class="text-gray-700 group-hover:text-sky-400 text-xs ml-auto font-mono">↗</span>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed">Direct unified inbox integration. Routes web chats, Instagram DMs, and WhatsApp API messages from 100+ sites into one agency dashboard.</p>
+                    </a>
+                    <!-- Twilio -->
+                    <a href="https://www.twilio.com/docs/whatsapp/api" target="_blank" class="block bg-gray-900/50 border border-gray-800 p-6 rounded-xl hover:border-green-500/50 transition-colors group shadow-lg">
+                        <div class="font-bold text-white mb-2 flex items-center gap-2">
+                            <div class="w-2 h-2 rounded-full bg-green-500"></div> Twilio <span class="text-gray-700 group-hover:text-green-400 text-xs ml-auto font-mono">↗</span>
+                        </div>
+                        <p class="text-gray-400 leading-relaxed">Programmatic SMS and WhatsApp business integration. Fires automated payment confirmations from our global Cloudflare Worker instantly.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 6. Domain Management -->
+            <div class="glass-card p-8 md:p-12 reveal">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-teal-500/20 text-teal-400 rounded flex items-center justify-center font-bold text-xl">6</div>
+                    <h2 class="text-3xl font-bold">Domain Pipeline (Spaceship.com)</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <p class="text-gray-400 mb-6 leading-relaxed">
+                            For purchasing custom URLs and managing global domain configurations at scale, we bypass legacy providers and operate strictly through <strong class="text-white">Spaceship.com</strong>.
+                        </p>
+                        <h3 class="text-xl text-white font-bold mb-3">Why Spaceship?</h3>
+                        <ul class="space-y-3 text-sm text-gray-300">
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-teal-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Instant DNS propagation natively mapped to Cloudflare's Edge</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-teal-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Dramatically cheaper and faster for onboarding 100+ clients.</li>
+                            <li class="flex items-center gap-2"><svg class="w-5 h-5 text-teal-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> An incredibly modern, programmable API layer for automatic provisioning.</li>
+                        </ul>
+                    </div>
+                    <div class="border border-gray-800 rounded-xl bg-gray-900 p-6">
+                        <div class="text-xs text-teal-400 font-mono mb-4 uppercase tracking-widest">DNS Logic Layer</div>
+                        <div class="text-sm font-mono text-gray-400 leading-relaxed space-y-2">
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500">Domain</span> <span class="text-white">Spaceship Registrar</span>
+                            </div>
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500">Nameservers</span> <span class="text-white">Routed to Cloudflare</span>
+                            </div>
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500">Astro Route</span> <span class="text-sky-300">cf_deploy_hook (Automatic)</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">SSL Target</span> <span class="text-green-400">Strict HTTPS Edge</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Google Ecosystem Strategy -->
+            <div class="glass-card p-8 md:p-12 reveal">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-red-500/20 text-red-500 rounded flex items-center justify-center font-bold text-xl">7</div>
+                    <h2 class="text-3xl font-bold">The Google Algorithm Strategy</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12">
+                     <div>
+                        <p class="text-gray-400 mb-6 leading-relaxed">
+                            Interacting with Google's ecosystem at scale is a minefield of algorithmic bot bans. We have engineered a strict Hybrid-Automation model to entirely bypass these penalties while still achieving enterprise expansion.
+                        </p>
+                        
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2"><svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg> Google Business Profile (GBP) Verification</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-3">Instead of using APIs to auto-create profiles (which triggers immediate spam-suspensions), our system generates a highly-trusted <strong>"GBP Launch Kit"</strong> for precise human copy/pasting. This guarantees instant algorithmic verification by stacking massive domain authority signals:</p>
+                                <ul class="space-y-2 text-xs text-gray-400 border-l-2 border-red-500/30 pl-4">
+                                    <li><strong class="text-white">Domain Identity (Resend):</strong> We provision a strict `info@clientURL.com` inbox via Resend. Google's algorithm sees the email precisely matches the application URL.</li>
+                                    <li><strong class="text-white">Local Authority (Twilio):</strong> We provision a geographic virtual phone number via Twilio, routing any Google verification texts directly into our Crisp Unified Inbox.</li>
+                                    <li><strong class="text-white">2025 Video Verification Prep:</strong> Because Google now mandates live unedited video tests for Service Area Businesses, our platform automatically generates a custom "What to Film" script for the client (branded vehicles, tool access, local landmarks) ensuring a first-try pass.</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2"><svg class="w-5 h-5 text-blue-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg> Google Ads API via MCC</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">Creating brand new ad accounts repeatedly triggers billing lockouts. Instead, our automation connects strictly to an aged, trusted <strong>Agency Manager Account (MCC)</strong>. High intent campaigns are safely spawned instantly under our MCC umbrella via API.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden flex flex-col justify-center">
+                        <div class="absolute w-full h-full bg-red-500/5 blur-3xl"></div>
+                        <div class="z-10 text-center">
+                            <div class="text-xs text-red-400 font-mono mb-4 uppercase tracking-widest">The Risk Mitigation Layer</div>
+                            <div class="flex items-center justify-between bg-slate-800/50 border border-slate-700 p-4 rounded-lg mb-4">
+                                <span class="text-white font-mono text-sm">Automated Profile Origin</span>
+                                <span class="text-red-400 font-bold text-sm bg-red-500/10 px-3 py-1 rounded border border-red-500/20">100% Ban Risk</span>
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-800/50 border border-slate-700 p-4 rounded-lg">
+                                <span class="text-white font-mono text-sm">Pre-Compiled Human Playbook</span>
+                                <span class="text-green-400 font-bold text-sm bg-green-500/10 px-3 py-1 rounded border border-green-500/20">0% Ban Risk</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. The Gig-Worker Review Pool -->
+            <div class="glass-card p-8 md:p-12 reveal">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-pink-500/20 text-pink-400 rounded flex items-center justify-center font-bold text-xl">8</div>
+                    <h2 class="text-3xl font-bold">The Gig-Worker Review Pool</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <p class="text-gray-400 mb-6 leading-relaxed">
+                            Securing legitimate, 5-star Google Business reviews is the hardest part of local SEO. We solved this by building a standalone local "Gig Economy" module directly into the FireCow Dashboard.
+                        </p>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2"><svg class="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z"/></svg> The Reviewer Roster</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">We onboard trusted locals into our private D1 database, tracking their Name, WhatsApp Number, and SINPE payment info. We monitor stats on how many "gigs" they complete for our clients.</p>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2"><svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> One-Click WhatsApp Blasts</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">When a client needs an SEO boost, our admin team clicks "Blast Gig", sets a budget, and targets a client. FireCow's Twilio integration automatically messages random active gig-workers: <em>"Leave a 5-star review here and reply with a screenshot for ₡5000."</em></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden h-full flex flex-col justify-center">
+                        <div class="absolute w-full h-full bg-pink-500/5 blur-3xl"></div>
+                        <div class="z-10">
+                            <div class="text-xs text-pink-400 font-mono mb-4 a tracking-widest uppercase">Automated Dispatch Log</div>
+                            <div class="space-y-3">
+                                <div class="bg-slate-800/50 border border-slate-700 p-3 rounded-lg flex justify-between items-center">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs">WA</div>
+                                        <div>
+                                            <div class="text-white text-sm font-bold">New Gig: ₡5000</div>
+                                            <div class="text-gray-400 text-xs font-mono">Dispatched to +506 8888-8888</div>
+                                        </div>
+                                    </div>
+                                    <span class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs font-bold border border-green-500/30">PAID</span>
+                                </div>
+                                <div class="bg-slate-800/50 border border-slate-700 p-3 rounded-lg flex justify-between items-center">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 text-xs">WA</div>
+                                        <div>
+                                            <div class="text-white text-sm font-bold">New Gig: ₡5000</div>
+                                            <div class="text-gray-400 text-xs font-mono">Dispatched to +506 8123-4567</div>
+                                        </div>
+                                    </div>
+                                    <span class="bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded text-xs font-bold border border-yellow-500/30">PENDING</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. Future Roadmap -->
+            <div class="glass-card p-8 md:p-12 reveal">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-12 bg-orange-500/20 text-orange-400 rounded flex items-center justify-center font-bold text-xl">9</div>
+                    <h2 class="text-3xl font-bold">The Roadmap (Phase 5 & 6)</h2>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-3">Google Ads API & ROAS</h3>
+                        <p class="text-gray-400 mb-8 leading-relaxed">
+                            We are building direct OAuth2 integration with the Google Ads API and our central D1 Database. By matching our UTM tracking notes directly against live campaign spend, our Analytics dashboard will show exact Return on Ad Spend (ROAS) instantly.
+                        </p>
+
+                        <h3 class="text-xl font-bold text-white mb-3">Edge Localization (i18n)</h3>
+                        <p class="text-gray-400 mb-8 leading-relaxed">
+                            Phase 5 brings seamless English/Spanish multi-language support. Fully configured URL-prefix routing at the edge, meaning zero performance loss while hitting Latin American and US markets simultaneously.
+                        </p>
+                        
+                        <h3 class="text-xl font-bold text-white mb-3">Twilio SMS</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            Beyond Resend emails, we are integrating programmatic Twilio SMS confirmations directly from the Cloudflare Worker upon payment success.
+                        </p>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 font-mono text-sm text-gray-400 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute w-full h-full bg-orange-500/5 blur-3xl"></div>
+                        <div class="z-10 text-center">
+                            <div class="text-3xl font-bold text-green-400 mb-2">485%</div>
+                            <div class="text-xs uppercase tracking-widest text-gray-500">Live ROAS Tracking</div>
+                            <div class="mt-6 animate-pulse w-32 h-1 bg-gradient-to-r from-orange-500 to-green-500 mx-auto rounded"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Interactive Reveal Script -->
+    <script>
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 50;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        setTimeout(reveal, 100);
+    </script>
+</body>
+</html>
