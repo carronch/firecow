@@ -41,6 +41,44 @@ export default function BookingsTable({ initialBookings, apiBase }: Props) {
         booking_date: '', party_size: 1, status: 'confirmed', notes: '',
     });
 
+    const [showNew, setShowNew] = useState(false);
+    const [newData, setNewData] = useState<{ tour_id: string; site_id: string; customer_name: string; customer_email: string; booking_date: string; party_size: number; total_amount: number; status: string; notes: string }>({
+        tour_id: '', site_id: 'isla-tortuga-costa-rica', customer_name: '', customer_email: '', booking_date: '', party_size: 1, total_amount: 0, status: 'confirmed', notes: ''
+    });
+
+    const handleCreate = async () => {
+        setSaving(true);
+        setError(null);
+        try {
+            const manualId = `manual_${Date.now()}`;
+            const res = await fetch(`${apiBase}/api/bookings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    tour_id: newData.tour_id,
+                    site_id: newData.site_id,
+                    stripe_payment_intent_id: manualId,
+                    customer_name: newData.customer_name,
+                    customer_email: newData.customer_email,
+                    booking_date: newData.booking_date,
+                    party_size: newData.party_size,
+                    total_amount: Math.round(newData.total_amount * 100), // convert dollars back to cents
+                    status: newData.status,
+                    notes: newData.notes || '{"utm_source":"manual"}',
+                }),
+            });
+            if (!res.ok) throw new Error(await res.text());
+            const created = await res.json();
+            setBookings(bs => [created, ...bs]);
+            setShowNew(false);
+            setNewData({ tour_id: '', site_id: 'isla-tortuga-costa-rica', customer_name: '', customer_email: '', booking_date: '', party_size: 1, total_amount: 0, status: 'confirmed', notes: '' });
+        } catch (e: any) {
+            setError(e.message);
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const refresh = useCallback(async () => {
         setLoading(true);
         try {
@@ -113,15 +151,75 @@ export default function BookingsTable({ initialBookings, apiBase }: Props) {
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <p className="text-sm text-slate-400">{bookings.length} bookings</p>
-                <button
-                    onClick={refresh}
-                    disabled={loading}
-                    className="flex items-center gap-2 px-3 py-1.5 text-sm border border-slate-700 rounded-lg hover:bg-slate-800/30 disabled:opacity-50"
-                >
-                    <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-                    Refresh
-                </button>
+                <div className="flex gap-2">
+                    <button
+                        onClick={() => setShowNew(!showNew)}
+                        className="flex items-center gap-2 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                        + New Booking
+                    </button>
+                    <button
+                        onClick={refresh}
+                        disabled={loading}
+                        className="flex items-center gap-2 px-3 py-1.5 text-sm border border-slate-700 rounded-lg hover:bg-slate-800/30 disabled:opacity-50"
+                    >
+                        <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+                        Refresh
+                    </button>
+                </div>
             </div>
+
+            {showNew && (
+                <div className="p-4 bg-slate-900 border border-slate-700 rounded-xl mb-4 text-sm space-y-3">
+                    <h3 className="font-bold text-white">Manual Booking Override</h3>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div>
+                            <label className="block text-slate-400 mb-1">Customer Name</label>
+                            <input className={inp} value={newData.customer_name} onChange={e => setNewData(d => ({ ...d, customer_name: e.target.value }))} placeholder="John Doe" />
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 mb-1">Customer Email</label>
+                            <input className={inp} type="email" value={newData.customer_email} onChange={e => setNewData(d => ({ ...d, customer_email: e.target.value }))} placeholder="john@example.com" />
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 mb-1">Total Paid (USD)</label>
+                            <input className={inp} type="number" value={newData.total_amount} onChange={e => setNewData(d => ({ ...d, total_amount: Number(e.target.value) }))} placeholder="150" />
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 mb-1">Booking Date</label>
+                            <input className={inp} type="date" value={newData.booking_date} onChange={e => setNewData(d => ({ ...d, booking_date: e.target.value }))} />
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 mb-1">Party Size</label>
+                            <input className={inp} type="number" min="1" value={newData.party_size} onChange={e => setNewData(d => ({ ...d, party_size: Number(e.target.value) }))} />
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 mb-1">Status</label>
+                            <select className={`${inp} bg-slate-900/40 backdrop-blur-md`} value={newData.status} onChange={e => setNewData(d => ({ ...d, status: e.target.value }))}>
+                                {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 mb-1">Tour ID (UUID)</label>
+                            <input className={inp} value={newData.tour_id} onChange={e => setNewData(d => ({ ...d, tour_id: e.target.value }))} placeholder="uuid..." />
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 mb-1">Site Slug</label>
+                            <input className={inp} value={newData.site_id} onChange={e => setNewData(d => ({ ...d, site_id: e.target.value }))} />
+                        </div>
+                        <div>
+                            <label className="block text-slate-400 mb-1">Admin Notes / UTM JSON</label>
+                            <input className={inp} value={newData.notes} onChange={e => setNewData(d => ({ ...d, notes: e.target.value }))} placeholder='{"utm_source":"manual"}' />
+                        </div>
+                    </div>
+                    <div className="flex justify-end gap-2 mt-2 pt-2 border-t border-slate-800">
+                        <button onClick={() => setShowNew(false)} className="px-3 py-1.5 border border-slate-700 rounded hover:bg-slate-800">Cancel</button>
+                        <button onClick={handleCreate} disabled={saving} className="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1">
+                            {saving ? 'Creating...' : 'Create Booking'}
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {error && (
                 <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">
