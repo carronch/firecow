@@ -14,12 +14,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Deploy firecow-api
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: de37049df0384c9ae759a247ab16f81f
-          workingDirectory: workers/firecow-api
-          command: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: de37049df0384c9ae759a247ab16f81f
+        working-directory: workers/firecow-api
+        run: npx wrangler deploy
 
   # ── Deploy Admin (firecow-manager Pages) ─────────────────────────────────
   deploy-admin:
@@ -44,8 +43,7 @@ jobs:
         run: pnpm --filter @firecow/admin build
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: de37049df0384c9ae759a247ab16f81f
-          command: pages deploy apps/admin/dist --project-name=firecow-manager --branch=main
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: de37049df0384c9ae759a247ab16f81f
+        run: npx wrangler pages deploy apps/admin/dist --project-name=firecow-manager --branch=main
