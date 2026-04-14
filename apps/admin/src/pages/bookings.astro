@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../layouts/AdminLayout.astro';
 import BookingsTable from '../components/BookingsTable';
-import { getBookings, API_BASE, type Booking } from '../lib/api';
+import { getBookings, API_BASE, ADMIN_TOKEN, type Booking } from '../lib/api';
 
 export const prerender = false;
 
@@ -14,5 +14,6 @@ try { bookings = await getBookings(); } catch {}
         client:load
         initialBookings={bookings}
         apiBase={API_BASE}
+        adminToken={ADMIN_TOKEN}
     />
 </AdminLayout>

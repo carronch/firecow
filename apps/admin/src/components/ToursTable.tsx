@@ -48,6 +48,7 @@ interface Props {
     initialTours: Tour[];
     suppliers: Supplier[];
     apiBase: string;
+    adminToken: string;
     agentApiBase: string;
     agentAdminKey: string;
 }
@@ -249,7 +250,7 @@ function AvailabilityPanel({ tour, agentApiBase, agentAdminKey }: AvailabilityPa
 
 // ── Main component ──────────────────────────────────────────────────────────
 
-export default function ToursTable({ initialTours, suppliers, apiBase, agentApiBase, agentAdminKey }: Props) {
+export default function ToursTable({ initialTours, suppliers, apiBase, adminToken, agentApiBase, agentAdminKey }: Props) {
     const [rows, setRows] = useState<Tour[]>(initialTours);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editData, setEditData] = useState<EditRow>(EMPTY_TOUR);
@@ -274,7 +275,7 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
             const key = `tours/${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
             const res = await fetch(`${apiBase}/api/upload?key=${encodeURIComponent(key)}`, {
                 method: 'POST',
-                headers: { 'Content-Type': file.type },
+                headers: { 'Content-Type': file.type, 'Authorization': `Bearer ${adminToken}` },
                 body: file,
             });
             if (!res.ok) throw new Error('Upload failed');
@@ -301,7 +302,7 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
         try {
             const res = await fetch(`${apiBase}/api/tours/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(editData),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -325,7 +326,7 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
         try {
             const res = await fetch(`${apiBase}/api/tours`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(newRow),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -345,7 +346,7 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
         try {
             const res = await fetch(`${apiBase}/api/tours/${t.id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify({ is_active: next }),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -359,7 +360,7 @@ export default function ToursTable({ initialTours, suppliers, apiBase, agentApiB
         if (!confirm(`Delete tour "${name}"?`)) return;
         setError(null);
         try {
-            const res = await fetch(`${apiBase}/api/tours/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${apiBase}/api/tours/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${adminToken}` } });
             if (!res.ok) throw new Error(await res.text());
             setRows(rs => rs.filter(r => r.id !== id));
         } catch (e: any) {

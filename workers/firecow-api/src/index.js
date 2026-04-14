@@ -76,6 +76,21 @@ export default {
     const method = request.method;
     const DB = env.DB;
 
+    // ─── ADMIN AUTH ────────────────────────────────────────────────────────────
+    // All write operations require a valid admin token except POST /api/bookings
+    // (tour sites create bookings without admin credentials).
+    const isWrite = method === 'POST' || method === 'PUT' || method === 'DELETE';
+    const isPublicBookingCreate = method === 'POST' && segments[1] === 'bookings';
+    if (isWrite && !isPublicBookingCreate && env.ADMIN_SECRET) {
+      const auth = request.headers.get('Authorization');
+      if (auth !== `Bearer ${env.ADMIN_SECRET}`) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { ...CORS, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     try {
       // ─── SUPPLIERS ─────────────────────────────────────────────────────────
       if (segments[1] === 'suppliers') {

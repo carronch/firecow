@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../layouts/AdminLayout.astro';
 import SitesTable from '../components/SitesTable';
-import { getSites, getSuppliers, API_BASE, type Site, type Supplier } from '../lib/api';
+import { getSites, getSuppliers, API_BASE, ADMIN_TOKEN, type Site, type Supplier } from '../lib/api';
 
 export const prerender = false;
 
@@ -16,5 +16,6 @@ try { [sites, suppliers] = await Promise.all([getSites(), getSuppliers()]); } ca
         initialSites={sites}
         suppliers={suppliers}
         apiBase={API_BASE}
+        adminToken={ADMIN_TOKEN}
     />
 </AdminLayout>

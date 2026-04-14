@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../layouts/AdminLayout.astro';
 import ToursTable from '../components/ToursTable';
-import { getTours, getSuppliers, API_BASE, AGENT_API_BASE, AGENT_ADMIN_KEY, type Tour, type Supplier } from '../lib/api';
+import { getTours, getSuppliers, API_BASE, ADMIN_TOKEN, AGENT_API_BASE, AGENT_ADMIN_KEY, type Tour, type Supplier } from '../lib/api';
 
 export const prerender = false;
 
@@ -16,6 +16,7 @@ try { [tours, suppliers] = await Promise.all([getTours(), getSuppliers()]); } ca
         initialTours={tours}
         suppliers={suppliers}
         apiBase={API_BASE}
+        adminToken={ADMIN_TOKEN}
         agentApiBase={AGENT_API_BASE}
         agentAdminKey={AGENT_ADMIN_KEY}
     />

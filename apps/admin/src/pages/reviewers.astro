@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../layouts/AdminLayout.astro';
 import ReviewersTable from '../components/ReviewersTable';
-import { getSites, API_BASE, type Site } from '../lib/api';
+import { getSites, API_BASE, ADMIN_TOKEN, type Site } from '../lib/api';
 
 export const prerender = false;
 
@@ -18,5 +18,6 @@ try {
         client:load
         sites={sites}
         apiBase={API_BASE}
+        adminToken={ADMIN_TOKEN}
     />
 </AdminLayout>

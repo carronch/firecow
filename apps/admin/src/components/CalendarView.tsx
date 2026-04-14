@@ -27,9 +27,10 @@ const STATUSES = ['confirmed', 'pending', 'refunded', 'cancelled'];
 interface Props {
     initialBookings: Booking[];
     apiBase: string;
+    adminToken: string;
 }
 
-export default function CalendarView({ initialBookings, apiBase }: Props) {
+export default function CalendarView({ initialBookings, apiBase, adminToken }: Props) {
     const today = new Date();
     const [year, setYear] = useState(today.getFullYear());
     const [month, setMonth] = useState(today.getMonth()); // 0-indexed
@@ -79,7 +80,7 @@ export default function CalendarView({ initialBookings, apiBase }: Props) {
         try {
             const res = await fetch(`${apiBase}/api/bookings/${selected.id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(editData),
             });
             if (!res.ok) throw new Error(await res.text());

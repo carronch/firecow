@@ -29,7 +29,7 @@ interface Campaign {
 
 const EMPTY_REVIEWER = { name: '', whatsapp_number: '', sinpe_number: '' };
 
-export default function ReviewersTable({ sites, apiBase }: { sites: Site[], apiBase: string }) {
+export default function ReviewersTable({ sites, apiBase, adminToken }: { sites: Site[], apiBase: string, adminToken: string }) {
     const [reviewers, setReviewers] = useState<Reviewer[]>([]);
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
@@ -72,7 +72,7 @@ export default function ReviewersTable({ sites, apiBase }: { sites: Site[], apiB
         try {
             const res = await fetch(`${apiBase}/api/reviewers`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(formData)
             });
             if (!res.ok) throw new Error(await res.text());
@@ -91,7 +91,7 @@ export default function ReviewersTable({ sites, apiBase }: { sites: Site[], apiB
         try {
             const res = await fetch(`${apiBase}/api/reviewers/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify({ status: next })
             });
             if (res.ok) await refreshData();
@@ -103,7 +103,7 @@ export default function ReviewersTable({ sites, apiBase }: { sites: Site[], apiB
         try {
             const res = await fetch(`${apiBase}/api/campaigns/blast`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(campData)
             });
             if (!res.ok) throw new Error(await res.text());

@@ -41,11 +41,12 @@ function formatDate(iso: string): string {
 interface Props {
     supplier: Supplier | null;
     apiBase: string;
+    adminToken: string;
     onClose: () => void;
     onStatusChange: (supplierId: string, status: CheckStatus) => void;
 }
 
-export default function SupplierCheckPanel({ supplier, apiBase, onClose, onStatusChange }: Props) {
+export default function SupplierCheckPanel({ supplier, apiBase, adminToken, onClose, onStatusChange }: Props) {
     const [checks, setChecks] = useState<Map<string, SupplierCheck>>(new Map());
     const [saving, setSaving] = useState<string | null>(null);
     const [waDate, setWaDate] = useState<string | null>(null);
@@ -78,7 +79,7 @@ export default function SupplierCheckPanel({ supplier, apiBase, onClose, onStatu
             const seasonName = getSeasonForDate(new Date(date + 'T12:00:00'));
             const res = await fetch(`${apiBase}/api/supplier-checks`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify({
                     supplier_id: supplier.id,
                     check_date: date,

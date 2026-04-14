@@ -2,6 +2,9 @@ export const API_BASE =
     (import.meta.env.FIRECOW_API_URL as string | undefined) ??
     'https://firecow-api.firecowbooking.workers.dev';
 
+export const ADMIN_TOKEN =
+    (import.meta.env.ADMIN_SECRET as string | undefined) ?? '';
+
 export const AGENT_API_BASE =
     (import.meta.env.AGENT_API_URL as string | undefined) ??
     'https://firecow-agent-api.firecowbooking.workers.dev';

@@ -28,9 +28,10 @@ const STATUSES = ['confirmed', 'pending', 'refunded', 'cancelled'];
 interface Props {
     initialBookings: Booking[];
     apiBase: string;
+    adminToken: string;
 }
 
-export default function BookingsTable({ initialBookings, apiBase }: Props) {
+export default function BookingsTable({ initialBookings, apiBase, adminToken }: Props) {
     const [bookings, setBookings] = useState<Booking[]>(initialBookings);
     const [loading, setLoading] = useState(false);
     const [refunding, setRefunding] = useState<string | null>(null);
@@ -100,7 +101,7 @@ export default function BookingsTable({ initialBookings, apiBase }: Props) {
         try {
             const res = await fetch(`${apiBase}/api/bookings/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(editData),
             });
             if (!res.ok) throw new Error(await res.text());

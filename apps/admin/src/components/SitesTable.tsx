@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { Plus, RefreshCw, Zap, Pencil, Check, X, Globe, Copy, Phone, ShieldCheck } from 'lucide-react';
+import React, { useState, useCallback, useRef } from 'react';
+import { Plus, RefreshCw, Zap, Pencil, Check, X, Globe, Copy, Phone, ShieldCheck, Upload, CheckCheck } from 'lucide-react';
 import GbpLaunchKit from './GbpLaunchKit';
 
 interface Site {
@@ -35,9 +35,10 @@ interface Props {
     initialSites: Site[];
     suppliers: Supplier[];
     apiBase: string;
+    adminToken: string;
 }
 
-export default function SitesTable({ initialSites, suppliers, apiBase }: Props) {
+export default function SitesTable({ initialSites, suppliers, apiBase, adminToken }: Props) {
     const [sites, setSites] = useState<Site[]>(initialSites);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editData, setEditData] = useState<typeof EMPTY_SITE>(EMPTY_SITE);
@@ -49,6 +50,44 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
     const [deployMsg, setDeployMsg] = useState<string | null>(null);
     // Track sites saved but not yet deployed
     const [pendingDeploy, setPendingDeploy] = useState<Set<string>>(new Set());
+
+    // Image upload state
+    const [uploading, setUploading] = useState<string | null>(null);
+    const [uploadedUrls, setUploadedUrls] = useState<Record<string, string>>({});
+    const [copiedKey, setCopiedKey] = useState<string | null>(null);
+    const imgRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
+    const uploadSiteImage = async (file: File, slug: string, descriptor: string) => {
+        if (!slug.trim()) { setError('Set a slug before uploading images.'); return; }
+        setUploading(descriptor);
+        setError(null);
+        try {
+            const ext = file.name.split('.').pop() ?? 'jpg';
+            const key = `sites/${slug}/${slug}-${descriptor}.${ext}`;
+            const res = await fetch(`${apiBase}/api/upload?key=${encodeURIComponent(key)}`, {
+                method: 'POST',
+                headers: { 'Content-Type': file.type || 'application/octet-stream', 'Authorization': `Bearer ${adminToken}` },
+                body: file,
+            });
+            if (!res.ok) throw new Error('Upload failed');
+            const { url } = await res.json();
+            setUploadedUrls(prev => ({ ...prev, [descriptor]: url }));
+        } catch (e: any) {
+            setError(e.message);
+        } finally {
+            setUploading(null);
+        }
+    };
+
+    const copyUrl = async (descriptor: string, url: string) => {
+        try {
+            await navigator.clipboard.writeText(url);
+            setCopiedKey(descriptor);
+            setTimeout(() => setCopiedKey(null), 2000);
+        } catch {
+            setError('Could not copy — please select and copy the URL manually.');
+        }
+    };
 
     // Twilio & GBP State
     const [provisioningSite, setProvisioningSite] = useState<string | null>(null);
@@ -91,7 +130,7 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
         try {
             const res = await fetch(`${apiBase}/api/twilio/provision`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify({ site_id: siteId, countryCode: provisionCountry }),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -106,6 +145,7 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
     };
 
     const startEdit = (s: Site) => {
+        setUploadedUrls({});
         setEditingId(s.id);
         setEditData({
             slug: s.slug, domain: s.domain, cf_project_name: s.cf_project_name,
@@ -123,7 +163,7 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
         try {
             const res = await fetch(`${apiBase}/api/sites/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(editData),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -145,7 +185,7 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
         try {
             const res = await fetch(`${apiBase}/api/sites`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(newSite),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -168,7 +208,7 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
             const { id: _id, ...rest } = s as any;
             const res = await fetch(`${apiBase}/api/sites`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify({ ...rest, slug: `${s.slug}-copy`, is_live: 0, cf_deploy_hook: '' }),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -188,7 +228,7 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
         try {
             const res = await fetch(`${apiBase}/api/sites/${s.id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify({ is_live: next }),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -378,6 +418,57 @@ export default function SitesTable({ initialSites, suppliers, apiBase }: Props) 
                             {editingId === s.id && (
                                 <div className="border-t border-slate-800/60 px-5 py-4 bg-blue-50">
                                     <SiteForm data={editData} onChange={setEditData} />
+
+                                    {/* Image Uploader */}
+                                    <div className="mt-4 pt-4 border-t border-slate-200">
+                                        <p className="text-xs font-semibold text-slate-500 mb-2">Site Images — upload files to get SEO-optimized URLs</p>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {(['hero', 'gallery-1', 'gallery-2', 'gallery-3', 'gallery-4'] as const).map(descriptor => (
+                                                <div key={descriptor} className="flex items-center gap-2">
+                                                    <input
+                                                        ref={el => { imgRefs.current[descriptor] = el; }}
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        onChange={e => {
+                                                            const f = e.target.files?.[0];
+                                                            if (f) uploadSiteImage(f, editData.slug, descriptor);
+                                                            e.target.value = '';
+                                                        }}
+                                                    />
+                                                    <button
+                                                        onClick={() => imgRefs.current[descriptor]?.click()}
+                                                        disabled={uploading !== null}
+                                                        className="flex items-center gap-1 px-2.5 py-1.5 text-xs border border-slate-700 rounded-lg hover:bg-slate-800/10 disabled:opacity-50 whitespace-nowrap bg-white"
+                                                    >
+                                                        <Upload size={11} />
+                                                        {uploading === descriptor ? 'Uploading…' : descriptor === 'hero' ? 'Hero' : `Gallery ${descriptor.split('-')[1]}`}
+                                                    </button>
+                                                    {uploadedUrls[descriptor] ? (
+                                                        <>
+                                                            <input
+                                                                readOnly
+                                                                value={uploadedUrls[descriptor]}
+                                                                className="flex-1 border border-slate-300 rounded px-2 py-1 text-xs bg-white text-slate-600 font-mono truncate"
+                                                            />
+                                                            <button
+                                                                onClick={() => copyUrl(descriptor, uploadedUrls[descriptor])}
+                                                                className="flex items-center gap-1 px-2 py-1.5 text-xs border border-slate-300 rounded hover:bg-slate-100 bg-white whitespace-nowrap"
+                                                            >
+                                                                {copiedKey === descriptor ? <><CheckCheck size={11} className="text-green-600" /> Copied</> : <><Copy size={11} /> Copy</>}
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        <span className="text-xs text-slate-400 italic">
+                                                            {editData.slug ? `→ ${editData.slug}-${descriptor}.jpg` : 'set a slug first'}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <p className="text-xs text-slate-400 mt-2">Copy these URLs and paste them into the Tours tab → Hero Image or Gallery Images fields.</p>
+                                    </div>
+
                                     <div className="flex gap-2 mt-3">
                                         <button onClick={() => saveEdit(s.id)} disabled={saving} className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-sky-500 to-purple-600 border-0 text-white text-sm rounded-lg hover:opacity-90 disabled:opacity-50">
                                             <Check size={13} /> {saving ? 'Saving…' : 'Save'}

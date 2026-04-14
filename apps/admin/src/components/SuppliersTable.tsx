@@ -32,9 +32,10 @@ const STATUS_CLASSES: Record<CheckStatus, string> = {
 interface Props {
     initialSuppliers: Supplier[];
     apiBase: string;
+    adminToken: string;
 }
 
-export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
+export default function SuppliersTable({ initialSuppliers, apiBase, adminToken }: Props) {
     const [rows, setRows] = useState<Supplier[]>(initialSuppliers);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editData, setEditData] = useState<EditRow>(EMPTY);
@@ -106,7 +107,7 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
         try {
             const res = await fetch(`${apiBase}/api/suppliers/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(editData),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -127,7 +128,7 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
         try {
             const res = await fetch(`${apiBase}/api/suppliers`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
                 body: JSON.stringify(newRow),
             });
             if (!res.ok) throw new Error(await res.text());
@@ -146,7 +147,7 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
         if (!confirm(`Delete supplier "${name}"? This cannot be undone.`)) return;
         setError(null);
         try {
-            const res = await fetch(`${apiBase}/api/suppliers/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${apiBase}/api/suppliers/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${adminToken}` } });
             if (!res.ok) throw new Error(await res.text());
             setRows(rs => rs.filter(r => r.id !== id));
         } catch (e: any) {
@@ -259,6 +260,7 @@ export default function SuppliersTable({ initialSuppliers, apiBase }: Props) {
             <SupplierCheckPanel
                 supplier={panelSupplier}
                 apiBase={apiBase}
+                adminToken={adminToken}
                 onClose={() => setPanelSupplier(null)}
                 onStatusChange={handleStatusChange}
             />

@@ -1,7 +1,7 @@
 ---
 import AdminLayout from '../layouts/AdminLayout.astro';
 import SuppliersTable from '../components/SuppliersTable';
-import { getSuppliers, API_BASE, type Supplier } from '../lib/api';
+import { getSuppliers, API_BASE, ADMIN_TOKEN, type Supplier } from '../lib/api';
 
 export const prerender = false;
 
@@ -14,5 +14,6 @@ try { suppliers = await getSuppliers(); } catch {}
         client:load
         initialSuppliers={suppliers}
         apiBase={API_BASE}
+        adminToken={ADMIN_TOKEN}
     />
 </AdminLayout>
